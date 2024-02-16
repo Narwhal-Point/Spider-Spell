@@ -207,7 +207,6 @@ namespace Player
 
                 yield return null;
             }
-
             _moveSpeed = _desiredMoveSpeed;
         }
         

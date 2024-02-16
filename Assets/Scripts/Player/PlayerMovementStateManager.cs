@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Player;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PlayerMovementStateManager : MonoBehaviour
 {
@@ -60,10 +62,11 @@ public class PlayerMovementStateManager : MonoBehaviour
         
         public float HorizontalInput { get; private set; }
         public float VerticalInput { get; private set; }
-
         public Vector3 MoveDirection { get; set; }
 
         public Rigidbody Rb { get; private set; }
+
+        public TMP_Text text;
         
         // enum to display active state on screen
         [FormerlySerializedAs("state")] public MovementState movementState;
@@ -100,6 +103,7 @@ public class PlayerMovementStateManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        text.text = _currentState.ToString();
         Grounded = Physics.Raycast(transform.position, Vector3.down, 
             playerHeight * 0.5f + 0.2f, ground);
         
@@ -120,7 +124,4 @@ public class PlayerMovementStateManager : MonoBehaviour
         _currentState = state;
         state.EnterState(this);
     }
-
-    
-
 }

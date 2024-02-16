@@ -42,7 +42,7 @@ public class playerMovementStateJumping : PlayerMovementBaseState
     private void Jump(PlayerMovementStateManager player)
     {
         player.ExitingSlope = true;
-        // player.Rb.useGravity = true;
+        player.Rb.useGravity = true;
 
         // reset y velocity
         var velocity = player.Rb.velocity;

@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerMovementStateWalking : PlayerMovementBaseState
 {
-    private float _moveSpeed;
     
     private RaycastHit _slopeHit;
     
@@ -11,7 +10,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         player.movementState = PlayerMovementStateManager.MovementState.Walking;
         player.DesiredMoveSpeed = player.walkSpeed;
 
-        _moveSpeed = player.DesiredMoveSpeed;
+        player.MoveSpeed = player.DesiredMoveSpeed;
         player.Rb.drag = player.groundDrag;
     }
 
@@ -24,7 +23,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
             player.SwitchState(player.idleState);
         else if(player.HorizontalInput != 0 || player.VerticalInput != 0)
         {
-            if(Input.GetKey(player.slideKey))
+            if(Input.GetKeyDown(player.slideKey))
                 player.SwitchState(player.slidingState);
             else if(Input.GetKey(player.sprintKey))
                 player.SwitchState(player.sprintingState);
@@ -65,7 +64,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         // player is on a slope
         if (OnSlope(player) && !player.ExitingSlope)
         {
-            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * _moveSpeed * 20f, ForceMode.Force);
+            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * player.MoveSpeed * 20f, ForceMode.Force);
 
             if (player.Rb.velocity.y > 0)
                 player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -74,7 +73,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         // player on the ground
         else if (player.Grounded)
         {
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f),
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f),
                 ForceMode.Force); // move
         }
 
@@ -87,17 +86,17 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         // limit speed on slope
         if (OnSlope(player) && !player.ExitingSlope)
         {
-            if ( player.Rb.velocity.magnitude > _moveSpeed)
-                player.Rb.velocity =  player.Rb.velocity.normalized * _moveSpeed;
+            if ( player.Rb.velocity.magnitude > player.MoveSpeed)
+                player.Rb.velocity =  player.Rb.velocity.normalized * player.MoveSpeed;
         }
         else // limit speed on ground
         {
             Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > _moveSpeed)
+            if (flatVel.magnitude > player.MoveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * player.MoveSpeed;
                 player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
             }
         }

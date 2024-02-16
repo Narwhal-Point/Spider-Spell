@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerMovementStateSprinting : PlayerMovementBaseState
 {
-    private float _moveSpeed;
 
     private RaycastHit _slopeHit;
 
@@ -11,7 +10,7 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
         player.movementState = PlayerMovementStateManager.MovementState.Sprinting;
         player.DesiredMoveSpeed = player.sprintSpeed;
 
-        _moveSpeed = player.DesiredMoveSpeed; // should probably make this better
+        player.MoveSpeed = player.DesiredMoveSpeed; // should probably make this better
 
         // ground drag
         player.Rb.drag = player.groundDrag;
@@ -23,7 +22,7 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
         SpeedControl(player);
         
         // switch to another state
-        if (Input.GetKey(player.slideKey))
+        if (Input.GetKeyDown(player.slideKey))
             player.SwitchState(player.slidingState);
         else if (Input.GetKeyDown(player.jumpKey))
             player.SwitchState(player.jumpingState);
@@ -61,7 +60,7 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
         // player is on a slope
         if (OnSlope(player) && !player.ExitingSlope)
         {
-            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * _moveSpeed * 20f, ForceMode.Force);
+            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * player.MoveSpeed * 20f, ForceMode.Force);
 
             if (player.Rb.velocity.y > 0)
                 player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -70,7 +69,7 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
         // player on the ground
         else if (player.Grounded)
         {
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f),
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f),
                 ForceMode.Force); // move
         }
 
@@ -83,17 +82,17 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
         // limit speed on slope
         if (OnSlope(player) && !player.ExitingSlope)
         {
-            if (player.Rb.velocity.magnitude > _moveSpeed)
-                player.Rb.velocity = player.Rb.velocity.normalized * _moveSpeed;
+            if (player.Rb.velocity.magnitude > player.MoveSpeed)
+                player.Rb.velocity = player.Rb.velocity.normalized * player.MoveSpeed;
         }
         else // limit speed on ground
         {
             Vector3 flatVel = new Vector3(player.Rb.velocity.x, 0f, player.Rb.velocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > _moveSpeed)
+            if (flatVel.magnitude > player.MoveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * player.MoveSpeed;
                 player.Rb.velocity = new Vector3(limitedVel.x, player.Rb.velocity.y, limitedVel.z);
             }
         }
