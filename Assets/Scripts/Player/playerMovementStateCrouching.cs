@@ -8,6 +8,7 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
 
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = false;
         player.movementState = PlayerMovementStateManager.MovementState.Crouching;
 
         player.DesiredMoveSpeed = player.crouchSpeed;
@@ -35,6 +36,8 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
             else
                 player.SwitchState(player.idleState);
         }
+        if(!player.Grounded)
+            player.SwitchState(player.fallingState);
     }
 
     public override void FixedUpdateState(PlayerMovementStateManager player)

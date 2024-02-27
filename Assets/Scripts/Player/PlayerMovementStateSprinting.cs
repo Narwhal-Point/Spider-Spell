@@ -7,6 +7,7 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
 
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = false;
         player.movementState = PlayerMovementStateManager.MovementState.Sprinting;
         player.DesiredMoveSpeed = player.sprintSpeed;
 
@@ -28,6 +29,8 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
             player.SwitchState(player.jumpingState);
         else if (Input.GetKeyUp(player.sprintKey))
             player.SwitchState(player.walkingState);
+        else if(!player.Grounded)
+            player.SwitchState(player.fallingState);
     }
 
     public override void FixedUpdateState(PlayerMovementStateManager player)

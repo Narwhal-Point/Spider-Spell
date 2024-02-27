@@ -7,6 +7,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
     
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = false;
         player.movementState = PlayerMovementStateManager.MovementState.Walking;
         player.DesiredMoveSpeed = player.walkSpeed;
 
@@ -31,6 +32,9 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
                 player.SwitchState(player.jumpingState);
             else if(Input.GetKey(player.crouchKey))
                 player.SwitchState(player.crouchingState);
+            else if(!player.Grounded)
+                player.SwitchState(player.fallingState);
+
         }
         
     }
@@ -78,7 +82,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         }
 
         // turn gravity off while on slope
-        player.Rb.useGravity = !OnSlope(player);
+        // player.Rb.useGravity = !OnSlope(player);
     }
 
     private void SpeedControl(PlayerMovementStateManager player)

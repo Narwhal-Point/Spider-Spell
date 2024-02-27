@@ -5,11 +5,13 @@ public class playerMovementStateJumping : PlayerMovementBaseState
     private float jumpTimer;
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = true;
+
         player.ReadyToJump = false;
         Jump(player);
         // player.Invoke(nameof(ResetJump), player.jumpCooldown);
         jumpTimer = player.jumpCooldown;
-        player.movementState = PlayerMovementStateManager.MovementState.Air;
+        player.movementState = PlayerMovementStateManager.MovementState.Jumping;
         player.Rb.drag = 0; // no ground drag because we're in the air
     }
 
@@ -34,9 +36,13 @@ public class playerMovementStateJumping : PlayerMovementBaseState
         MovePlayer(player);
 
         jumpTimer -= Time.deltaTime;
-        
-        if(jumpTimer <= 0)
+
+        if (jumpTimer <= 0)
+        {
             ResetJump(player);
+            if(!player.Grounded && player.Rb.velocity.y < 0)
+                player.SwitchState(player.fallingState);
+        }
     }
 
     private void Jump(PlayerMovementStateManager player)

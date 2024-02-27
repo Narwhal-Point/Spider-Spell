@@ -6,6 +6,7 @@ public class PlayerMovementStateSliding : PlayerMovementBaseState
     
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = false;
         StartSlide(player);
         player.movementState = PlayerMovementStateManager.MovementState.Sliding;
         player.Rb.drag = player.groundDrag;
@@ -50,6 +51,8 @@ public class PlayerMovementStateSliding : PlayerMovementBaseState
             else
                 player.SwitchState(player.walkingState);
         }
+        else if(!player.Grounded)
+            player.SwitchState(player.fallingState);
     }
 
     private void SlidingMovement(PlayerMovementStateManager player)
