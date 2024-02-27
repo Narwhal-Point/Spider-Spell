@@ -9,87 +9,81 @@ using UnityEngine.UI;
 
 public class PlayerMovementStateManager : MonoBehaviour
 {
-    [Header("Movement")]
-        public float walkSpeed = 7;
-        public float sprintSpeed = 10;
-        public float MoveSpeed { get; set; }
-        public float slideSpeed = 30;
+    [Header("Movement")] public float walkSpeed = 7;
+    public float sprintSpeed = 10;
+    public float MoveSpeed { get; set; }
+    public float slideSpeed = 30;
 
-        public float DesiredMoveSpeed { get; set; }
-        public float LastDesiredMoveSpeed { get; set; }
-        
-        public float speedIncreaseMultiplier = 1.5f;
-        public float slopeIncreaseMultiplier = 2.5f;
-    
-        public float groundDrag = 5f;
+    public float DesiredMoveSpeed { get; set; }
+    public float LastDesiredMoveSpeed { get; set; }
 
-        [Header("Jumping")]
-        public float jumpForce = 6;
-        public float airMultiplier = 0.001f;
-        public float jumpCooldown = 0.5f;
-        public bool ReadyToJump { get; set; }
+    public float speedIncreaseMultiplier = 1.5f;
+    public float slopeIncreaseMultiplier = 2.5f;
 
-        [Header("Crouching")] 
-        public float crouchSpeed = 3.5f;
-        public float crouchYScale = 0.5f;
-        public float StartYScale { get; set; }
-        
-        [Header("sliding")] 
-        public float maxSlideTime;
-        public float slideForce;
-        public float SlideTimer { get; set; }
-        public bool Sliding { get; set; }
+    public float groundDrag = 5f;
 
-        public float slideYScale;
-        
-        [Header("Keybinds")] 
-        public KeyCode jumpKey = KeyCode.Space;
-        public KeyCode sprintKey = KeyCode.LeftShift;
-        public KeyCode crouchKey = KeyCode.C;
-        public KeyCode slideKey = KeyCode.LeftControl;
+    [Header("Jumping")] public float jumpForce = 6;
+    public float airMultiplier = 0.001f;
+    public float jumpCooldown = 0.5f;
+    public bool ReadyToJump { get; set; }
 
-        [Header("Ground Check")] 
-        public float playerHeight = 2;
-        public LayerMask ground;
-        public bool Grounded { get; private set; }
+    [Header("Crouching")] public float crouchSpeed = 3.5f;
+    public float crouchYScale = 0.5f;
+    public float StartYScale { get; set; }
 
-        [Header("Slope Handling")] 
-        public float maxSlopeAngle;
-        public bool ExitingSlope { get; set; }
-        
-        [Header("References")] 
-        public Transform orientation;
-        
-        public float HorizontalInput { get; private set; }
-        public float VerticalInput { get; private set; }
-        public Vector3 MoveDirection { get; set; }
+    [Header("sliding")] public float maxSlideTime;
+    public float slideForce;
+    public float SlideTimer { get; set; }
+    public bool Sliding { get; set; }
 
-        public Rigidbody Rb { get; private set; }
+    public float slideYScale;
 
-        public TMP_Text text;
-        
-        // enum to display active state on screen
-        [FormerlySerializedAs("state")] public MovementState movementState;
-        public enum MovementState
-        {
-            Idle,
-            Walking,
-            Sprinting,
-            Crouching,
-            Sliding,
-            Jumping,
-            Falling
-        }
+    [Header("Keybinds")] public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode crouchKey = KeyCode.C;
+    public KeyCode slideKey = KeyCode.LeftControl;
 
-        private PlayerMovementBaseState _currentState;
-        public PlayerMovementStateSprinting sprintingState = new PlayerMovementStateSprinting();
-        public PlayerMovementStateWalking walkingState = new PlayerMovementStateWalking();
-        public playerMovementStateCrouching crouchingState = new playerMovementStateCrouching();
-        public playerMovementStateJumping jumpingState = new playerMovementStateJumping();
-        public PlayerMovementStateFalling fallingState = new PlayerMovementStateFalling();
-        public PlayerMovementStateSliding slidingState = new PlayerMovementStateSliding();
-        public PlayerMovementStateIdle idleState = new PlayerMovementStateIdle();
-    
+    [Header("Ground Check")] public float playerHeight = 2;
+    public LayerMask ground;
+    public LayerMask wall;
+    public bool Grounded; //{ get; private set; }
+
+    [Header("Slope Handling")] public float maxSlopeAngle;
+    public bool ExitingSlope { get; set; }
+
+    [Header("References")] public Transform orientation;
+
+    public float HorizontalInput { get; private set; }
+    public float VerticalInput { get; private set; }
+    public Vector3 MoveDirection { get; set; }
+
+    public Rigidbody Rb { get; private set; }
+
+    public TMP_Text text;
+
+    // enum to display active state on screen
+    [FormerlySerializedAs("state")] public MovementState movementState;
+
+    public enum MovementState
+    {
+        Idle,
+        Walking,
+        Sprinting,
+        Crouching,
+        Sliding,
+        Jumping,
+        Falling
+    }
+
+    private PlayerMovementBaseState _currentState;
+    public PlayerMovementStateSprinting sprintingState = new PlayerMovementStateSprinting();
+    public PlayerMovementStateWalking walkingState = new PlayerMovementStateWalking();
+    public playerMovementStateCrouching crouchingState = new playerMovementStateCrouching();
+    public playerMovementStateJumping jumpingState = new playerMovementStateJumping();
+    public PlayerMovementStateFalling fallingState = new PlayerMovementStateFalling();
+    public PlayerMovementStateSliding slidingState = new PlayerMovementStateSliding();
+    public PlayerMovementStateIdle idleState = new PlayerMovementStateIdle();
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -106,13 +100,14 @@ public class PlayerMovementStateManager : MonoBehaviour
     private void Update()
     {
         text.text = _currentState.ToString();
-        Grounded = Physics.Raycast(transform.position, Vector3.down, 
+        Grounded = Physics.Raycast(transform.position, -transform.up,
             playerHeight * 0.5f + 0.2f, ground);
-        
+        switchSurface();
+
         // get keyboard input
         HorizontalInput = Input.GetAxisRaw("Horizontal"); // A + D
         VerticalInput = Input.GetAxisRaw("Vertical"); // W + S
-        
+
         _currentState.UpdateState(this);
     }
 
@@ -123,7 +118,23 @@ public class PlayerMovementStateManager : MonoBehaviour
 
     public void SwitchState(PlayerMovementBaseState state)
     {
+
         _currentState = state;
         state.EnterState(this);
+    }
+
+    private void switchSurface()
+    {
+        Debug.Log(transform.rotation);
+        bool groundedForward = Physics.Raycast(transform.position, -transform.forward,
+            playerHeight * 0.5f + 0.2f, ground);
+        if (groundedForward)
+        {
+            transform.Rotate(-90, 0, 0);
+            Debug.Log("found ground in the forward direction");
+        }
+        else if (transform.rotation.x < -0.5f)
+            transform.Rotate(180, 0, 0);
+        
     }
 }

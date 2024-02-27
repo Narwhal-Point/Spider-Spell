@@ -77,8 +77,8 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         // player on the ground
         else if (player.Grounded)
         {
-            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f),
-                ForceMode.Force); // move
+            // Debug.Log(player.MoveDirection);
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force); // move
         }
     }
 
