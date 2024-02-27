@@ -6,9 +6,10 @@ public class PlayerMovementStateFalling : PlayerMovementBaseState
     {
         player.movementState = PlayerMovementStateManager.MovementState.Falling;
         player.Rb.useGravity = true;
-        // var velocity = player.Rb.velocity;
-        // velocity = new Vector3(velocity.x, -5f, velocity.z);
-        // player.Rb.velocity = velocity;
+        
+        // disable ground drag because otherwise we clamp the y value
+        // this took hours to figure out...
+        player.Rb.drag = 0f;
     }
 
     public override void UpdateState(PlayerMovementStateManager player)
