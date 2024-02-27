@@ -82,9 +82,6 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f),
                 ForceMode.Force); // move
         }
-
-        // turn gravity off while on slope
-        player.Rb.useGravity = !OnSlope(player);
     }
 
     private void SpeedControl(PlayerMovementStateManager player)

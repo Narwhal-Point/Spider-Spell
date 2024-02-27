@@ -75,9 +75,6 @@ public class PlayerMovementStateSprinting : PlayerMovementBaseState
             player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f),
                 ForceMode.Force); // move
         }
-
-        // turn gravity off while on slope
-        player.Rb.useGravity = !OnSlope(player);
     }
 
     private void SpeedControl(PlayerMovementStateManager player)

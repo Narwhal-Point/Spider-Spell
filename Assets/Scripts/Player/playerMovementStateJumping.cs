@@ -17,11 +17,25 @@ public class playerMovementStateJumping : PlayerMovementBaseState
 
     public override void UpdateState(PlayerMovementStateManager player)
     {
+        jumpTimer -= Time.deltaTime;
+
+        if (jumpTimer <= 0)
+        {
+            ResetJump(player);
+            if (!player.Grounded && player.Rb.velocity.y < 0)
+            {
+                player.SwitchState(player.fallingState);
+                return;
+            }
+        }
+        
         if (player.Grounded && player.ReadyToJump)
         {
             if (player.HorizontalInput != 0 || player.VerticalInput != 0)
             {
-                if(Input.GetKeyDown(player.sprintKey))
+                if(Input.GetKeyDown(player.slideKey))
+                    player.SwitchState(player.slidingState);
+                else if(Input.GetKeyDown(player.sprintKey))
                     player.SwitchState(player.sprintingState);
                 else
                     player.SwitchState(player.walkingState);
@@ -34,15 +48,6 @@ public class playerMovementStateJumping : PlayerMovementBaseState
     public override void FixedUpdateState(PlayerMovementStateManager player)
     {
         MovePlayer(player);
-
-        jumpTimer -= Time.deltaTime;
-
-        if (jumpTimer <= 0)
-        {
-            ResetJump(player);
-            if(!player.Grounded && player.Rb.velocity.y < 0)
-                player.SwitchState(player.fallingState);
-        }
     }
 
     private void Jump(PlayerMovementStateManager player)

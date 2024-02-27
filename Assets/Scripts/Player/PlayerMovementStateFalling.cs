@@ -15,8 +15,19 @@ public class PlayerMovementStateFalling : PlayerMovementBaseState
     public override void UpdateState(PlayerMovementStateManager player)
     {
         if (player.Grounded)
-            player.SwitchState(player.idleState);
-        Debug.Log(player.Rb.velocity.y);
+        {
+            if (player.HorizontalInput != 0 || player.VerticalInput != 0)
+            {
+                if(Input.GetKey(player.slideKey))
+                    player.SwitchState(player.slidingState); // why no work
+                else if(Input.GetKeyDown(player.sprintKey))
+                    player.SwitchState(player.sprintingState);
+                else
+                    player.SwitchState(player.walkingState);
+            }
+            else
+                player.SwitchState(player.idleState);
+        }
     }
 
     public override void FixedUpdateState(PlayerMovementStateManager player)
