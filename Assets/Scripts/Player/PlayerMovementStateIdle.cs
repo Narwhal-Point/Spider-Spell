@@ -8,6 +8,7 @@ public class PlayerMovementStateIdle : PlayerMovementBaseState
     
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.Rb.useGravity = false;
         player.movementState = PlayerMovementStateManager.MovementState.Idle;
         player.Rb.drag = player.groundDrag;
     }
@@ -24,6 +25,8 @@ public class PlayerMovementStateIdle : PlayerMovementBaseState
         {
             player.SwitchState(player.jumpingState);
         }
+        else if(!player.Grounded)
+            player.SwitchState(player.fallingState);
     }
 
     public override void FixedUpdateState(PlayerMovementStateManager player)

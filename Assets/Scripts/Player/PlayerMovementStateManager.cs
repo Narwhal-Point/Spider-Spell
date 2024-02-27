@@ -77,7 +77,8 @@ public class PlayerMovementStateManager : MonoBehaviour
             Sprinting,
             Crouching,
             Sliding,
-            Air
+            Jumping,
+            Falling
         }
 
         private PlayerMovementBaseState _currentState;
@@ -85,6 +86,7 @@ public class PlayerMovementStateManager : MonoBehaviour
         public PlayerMovementStateWalking walkingState = new PlayerMovementStateWalking();
         public playerMovementStateCrouching crouchingState = new playerMovementStateCrouching();
         public playerMovementStateJumping jumpingState = new playerMovementStateJumping();
+        public PlayerMovementStateFalling fallingState = new PlayerMovementStateFalling();
         public PlayerMovementStateSliding slidingState = new PlayerMovementStateSliding();
         public PlayerMovementStateIdle idleState = new PlayerMovementStateIdle();
     
