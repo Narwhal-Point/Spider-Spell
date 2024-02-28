@@ -44,38 +44,6 @@ public class PlayerSwinging : MonoBehaviour
     {
         drawRope();
     }
-
-    private void StartSwing()
-    {
-        // return if predictionHit not found
-        if (predictionHit.point == Vector3.zero) 
-            return;
-
-        swingPoint = predictionHit.point;
-        joint = player.gameObject.AddComponent<SpringJoint>();
-        joint.autoConfigureConnectedAnchor = false;
-        joint.connectedAnchor = swingPoint;
-
-        float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
-
-        // the distance grapple will try to keep from grapple point. 
-        joint.maxDistance = distanceFromPoint * 0.8f;
-        joint.minDistance = distanceFromPoint * 0.25f;
-
-        // customize values as you like
-        joint.spring = 4.5f;
-        joint.damper = 7f;
-        joint.massScale = 4.5f;
-
-        lr.positionCount = 2;
-        currentGrapplePosition = gunTip.position;
-    }
-
-    void StopSwing()
-    {
-        lr.positionCount = 0;
-        Destroy(joint);
-    }
     void drawRope()
     {
         // if not grappling don't draw rope

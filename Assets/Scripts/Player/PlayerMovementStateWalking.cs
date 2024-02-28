@@ -20,7 +20,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         SpeedControl(player);
         
          // switch to another state
-        if(player.Grounded && player.HorizontalInput == 0 && player.VerticalInput == 0 && player.Rb.velocity.magnitude < 0.1f)
+        if(player.Grounded && player.HorizontalInput == 0 && player.VerticalInput == 0)
             player.SwitchState(player.idleState);
         else if(player.HorizontalInput != 0 || player.VerticalInput != 0)
         {
@@ -68,7 +68,7 @@ public class PlayerMovementStateWalking : PlayerMovementBaseState
         // player is on a slope
         if (OnSlope(player) && !player.ExitingSlope)
         {
-            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * player.MoveSpeed * 20f, ForceMode.Force);
+            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (player.MoveSpeed * 20f), ForceMode.Force);
 
             if (player.Rb.velocity.y > 0)
                 player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);

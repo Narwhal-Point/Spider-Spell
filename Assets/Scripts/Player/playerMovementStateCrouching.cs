@@ -8,6 +8,7 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
 
     public override void EnterState(PlayerMovementStateManager player)
     {
+        player.crouchSound.Play();   
         player.Rb.useGravity = false;
         player.movementState = PlayerMovementStateManager.MovementState.Crouching;
 
@@ -30,14 +31,24 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
         {
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale,
                 player.transform.localScale.z);
-            
+
             if (player.HorizontalInput != 0 || player.VerticalInput != 0)
+            {
                 player.SwitchState(player.walkingState);
+                player.uncrouchSound.Play();
+            }
             else
+            {
                 player.SwitchState(player.idleState);
+                player.uncrouchSound.Play();
+            }
         }
-        if(!player.Grounded)
+
+        if (!player.Grounded)
+        {
             player.SwitchState(player.fallingState);
+            player.uncrouchSound.Play();
+        }
     }
 
     public override void FixedUpdateState(PlayerMovementStateManager player)

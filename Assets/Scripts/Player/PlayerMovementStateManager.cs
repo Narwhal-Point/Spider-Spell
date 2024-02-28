@@ -1,7 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class PlayerMovementStateManager : MonoBehaviour
 {
@@ -29,7 +27,7 @@ public class PlayerMovementStateManager : MonoBehaviour
     [Header("Crouching")] 
     public float crouchSpeed = 3.5f;
     public float crouchYScale = 0.5f;
-    public float StartYScale { get; set; }
+    public float StartYScale { get; private set; }
 
     [Header("sliding")] 
     public float maxSlideTime;
@@ -54,22 +52,16 @@ public class PlayerMovementStateManager : MonoBehaviour
     [Header("Slope Handling")] 
     public float maxSlopeAngle;
     public bool ExitingSlope { get; set; }
-
-    [Header("Swinging")]
-    public float maxSwingDistance = 15f;
-
-    // public SpringJoint joint { get; set; } // needs to be in a monobehaviour script
     
+    [Header("Swinging")]
     public KeyCode swingKey = KeyCode.Mouse0;
-
-    [Header("Prediction")] 
-    public float predictionSphereCastRadius;
-    public PlayerSwinging swing { get; private set; }
+    public float horizontalThrustForce = 200f;
+    public float forwardThrustForce = 300f;
+    public float extendCableSpeed = 20f;
+    public PlayerSwinging Swing { get; private set; }
     
     [Header("References")] 
-    public LineRenderer lr;
-    public Transform orientation, swingOrigin, cam, play;
-    public LayerMask whatIsGrappleable;
+    public Transform orientation, swingOrigin;
 
     public float HorizontalInput { get; private set; }
     public float VerticalInput { get; private set; }
@@ -77,10 +69,14 @@ public class PlayerMovementStateManager : MonoBehaviour
 
     public Rigidbody Rb { get; private set; }
 
+    public AudioSource crouchSound;
+    public AudioSource uncrouchSound;
+
+
     public TMP_Text text;
 
     // enum to display active state on screen
-    [FormerlySerializedAs("state")] public MovementState movementState;
+    public MovementState movementState;
 
     public enum MovementState
     {
@@ -91,7 +87,7 @@ public class PlayerMovementStateManager : MonoBehaviour
         Sliding,
         Jumping,
         Falling,
-        swinging
+        Swinging
     }
 
     private PlayerMovementBaseState _currentState;
@@ -107,7 +103,7 @@ public class PlayerMovementStateManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        swing = GetComponent<PlayerSwinging>();
+        Swing = GetComponent<PlayerSwinging>();
         Rb = GetComponent<Rigidbody>();
         Rb.freezeRotation = true; // stop character from falling over
         ReadyToJump = true;
@@ -150,7 +146,7 @@ public class PlayerMovementStateManager : MonoBehaviour
     // Do I care? No.
     public void DestroyJoint()
     {
-        Destroy(swing.joint);
+        Destroy(Swing.joint);
     }
     
 }
