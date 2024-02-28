@@ -46,7 +46,7 @@ public class PlayerMovementStateManager : MonoBehaviour
     [Header("Ground Check")] public float playerHeight = 2;
     public LayerMask ground;
     public LayerMask wall;
-    public bool Grounded; //{ get; private set; }
+    public bool Grounded { get; private set; }
 
     [Header("Slope Handling")] public float maxSlopeAngle;
     public bool ExitingSlope { get; set; }
@@ -99,11 +99,13 @@ public class PlayerMovementStateManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        // print the current movement state on the screen
         text.text = _currentState.ToString();
-        Grounded = Physics.Raycast(transform.position, -transform.up,
+        
+        // check if player is on the ground
+        Grounded = Physics.Raycast(transform.position, Vector3.down,
             playerHeight * 0.5f + 0.2f, ground);
-        switchSurface();
-
+        
         // get keyboard input
         HorizontalInput = Input.GetAxisRaw("Horizontal"); // A + D
         VerticalInput = Input.GetAxisRaw("Vertical"); // W + S
@@ -122,19 +124,6 @@ public class PlayerMovementStateManager : MonoBehaviour
         _currentState = state;
         state.EnterState(this);
     }
+    
 
-    private void switchSurface()
-    {
-        Debug.Log(transform.rotation);
-        bool groundedForward = Physics.Raycast(transform.position, -transform.forward,
-            playerHeight * 0.5f + 0.2f, ground);
-        if (groundedForward)
-        {
-            transform.Rotate(-90, 0, 0);
-            Debug.Log("found ground in the forward direction");
-        }
-        else if (transform.rotation.x < -0.5f)
-            transform.Rotate(180, 0, 0);
-        
-    }
 }
