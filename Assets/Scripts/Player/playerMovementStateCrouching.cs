@@ -44,7 +44,7 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
     {
         MovePlayer(player);
     }
-
+    
     private bool OnSlope(PlayerMovementStateManager player)
     {
         if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))

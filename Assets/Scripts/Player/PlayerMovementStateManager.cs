@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,8 +5,10 @@ using UnityEngine.UI;
 
 public class PlayerMovementStateManager : MonoBehaviour
 {
-    [Header("Movement")] public float walkSpeed = 7;
+    [Header("Movement")] 
+    public float walkSpeed = 7;
     public float sprintSpeed = 10;
+    public float swingSpeed = 20;
     public float MoveSpeed { get; set; }
     public float slideSpeed = 30;
 
@@ -22,36 +20,56 @@ public class PlayerMovementStateManager : MonoBehaviour
 
     public float groundDrag = 5f;
 
-    [Header("Jumping")] public float jumpForce = 6;
+    [Header("Jumping")] 
+    public float jumpForce = 6;
     public float airMultiplier = 0.001f;
     public float jumpCooldown = 0.5f;
     public bool ReadyToJump { get; set; }
 
-    [Header("Crouching")] public float crouchSpeed = 3.5f;
+    [Header("Crouching")] 
+    public float crouchSpeed = 3.5f;
     public float crouchYScale = 0.5f;
     public float StartYScale { get; set; }
 
-    [Header("sliding")] public float maxSlideTime;
+    [Header("sliding")] 
+    public float maxSlideTime;
     public float slideForce;
     public float SlideTimer { get; set; }
     public bool Sliding { get; set; }
 
     public float slideYScale;
 
-    [Header("Keybinds")] public KeyCode jumpKey = KeyCode.Space;
+    [Header("Keybinds")] 
+    public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.C;
     public KeyCode slideKey = KeyCode.LeftControl;
 
-    [Header("Ground Check")] public float playerHeight = 2;
+    [Header("Ground Check")] 
+    public float playerHeight = 2;
     public LayerMask ground;
     public LayerMask wall;
     public bool Grounded { get; private set; }
 
-    [Header("Slope Handling")] public float maxSlopeAngle;
+    [Header("Slope Handling")] 
+    public float maxSlopeAngle;
     public bool ExitingSlope { get; set; }
 
-    [Header("References")] public Transform orientation;
+    [Header("Swinging")]
+    public float maxSwingDistance = 15f;
+
+    // public SpringJoint joint { get; set; } // needs to be in a monobehaviour script
+    
+    public KeyCode swingKey = KeyCode.Mouse0;
+
+    [Header("Prediction")] 
+    public float predictionSphereCastRadius;
+    public PlayerSwinging swing { get; private set; }
+    
+    [Header("References")] 
+    public LineRenderer lr;
+    public Transform orientation, swingOrigin, cam, play;
+    public LayerMask whatIsGrappleable;
 
     public float HorizontalInput { get; private set; }
     public float VerticalInput { get; private set; }
@@ -72,7 +90,8 @@ public class PlayerMovementStateManager : MonoBehaviour
         Crouching,
         Sliding,
         Jumping,
-        Falling
+        Falling,
+        swinging
     }
 
     private PlayerMovementBaseState _currentState;
@@ -82,11 +101,13 @@ public class PlayerMovementStateManager : MonoBehaviour
     public playerMovementStateJumping jumpingState = new playerMovementStateJumping();
     public PlayerMovementStateFalling fallingState = new PlayerMovementStateFalling();
     public PlayerMovementStateSliding slidingState = new PlayerMovementStateSliding();
+    public PlayerMovementStateSwinging swingingState = new PlayerMovementStateSwinging();
     public PlayerMovementStateIdle idleState = new PlayerMovementStateIdle();
 
     // Start is called before the first frame update
     private void Start()
     {
+        swing = GetComponent<PlayerSwinging>();
         Rb = GetComponent<Rigidbody>();
         Rb.freezeRotation = true; // stop character from falling over
         ReadyToJump = true;
@@ -124,6 +145,12 @@ public class PlayerMovementStateManager : MonoBehaviour
         _currentState = state;
         state.EnterState(this);
     }
-    
 
+    // is this stupid? Yes.
+    // Do I care? No.
+    public void DestroyJoint()
+    {
+        Destroy(swing.joint);
+    }
+    
 }

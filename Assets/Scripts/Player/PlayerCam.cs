@@ -10,6 +10,8 @@ namespace Player
         public Rigidbody rb;
 
         public float rotationSpeed = 1f;
+
+        public Vector3 viewDirHeight;
     
         // Start is called before the first frame update
         void Start()
@@ -25,7 +27,7 @@ namespace Player
             // rotate orientation
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
-        
+            
             // rotate player object
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");

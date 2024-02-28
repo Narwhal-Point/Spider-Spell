@@ -11,8 +11,9 @@ public class PlayerSwinging : MonoBehaviour
     
     [Header("Swinging")]
     public float maxSwingDistance = 15f;
-    private Vector3 swingPoint;
-    private SpringJoint joint;
+    public Vector3 swingPoint { get; set; }
+    public SpringJoint joint { get; set; }
+    public Vector3 currentGrapplePosition { get; set; }
     
     public KeyCode swingKey = KeyCode.Mouse0;
 
@@ -28,10 +29,13 @@ public class PlayerSwinging : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(swingKey))
-            StartSwing();
-        if(Input.GetKeyUp(swingKey))
-            StopSwing();
+        // if (Input.GetKeyDown(swingKey))
+        // {
+        //     StartSwing();
+        // }
+        //
+        // if(Input.GetKeyUp(swingKey))
+        //     StopSwing();
         
         CheckForSwingPoints();
     }
@@ -72,8 +76,6 @@ public class PlayerSwinging : MonoBehaviour
         lr.positionCount = 0;
         Destroy(joint);
     }
-
-    private Vector3 currentGrapplePosition;
     void drawRope()
     {
         // if not grappling don't draw rope
@@ -93,7 +95,10 @@ public class PlayerSwinging : MonoBehaviour
            return;
 
         RaycastHit sphereCastHit;
-        Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, out sphereCastHit, maxSwingDistance,
+
+        Vector3 castPosition = new Vector3(player.position.x, cam.position.y, player.position.z);
+        
+        Physics.SphereCast(castPosition, predictionSphereCastRadius, cam.forward, out sphereCastHit, maxSwingDistance,
             whatIsGrappleable);
 
         RaycastHit raycastHit;

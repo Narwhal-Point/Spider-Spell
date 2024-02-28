@@ -14,6 +14,8 @@ public class PlayerMovementStateFalling : PlayerMovementBaseState
 
     public override void UpdateState(PlayerMovementStateManager player)
     {
+        if (Input.GetKeyDown(player.swingKey))
+            player.SwitchState(player.swingingState);
         if (player.Grounded)
         {
             if (player.HorizontalInput != 0 || player.VerticalInput != 0)

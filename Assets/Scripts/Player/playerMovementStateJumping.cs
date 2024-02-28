@@ -21,6 +21,8 @@ public class playerMovementStateJumping : PlayerMovementBaseState
 
         if (jumpTimer <= 0)
         {
+            if (Input.GetKeyDown(player.swingKey))
+                player.SwitchState(player.swingingState);
             ResetJump(player);
             if (!player.Grounded && player.Rb.velocity.y < 0)
             {
