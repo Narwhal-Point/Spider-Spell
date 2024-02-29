@@ -29,14 +29,6 @@ public class PlayerSwinging : MonoBehaviour
 
     private void Update()
     {
-        // if (Input.GetKeyDown(swingKey))
-        // {
-        //     StartSwing();
-        // }
-        //
-        // if(Input.GetKeyUp(swingKey))
-        //     StopSwing();
-        
         CheckForSwingPoints();
     }
 
@@ -93,7 +85,5 @@ public class PlayerSwinging : MonoBehaviour
             predicitionPoint.gameObject.SetActive(false);
 
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
-        
-        
     }
 }
