@@ -1,25 +1,28 @@
 using UnityEngine;
 
-public class MovementIdleSOBASE : ScriptableObject
+namespace Player.Movement.Movement_Logic.Idle
 {
-    protected PlayerMovement playerMovement;
-    protected Transform transform;
-    protected GameObject gameObject;
-
-    protected Transform playerTransform;
-
-    public virtual void Initialize(GameObject gameObject, PlayerMovement playerMovement)
+    public class MovementIdleSOBASE : ScriptableObject
     {
-        this.gameObject = gameObject;
-        this.playerMovement = playerMovement;
-        this.gameObject = gameObject;
+        protected PlayerMovement playerMovement;
+        protected Transform transform;
+        protected GameObject gameObject;
 
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        protected Transform playerTransform;
+
+        public virtual void Initialize(GameObject gameObject, PlayerMovement playerMovement)
+        {
+            this.gameObject = gameObject;
+            this.playerMovement = playerMovement;
+            this.gameObject = gameObject;
+
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+    
+        public virtual void DoEnterLogic() {}
+        public virtual void DoExitLogic() {}
+        public virtual void DoUpdateLogic() {}
+        public virtual void DoFixedUpdateLogic() {}
+    
     }
-    
-    public virtual void DoEnterLogic() {}
-    public virtual void DoExitLogic() {}
-    public virtual void DoUpdateLogic() {}
-    public virtual void DoFixedUpdateLogic() {}
-    
 }
