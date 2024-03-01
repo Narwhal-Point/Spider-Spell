@@ -1,17 +1,13 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
-public class PlayerMovementStateManager : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")] 
     public float walkSpeed = 7;
     public float sprintSpeed = 10;
     public float swingSpeed = 20;
-    public float MoveSpeed { get; set; }
     public float slideSpeed = 30;
-
-    public float DesiredMoveSpeed { get; set; }
-    public float LastDesiredMoveSpeed { get; set; }
 
     public float speedIncreaseMultiplier = 1.5f;
     public float slopeIncreaseMultiplier = 2.5f;
@@ -19,10 +15,9 @@ public class PlayerMovementStateManager : MonoBehaviour
     public float groundDrag = 5f;
 
     [Header("Jumping")] 
-    public float jumpForce = 6;
+    public float jumpForce = 10;
     public float airMultiplier = 0.001f;
     public float jumpCooldown = 0.5f;
-    public bool ReadyToJump { get; set; }
 
     [Header("Crouching")] 
     public float crouchSpeed = 3.5f;
@@ -30,12 +25,10 @@ public class PlayerMovementStateManager : MonoBehaviour
     public float StartYScale { get; private set; }
 
     [Header("sliding")] 
-    public float maxSlideTime;
-    public float slideForce;
-    public float SlideTimer { get; set; }
-    public bool Sliding { get; set; }
+    public float maxSlideTime = 0.75f;
+    public float slideForce = 150f;
 
-    public float slideYScale;
+    public float slideYScale = 0.5f;
 
     [Header("Keybinds")] 
     public KeyCode jumpKey = KeyCode.Space;
@@ -46,20 +39,19 @@ public class PlayerMovementStateManager : MonoBehaviour
     [Header("Ground Check")] 
     public float playerHeight = 2;
     public LayerMask ground;
-    public LayerMask wall;
     public bool Grounded { get; private set; }
 
     [Header("Slope Handling")] 
     public float maxSlopeAngle;
     public bool ExitingSlope { get; set; }
-    
-    [Header("Swinging")]
+
+    [Header("Swinging")] 
     public KeyCode swingKey = KeyCode.Mouse0;
     public float horizontalThrustForce = 200f;
     public float forwardThrustForce = 300f;
     public float extendCableSpeed = 20f;
     public PlayerSwinging Swing { get; private set; }
-    
+
     [Header("References")] 
     public Transform orientation, swingOrigin;
 
@@ -71,12 +63,12 @@ public class PlayerMovementStateManager : MonoBehaviour
 
     public AudioSource crouchSound;
     public AudioSource uncrouchSound;
-
-
+    
     public TMP_Text text;
 
     // enum to display active state on screen
     public MovementState movementState;
+    
 
     public enum MovementState
     {
@@ -90,34 +82,44 @@ public class PlayerMovementStateManager : MonoBehaviour
         Swinging
     }
 
-    private PlayerMovementBaseState _currentState;
-    public PlayerMovementStateSprinting sprintingState = new PlayerMovementStateSprinting();
-    public PlayerMovementStateWalking walkingState = new PlayerMovementStateWalking();
-    public playerMovementStateCrouching crouchingState = new playerMovementStateCrouching();
-    public playerMovementStateJumping jumpingState = new playerMovementStateJumping();
-    public PlayerMovementStateFalling fallingState = new PlayerMovementStateFalling();
-    public PlayerMovementStateSliding slidingState = new PlayerMovementStateSliding();
-    public PlayerMovementStateSwinging swingingState = new PlayerMovementStateSwinging();
-    public PlayerMovementStateIdle idleState = new PlayerMovementStateIdle();
+    private PlayerMovementStateManager _manager;
+    public PlayerMovementStateIdle IdleState { get; private set; }
+    public PlayerMovementStateWalking WalkingState { get; private set; }
+    public PlayerMovementStateSprinting SprintingState { get; private set; }
+    public playerMovementStateCrouching CrouchingState { get; private set; }
+    public playerMovementStateJumping JumpingState { get; private set; }
+    public PlayerMovementStateFalling FallingState { get; private set; }
+    public PlayerMovementStateSliding SlidingState { get; private set; }
+    public PlayerMovementStateSwinging SwingingState { get; private set; }
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        _manager = new PlayerMovementStateManager();
+        
+        IdleState = new PlayerMovementStateIdle(_manager, this);
+        WalkingState = new PlayerMovementStateWalking(_manager, this);
+        SprintingState = new PlayerMovementStateSprinting(_manager, this);
+        CrouchingState = new playerMovementStateCrouching(_manager, this);
+        JumpingState = new playerMovementStateJumping(_manager, this);
+        FallingState = new PlayerMovementStateFalling(_manager, this);
+        SlidingState = new PlayerMovementStateSliding(_manager, this);
+        SwingingState = new PlayerMovementStateSwinging(_manager, this);
+    }
+
     private void Start()
     {
         Swing = GetComponent<PlayerSwinging>();
         Rb = GetComponent<Rigidbody>();
         Rb.freezeRotation = true; // stop character from falling over
-        ReadyToJump = true;
         StartYScale = transform.localScale.y;
 
-        _currentState = idleState;
-        _currentState.EnterState(this);
+        _manager.Initialize(IdleState);
     }
 
-    // Update is called once per frame
     private void Update()
     {
         // print the current movement state on the screen
-        text.text = _currentState.ToString();
+        text.text = movementState.ToString();
         
         // check if player is on the ground
         Grounded = Physics.Raycast(transform.position, Vector3.down,
@@ -126,27 +128,19 @@ public class PlayerMovementStateManager : MonoBehaviour
         // get keyboard input
         HorizontalInput = Input.GetAxisRaw("Horizontal"); // A + D
         VerticalInput = Input.GetAxisRaw("Vertical"); // W + S
-
-        _currentState.UpdateState(this);
+        
+        _manager.CurrentState.UpdateState();
     }
 
     private void FixedUpdate()
     {
-        _currentState.FixedUpdateState(this);
+        _manager.CurrentState.FixedUpdateState();
     }
-
-    public void SwitchState(PlayerMovementBaseState state)
-    {
-
-        _currentState = state;
-        state.EnterState(this);
-    }
-
+    
     // is this stupid? Yes.
     // Do I care? No.
     public void DestroyJoint()
     {
         Destroy(Swing.joint);
     }
-    
 }

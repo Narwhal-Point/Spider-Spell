@@ -2,39 +2,42 @@ using UnityEngine;
 
 public class PlayerMovementStateSwinging : PlayerMovementBaseState
 {
-    public override void EnterState(PlayerMovementStateManager player)
+    public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
     {
-        player.DesiredMoveSpeed = player.swingSpeed;
-        player.MoveSpeed = player.DesiredMoveSpeed;
+    }
+    public override void EnterState()
+    {
+        DesiredMoveSpeed = player.swingSpeed;
+        MoveSpeed = DesiredMoveSpeed;
         
-        player.movementState = PlayerMovementStateManager.MovementState.Swinging;
+        player.movementState = PlayerMovement.MovementState.Swinging;
         player.Rb.useGravity = true;
         
         // disable ground drag because otherwise we clamp the y value
         // this took hours to figure out...
         player.Rb.drag = 0f;
         
-        StartSwing(player);
+        StartSwing();
     }
 
-    public override void UpdateState(PlayerMovementStateManager player)
+    public override void UpdateState()
     {
-        SpeedControl(player);
+        SpeedControl();
         if (Input.GetKeyUp(player.swingKey))
         {
-            StopSwing(player);
-            player.SwitchState(player.fallingState);
+            StopSwing();
+            manager.SwitchState(player.FallingState);
         }
         
         if(player.Swing.joint != null) // currently swinging
-            OdmGearMovement(player);
+            OdmGearMovement();
     }
 
-    public override void FixedUpdateState(PlayerMovementStateManager player)
+    public override void FixedUpdateState()
     {
     }
     
-    private void StartSwing(PlayerMovementStateManager player)
+    private void StartSwing()
     {
         // return if predictionHit not found
         if (player.Swing.predictionHit.point == Vector3.zero) 
@@ -60,13 +63,13 @@ public class PlayerMovementStateSwinging : PlayerMovementBaseState
         player.Swing.currentGrapplePosition = player.swingOrigin.position;
     }
 
-    void StopSwing(PlayerMovementStateManager player)
+    void StopSwing()
     {
         player.Swing.lr.positionCount = 0;
         player.DestroyJoint();
     }
     
-    private void OdmGearMovement(PlayerMovementStateManager player)
+    private void OdmGearMovement()
     {
         // right
         if (Input.GetKey(KeyCode.D)) player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
@@ -97,15 +100,14 @@ public class PlayerMovementStateSwinging : PlayerMovementBaseState
         }
     }
 
-    private void SpeedControl(PlayerMovementStateManager player)
+    private void SpeedControl()
     {
         Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
 
-        if (flatVel.magnitude > (player.MoveSpeed * 1.2f))
+        if (flatVel.magnitude > (MoveSpeed * 1.2f))
         {
-            Vector3 limitedVel = flatVel.normalized * player.MoveSpeed;
+            Vector3 limitedVel = flatVel.normalized * MoveSpeed;
             player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
         }
     }
-    
 }

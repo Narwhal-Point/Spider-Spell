@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 namespace Player
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovementOld : MonoBehaviour
     {
         [Header("Movement")]
         public float walkSpeed;

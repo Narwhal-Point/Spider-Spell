@@ -6,36 +6,40 @@ public class PlayerMovementStateIdle : PlayerMovementBaseState
     
     private RaycastHit _slopeHit;
     
-    public override void EnterState(PlayerMovementStateManager player)
+    public PlayerMovementStateIdle(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+    {
+    }
+
+    public override void EnterState()
     {
         player.Rb.useGravity = false;
-        player.movementState = PlayerMovementStateManager.MovementState.Idle;
+        player.movementState = PlayerMovement.MovementState.Idle;
         player.Rb.drag = player.groundDrag;
     }
 
-    public override void UpdateState(PlayerMovementStateManager player)
+    public override void UpdateState()
     {
-        SpeedControl(player);
+        SpeedControl();
         
         if (player.HorizontalInput != 0 || player.VerticalInput != 0 && player.Grounded)
         {
-                player.SwitchState(player.walkingState);
+                manager.SwitchState(player.WalkingState);
         }
         else if(Input.GetKeyDown(player.crouchKey))
-            player.SwitchState(player.crouchingState);
+            manager.SwitchState(player.CrouchingState);
         else if (Input.GetKeyDown(player.jumpKey))
         {
-            player.SwitchState(player.jumpingState);
+            manager.SwitchState(player.JumpingState);
         }
         else if(!player.Grounded)
-            player.SwitchState(player.fallingState);
+            manager.SwitchState(player.FallingState);
     }
 
-    public override void FixedUpdateState(PlayerMovementStateManager player)
+    public override void FixedUpdateState()
     {
     }
     
-    private bool OnSlope(PlayerMovementStateManager player)
+    private bool OnSlope()
     {
         if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
         {
@@ -45,25 +49,24 @@ public class PlayerMovementStateIdle : PlayerMovementBaseState
         return false;
     }
     
-    private void SpeedControl(PlayerMovementStateManager player)
+    private void SpeedControl()
     {
         // limit speed on slope
-        if (OnSlope(player) && !player.ExitingSlope)
+        if (OnSlope() && !player.ExitingSlope)
         {
-            if ( player.Rb.velocity.magnitude > player.MoveSpeed)
-                player.Rb.velocity =  player.Rb.velocity.normalized * player.MoveSpeed;
+            if ( player.Rb.velocity.magnitude > MoveSpeed)
+                player.Rb.velocity =  player.Rb.velocity.normalized * MoveSpeed;
         }
         else // limit speed on ground
         {
             Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > player.MoveSpeed)
+            if (flatVel.magnitude > MoveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * player.MoveSpeed;
+                Vector3 limitedVel = flatVel.normalized * MoveSpeed;
                 player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
             }
         }
     }
-
 }

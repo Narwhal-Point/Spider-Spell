@@ -4,78 +4,84 @@ public class PlayerMovementStateSliding : PlayerMovementBaseState
 {
     private RaycastHit _slopeHit;
     
-    public override void EnterState(PlayerMovementStateManager player)
+    private float SlideTimer { get; set; }
+    private bool Sliding { get; set; }
+    
+    public PlayerMovementStateSliding(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+    {
+    }
+    public override void EnterState()
     {
         player.Rb.useGravity = false;
-        StartSlide(player);
-        player.movementState = PlayerMovementStateManager.MovementState.Sliding;
+        StartSlide();
+        player.movementState = PlayerMovement.MovementState.Sliding;
         player.Rb.drag = player.groundDrag;
     }
 
-    public override void UpdateState(PlayerMovementStateManager player)
+    public override void UpdateState()
     {
 
-        if (Input.GetKeyUp(player.slideKey) && player.Sliding)
+        if (Input.GetKeyUp(player.slideKey) && Sliding)
         {
-            StopSlide(player);
+            StopSlide();
         }
     }
     
-    public override void FixedUpdateState(PlayerMovementStateManager player)
+    public override void FixedUpdateState()
     {
-        SlidingMovement(player);
+        SlidingMovement();
     }
     
-    private void StartSlide(PlayerMovementStateManager player)
+    private void StartSlide()
     {
-        player.Sliding = true;
+        Sliding = true;
 
         player.transform.localScale = new Vector3(player.transform.localScale.x, player.slideYScale, player.transform.localScale.z);
         player.Rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
 
-        player.SlideTimer = player.maxSlideTime;
+        SlideTimer = player.maxSlideTime;
 
     }
     
-    private void StopSlide(PlayerMovementStateManager player)
+    private void StopSlide()
     {
-        player.Sliding = false;
+        Sliding = false;
         player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale, player.transform.localScale.z);
         
         if(player.Grounded && player.HorizontalInput == 0 && player.VerticalInput == 0 && player.Rb.velocity.magnitude < 0.1f)
-            player.SwitchState(player.idleState);
+            manager.SwitchState(player.IdleState);
         else if (player.HorizontalInput != 0 || player.VerticalInput != 0)
         {
             if (Input.GetKeyDown(player.sprintKey))
-                player.SwitchState(player.sprintingState);
+                manager.SwitchState(player.SprintingState);
             else
-                player.SwitchState(player.walkingState);
+                manager.SwitchState(player.WalkingState);
         }
         else if(!player.Grounded)
-            player.SwitchState(player.fallingState);
+            manager.SwitchState(player.FallingState);
     }
 
-    private void SlidingMovement(PlayerMovementStateManager player)
+    private void SlidingMovement()
     {
         // sliding normally
         Vector3 inputDirection = player.orientation.forward * player.VerticalInput + player.orientation.right * player.HorizontalInput;
 
-        if (!OnSlope(player) || player.Rb.velocity.y > -0.1f)
+        if (!OnSlope() || player.Rb.velocity.y > -0.1f)
         {
             player.Rb.AddForce(inputDirection.normalized * player.slideForce, ForceMode.Force);
 
-            player.SlideTimer -= Time.deltaTime;
+            SlideTimer -= Time.deltaTime;
         }
         else // sliding down a slope
         {
             player.Rb.AddForce(GetSlopeMoveDirection(inputDirection) * player.slideForce, ForceMode.Force);
         }
 
-        if(player.SlideTimer <= 0)
-            StopSlide(player);
+        if(SlideTimer <= 0)
+            StopSlide();
     }
     
-    private bool OnSlope(PlayerMovementStateManager player)
+    private bool OnSlope()
     {
         if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
         {

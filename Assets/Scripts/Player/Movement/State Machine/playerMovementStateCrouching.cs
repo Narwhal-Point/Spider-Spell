@@ -3,18 +3,21 @@ using UnityEngine;
 public class playerMovementStateCrouching : PlayerMovementBaseState
 {
     private float _moveSpeed;
-
     private RaycastHit _slopeHit;
 
-    public override void EnterState(PlayerMovementStateManager player)
+    public playerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+    {
+    }
+    
+    public override void EnterState()
     {
         player.crouchSound.Play();   
         player.Rb.useGravity = false;
-        player.movementState = PlayerMovementStateManager.MovementState.Crouching;
+        player.movementState = PlayerMovement.MovementState.Crouching;
 
-        player.DesiredMoveSpeed = player.crouchSpeed;
+        DesiredMoveSpeed = player.crouchSpeed;
 
-        _moveSpeed = player.DesiredMoveSpeed;
+        _moveSpeed = DesiredMoveSpeed;
         player.Rb.drag = player.groundDrag;
 
 
@@ -23,9 +26,14 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
         player.Rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
     }
 
-    public override void UpdateState(PlayerMovementStateManager player)
+    public override void ExitState()
     {
-        SpeedControl(player);
+        player.uncrouchSound.Play();
+    }
+
+    public override void UpdateState()
+    {
+        SpeedControl();
 
         if (Input.GetKeyUp(player.crouchKey))
         {
@@ -34,29 +42,26 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
 
             if (player.HorizontalInput != 0 || player.VerticalInput != 0)
             {
-                player.SwitchState(player.walkingState);
-                player.uncrouchSound.Play();
+                manager.SwitchState(player.WalkingState);
             }
             else
             {
-                player.SwitchState(player.idleState);
-                player.uncrouchSound.Play();
+                manager.SwitchState(player.IdleState);
             }
         }
 
         if (!player.Grounded)
         {
-            player.SwitchState(player.fallingState);
-            player.uncrouchSound.Play();
+            manager.SwitchState(player.FallingState);
         }
     }
 
-    public override void FixedUpdateState(PlayerMovementStateManager player)
+    public override void FixedUpdateState()
     {
-        MovePlayer(player);
+        MovePlayer();
     }
     
-    private bool OnSlope(PlayerMovementStateManager player)
+    private bool OnSlope()
     {
         if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
         {
@@ -72,16 +77,16 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
         return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
     }
 
-    private void MovePlayer(PlayerMovementStateManager player)
+    private void MovePlayer()
     {
         // get the direction to move towards
         player.MoveDirection = player.orientation.forward * player.VerticalInput +
                                player.orientation.right * player.HorizontalInput;
 
         // player is on a slope
-        if (OnSlope(player) && !player.ExitingSlope)
+        if (OnSlope() && !player.ExitingSlope)
         {
-            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * _moveSpeed * 20f, ForceMode.Force);
+            player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (_moveSpeed * 20f), ForceMode.Force);
 
             if (player.Rb.velocity.y > 0)
                 player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -95,10 +100,10 @@ public class playerMovementStateCrouching : PlayerMovementBaseState
         }
     }
 
-    private void SpeedControl(PlayerMovementStateManager player)
+    private void SpeedControl()
     {
         // limit speed on slope
-        if (OnSlope(player) && !player.ExitingSlope)
+        if (OnSlope() && !player.ExitingSlope)
         {
             if (player.Rb.velocity.magnitude > _moveSpeed)
                 player.Rb.velocity = player.Rb.velocity.normalized * _moveSpeed;

@@ -2,9 +2,13 @@
 
 public class PlayerMovementStateFalling : PlayerMovementBaseState
 {
-    public override void EnterState(PlayerMovementStateManager player)
+    public PlayerMovementStateFalling(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
     {
-        player.movementState = PlayerMovementStateManager.MovementState.Falling;
+    }
+    
+    public override void EnterState()
+    {
+        player.movementState = PlayerMovement.MovementState.Falling;
         player.Rb.useGravity = true;
         
         // disable ground drag because otherwise we clamp the y value
@@ -12,27 +16,23 @@ public class PlayerMovementStateFalling : PlayerMovementBaseState
         player.Rb.drag = 0f;
     }
 
-    public override void UpdateState(PlayerMovementStateManager player)
+    public override void UpdateState()
     {
         if (Input.GetKeyDown(player.swingKey))
-            player.SwitchState(player.swingingState);
+            manager.SwitchState(player.SwingingState);
         if (player.Grounded)
         {
             if (player.HorizontalInput != 0 || player.VerticalInput != 0)
             {
                 if(Input.GetKey(player.slideKey))
-                    player.SwitchState(player.slidingState); // why no work
+                    manager.SwitchState(player.SlidingState); // why no work
                 else if(Input.GetKeyDown(player.sprintKey))
-                    player.SwitchState(player.sprintingState);
+                    manager.SwitchState(player.SprintingState);
                 else
-                    player.SwitchState(player.walkingState);
+                    manager.SwitchState(player.WalkingState);
             }
             else
-                player.SwitchState(player.idleState);
+                manager.SwitchState(player.IdleState);
         }
-    }
-
-    public override void FixedUpdateState(PlayerMovementStateManager player)
-    {
     }
 }
