@@ -89,8 +89,8 @@ namespace Player.Movement
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
         public PlayerMovementStateSprinting SprintingState { get; private set; }
-        public playerMovementStateCrouching CrouchingState { get; private set; }
-        public playerMovementStateJumping JumpingState { get; private set; }
+        public PlayerMovementStateCrouching CrouchingState { get; private set; }
+        public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
@@ -102,8 +102,8 @@ namespace Player.Movement
             IdleState = new PlayerMovementStateIdle(_manager, this);
             WalkingState = new PlayerMovementStateWalking(_manager, this);
             SprintingState = new PlayerMovementStateSprinting(_manager, this);
-            CrouchingState = new playerMovementStateCrouching(_manager, this);
-            JumpingState = new playerMovementStateJumping(_manager, this);
+            CrouchingState = new PlayerMovementStateCrouching(_manager, this);
+            JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this);

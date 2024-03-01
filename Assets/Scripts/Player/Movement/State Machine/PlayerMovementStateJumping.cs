@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Player.Movement.State_Machine
 {
-    public class playerMovementStateJumping : PlayerMovementBaseState
+    public class PlayerMovementStateJumping : PlayerMovementBaseState
     {
-        private float jumpTimer;
-        protected bool ReadyToJump { get; set; } = true;
+        private float _jumpTimer;
+        private bool ReadyToJump { get; set; } = true;
     
-        public playerMovementStateJumping(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+        public PlayerMovementStateJumping(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
         {
         }
         public override void EnterState()
@@ -17,16 +17,16 @@ namespace Player.Movement.State_Machine
             ReadyToJump = false;
             Jump();
             // player.Invoke(nameof(ResetJump), player.jumpCooldown);
-            jumpTimer = player.jumpCooldown;
+            _jumpTimer = player.jumpCooldown;
             player.movementState = PlayerMovement.MovementState.Jumping;
             player.Rb.drag = 0; // no ground drag because we're in the air
         }
 
         public override void UpdateState()
         {
-            jumpTimer -= Time.deltaTime;
+            _jumpTimer -= Time.deltaTime;
 
-            if (jumpTimer <= 0)
+            if (_jumpTimer <= 0)
             {
                 if (Input.GetKeyDown(player.swingKey))
                     manager.SwitchState(player.SwingingState);

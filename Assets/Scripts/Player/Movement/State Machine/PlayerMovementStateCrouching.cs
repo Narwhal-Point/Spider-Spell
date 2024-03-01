@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Player.Movement.State_Machine
 {
-    public class playerMovementStateCrouching : PlayerMovementBaseState
+    public class PlayerMovementStateCrouching : PlayerMovementBaseState
     {
         private float _moveSpeed;
         private RaycastHit _slopeHit;
 
-        public playerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+        public PlayerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
         {
         }
     
