@@ -20,13 +20,9 @@ namespace Player.Movement.State_Machine
             player.Rb.drag = player.groundDrag;
         }
 
-        public override void UpdateState()
+        public override void ExitState()
         {
-
-            if (Input.GetKeyUp(player.slideKey) && Sliding)
-            {
-                StopSlide();
-            }
+            StopSlide();
         }
     
         public override void FixedUpdateState()
@@ -49,18 +45,7 @@ namespace Player.Movement.State_Machine
         {
             Sliding = false;
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale, player.transform.localScale.z);
-        
-            if(player.Grounded && player.HorizontalInput == 0 && player.VerticalInput == 0 && player.Rb.velocity.magnitude < 0.1f)
-                manager.SwitchState(player.IdleState);
-            else if (player.HorizontalInput != 0 || player.VerticalInput != 0)
-            {
-                if (Input.GetKeyDown(player.sprintKey))
-                    manager.SwitchState(player.SprintingState);
-                else
-                    manager.SwitchState(player.WalkingState);
-            }
-            else if(!player.Grounded)
-                manager.SwitchState(player.FallingState);
+            
         }
 
         private void SlidingMovement()

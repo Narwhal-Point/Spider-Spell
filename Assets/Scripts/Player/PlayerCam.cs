@@ -7,7 +7,6 @@ namespace Player
         public Transform orientation;
         public Transform player;
         public Transform playerObj;
-        public Rigidbody rb;
 
         public float rotationSpeed = 1f;
 

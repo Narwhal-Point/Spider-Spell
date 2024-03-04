@@ -31,26 +31,13 @@ namespace Player.Movement.State_Machine
         public override void ExitState()
         {
             player.uncrouchSound.Play();
+            player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale,
+                player.transform.localScale.z);
         }
 
         public override void UpdateState()
         {
             SpeedControl();
-
-            if (Input.GetKeyUp(player.crouchKey))
-            {
-                player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale,
-                    player.transform.localScale.z);
-
-                if (player.HorizontalInput != 0 || player.VerticalInput != 0)
-                {
-                    manager.SwitchState(player.WalkingState);
-                }
-                else
-                {
-                    manager.SwitchState(player.IdleState);
-                }
-            }
 
             if (!player.Grounded)
             {

@@ -27,14 +27,9 @@ namespace Player.Movement.State_Machine
             SpeedControl();
         
             // switch to another state
-            if (Input.GetKeyDown(player.slideKey))
-                manager.SwitchState(player.SlidingState);
-            else if (Input.GetKeyDown(player.jumpKey))
-                manager.SwitchState(player.JumpingState);
-            else if (Input.GetKeyUp(player.sprintKey))
-                manager.SwitchState(player.WalkingState);
-            else if(!player.Grounded)
+            if(!player.Grounded)
                 manager.SwitchState(player.FallingState);
+            
         }
 
         public override void FixedUpdateState()

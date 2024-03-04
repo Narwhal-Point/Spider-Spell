@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player.Movement.State_Machine
 {
@@ -25,23 +26,10 @@ namespace Player.Movement.State_Machine
             SpeedControl();
         
             // switch to another state
-            if(player.Grounded && player.HorizontalInput == 0 && player.VerticalInput == 0)
+            if(!player.Grounded)
+                manager.SwitchState(player.FallingState);
+            else if (player.Moving == Vector2.zero)
                 manager.SwitchState(player.IdleState);
-            else if(player.HorizontalInput != 0 || player.VerticalInput != 0)
-            {
-                if(Input.GetKeyDown(player.slideKey))
-                    manager.SwitchState(player.SlidingState);
-                else if(Input.GetKey(player.sprintKey))
-                    manager.SwitchState(player.SprintingState);
-                else if(Input.GetKey(player.jumpKey))
-                    manager.SwitchState(player.JumpingState);
-                else if(Input.GetKey(player.crouchKey))
-                    manager.SwitchState(player.CrouchingState);
-                else if(!player.Grounded)
-                    manager.SwitchState(player.FallingState);
-
-            }
-        
         }
     
         public override void FixedUpdateState()
@@ -67,9 +55,12 @@ namespace Player.Movement.State_Machine
         private void MovePlayer()
         {
             // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.VerticalInput +
-                                   player.orientation.right * player.HorizontalInput;
+            // player.MoveDirection = player.orientation.forward * player.VerticalInput +
+            //                        player.orientation.right * player.HorizontalInput;
 
+            player.MoveDirection = player.orientation.forward * player.Moving.y +
+                                   player.orientation.right * player.Moving.x;
+            
             // player is on a slope
             if (OnSlope() && !player.ExitingSlope)
             {

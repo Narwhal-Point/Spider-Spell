@@ -22,19 +22,19 @@ namespace Player.Movement.State_Machine
         public override void UpdateState()
         {
             SpeedControl();
-        
-            if (player.HorizontalInput != 0 || player.VerticalInput != 0 && player.Grounded)
+
+            if (player.Moving != Vector2.zero)
             {
-                manager.SwitchState(player.WalkingState);
+                if(player.Sprinting)
+                    manager.SwitchState(player.SprintingState);
+                else
+                    manager.SwitchState(player.WalkingState);
             }
-            else if(Input.GetKeyDown(player.crouchKey))
+            else if(player.Crouching)
                 manager.SwitchState(player.CrouchingState);
-            else if (Input.GetKeyDown(player.jumpKey))
-            {
-                manager.SwitchState(player.JumpingState);
-            }
             else if(!player.Grounded)
                 manager.SwitchState(player.FallingState);
+            
         }
 
         public override void FixedUpdateState()

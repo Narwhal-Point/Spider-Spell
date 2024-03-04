@@ -25,7 +25,7 @@ namespace Player.Movement.State_Machine
         public override void UpdateState()
         {
             SpeedControl();
-            if (Input.GetKeyUp(player.swingKey))
+            if (!player.Firing)
             {
                 StopSwing();
                 manager.SwitchState(player.FallingState);

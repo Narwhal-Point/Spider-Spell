@@ -20,21 +20,22 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            if (Input.GetKeyDown(player.swingKey))
+            if(player.Firing) // start swinging
                 manager.SwitchState(player.SwingingState);
-            if (player.Grounded)
+            else if(player.Grounded)
             {
-                if (player.HorizontalInput != 0 || player.VerticalInput != 0)
+                if (player.Moving != Vector2.zero)
                 {
-                    if(Input.GetKey(player.slideKey))
-                        manager.SwitchState(player.SlidingState); // why no work
-                    else if(Input.GetKeyDown(player.sprintKey))
+                    if(player.Sliding)
+                        manager.SwitchState(player.SlidingState);
+                    else if(player.Sprinting)
                         manager.SwitchState(player.SprintingState);
                     else
                         manager.SwitchState(player.WalkingState);
                 }
                 else
                     manager.SwitchState(player.IdleState);
+            
             }
         }
     }

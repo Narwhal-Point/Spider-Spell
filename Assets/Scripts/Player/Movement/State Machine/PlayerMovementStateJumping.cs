@@ -6,10 +6,12 @@ namespace Player.Movement.State_Machine
     {
         private float _jumpTimer;
         private bool ReadyToJump { get; set; } = true;
-    
-        public PlayerMovementStateJumping(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+
+        public PlayerMovementStateJumping(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
+            player)
         {
         }
+
         public override void EnterState()
         {
             player.Rb.useGravity = true;
@@ -28,7 +30,7 @@ namespace Player.Movement.State_Machine
 
             if (_jumpTimer <= 0)
             {
-                if (Input.GetKeyDown(player.swingKey))
+                if(player.Firing)
                     manager.SwitchState(player.SwingingState);
                 ResetJump();
                 if (!player.Grounded && player.Rb.velocity.y < 0)
@@ -37,14 +39,12 @@ namespace Player.Movement.State_Machine
                     return;
                 }
             }
-        
+
             if (player.Grounded && ReadyToJump)
             {
-                if (player.HorizontalInput != 0 || player.VerticalInput != 0)
+                if (player.Moving != Vector2.zero)
                 {
-                    if(Input.GetKeyDown(player.slideKey))
-                        manager.SwitchState(player.SlidingState);
-                    else if(Input.GetKeyDown(player.sprintKey))
+                    if (player.Sprinting)
                         manager.SwitchState(player.SprintingState);
                     else
                         manager.SwitchState(player.WalkingState);
@@ -68,7 +68,7 @@ namespace Player.Movement.State_Machine
             var velocity = player.Rb.velocity;
             velocity = new Vector3(velocity.x, 0f, velocity.z);
             player.Rb.velocity = velocity;
-        
+
             player.Rb.AddForce(player.transform.up * player.jumpForce, ForceMode.Impulse);
         }
 

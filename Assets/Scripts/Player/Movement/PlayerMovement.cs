@@ -1,6 +1,7 @@
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player.Movement
 {
@@ -69,10 +70,16 @@ namespace Player.Movement
     
         public TMP_Text text;
 
+        public Vector2 Moving { get; private set; }
+        public bool Sprinting { get; private set; }
+        public bool Firing { get; private set; }
+        
+        public bool Sliding { get; private set; }
+        
+        public bool Crouching { get; private set; }
+        
         // enum to display active state on screen
         public MovementState movementState;
-    
-
         public enum MovementState
         {
             Idle,
@@ -94,6 +101,7 @@ namespace Player.Movement
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
+
 
         private void Awake()
         {
@@ -146,5 +154,79 @@ namespace Player.Movement
         {
             Destroy(Swing.joint);
         }
+        
+        // input callbacks
+        private void OnMove(InputValue value)
+        {
+            Moving = value.Get<Vector2>();
+        }
+
+        private void OnJump()
+        {
+            if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState
+                                                   || _manager.CurrentState == SprintingState)
+            {
+                _manager.SwitchState(JumpingState);
+            }
+        }
+
+        private void OnSprint(InputValue value)
+        {
+            Sprinting = value.isPressed;
+
+            if(_manager.CurrentState == WalkingState)
+                _manager.SwitchState(SprintingState);
+            else if (_manager.CurrentState == SprintingState)
+            {
+                _manager.SwitchState(WalkingState);
+            }
+        }
+
+        private void OnFire(InputValue value)
+        {
+            Firing = value.isPressed;
+        }
+
+        private void OnCrouch(InputValue value)
+        {
+            if(_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState)
+                _manager.SwitchState(CrouchingState);
+            else if(_manager.CurrentState == CrouchingState)
+            {
+                if(Moving != Vector2.zero)
+                {
+                    _manager.SwitchState(WalkingState);
+                }
+                else
+                {
+                    _manager.SwitchState(IdleState);
+                }
+            }
+
+            Crouching = value.isPressed;
+        }
+
+        private void OnSlide(InputValue value)
+        {
+            Sliding = value.isPressed;
+            if(_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState 
+                                                     || (Grounded && _manager.CurrentState == JumpingState) 
+                                                     || Grounded && _manager.CurrentState == FallingState)
+            _manager.SwitchState(SlidingState);
+            else if (_manager.CurrentState == SlidingState)
+            {
+                if(Grounded && Moving == Vector2.zero)
+                    _manager.SwitchState(IdleState);
+                else if (Moving != Vector2.zero)
+                {
+                    if(Sprinting)
+                        _manager.SwitchState(SprintingState);
+                    else
+                        _manager.SwitchState(WalkingState);
+                }
+            }
+        }
+
+
     }
 }
