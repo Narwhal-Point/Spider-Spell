@@ -34,12 +34,6 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Keybinds")] 
-        public KeyCode jumpKey = KeyCode.Space;
-        public KeyCode sprintKey = KeyCode.LeftShift;
-        public KeyCode crouchKey = KeyCode.C;
-        public KeyCode slideKey = KeyCode.LeftControl;
-
         [Header("Ground Check")] 
         public float playerHeight = 2;
         public LayerMask ground;

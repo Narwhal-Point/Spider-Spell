@@ -1501,7 +1501,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxSwingDistance: 15
-  swingKey: 323
   predictionSphereCastRadius: 10
   predicitionPoint: {fileID: 467219692}
 --- !u!114 &247806186
@@ -1531,10 +1530,6 @@ MonoBehaviour:
   maxSlideTime: 0.75
   slideForce: 150
   slideYScale: 0.5
-  jumpKey: 32
-  sprintKey: 304
-  crouchKey: 99
-  slideKey: 306
   playerHeight: 2
   ground:
     serializedVersion: 2
@@ -1651,7 +1646,7 @@ MonoBehaviour:
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 963194227}
 --- !u!43 &248919863
 Mesh:
   m_ObjectHideFlags: 0

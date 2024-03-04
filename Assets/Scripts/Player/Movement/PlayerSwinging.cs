@@ -14,8 +14,6 @@ namespace Player.Movement
         public Vector3 swingPoint { get; set; }
         public SpringJoint joint { get; set; }
         public Vector3 currentGrapplePosition { get; set; }
-    
-        public KeyCode swingKey = KeyCode.Mouse0;
 
         [Header("Prediction")] 
         public RaycastHit predictionHit;
