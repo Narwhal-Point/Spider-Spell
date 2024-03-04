@@ -96,7 +96,6 @@ namespace Player.Movement
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
 
-
         private void Awake()
         {
             _manager = new PlayerMovementStateManager();
@@ -130,10 +129,6 @@ namespace Player.Movement
             Grounded = Physics.Raycast(transform.position, Vector3.down,
                 playerHeight * 0.5f + 0.2f, ground);
         
-            // get keyboard input
-            HorizontalInput = Input.GetAxisRaw("Horizontal"); // A + D
-            VerticalInput = Input.GetAxisRaw("Vertical"); // W + S
-        
             _manager.CurrentState.UpdateState();
         }
 
@@ -148,7 +143,6 @@ namespace Player.Movement
         {
             Destroy(Swing.joint);
         }
-        
         // input callbacks
         private void OnMove(InputValue value)
         {

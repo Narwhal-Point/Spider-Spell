@@ -73,6 +73,7 @@ namespace Player.Movement.State_Machine
     
         private void OdmGearMovement()
         {
+            // TODO: Switch to new input system
             // right
             if (Input.GetKey(KeyCode.D)) player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
             // left
@@ -80,26 +81,6 @@ namespace Player.Movement.State_Machine
 
             // forward
             if (Input.GetKey(KeyCode.W)) player.Rb.AddForce(player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
-
-            // shorten cable
-            if (Input.GetKey(KeyCode.Space))
-            {
-                Vector3 directionToPoint = player.Swing.swingPoint - player.transform.position;
-                player.Rb.AddForce(directionToPoint.normalized * (player.forwardThrustForce * Time.deltaTime));
-
-                float distanceFromPoint = Vector3.Distance(player.transform.position, player.Swing.swingPoint);
-
-                player.Swing.joint.maxDistance = distanceFromPoint * 0.8f;
-                player.Swing.joint.minDistance = distanceFromPoint * 0.25f;
-            }
-            // extend cable
-            if (Input.GetKey(KeyCode.S))
-            {
-                float extendedDistanceFromPoint = Vector3.Distance(player.transform.position, player.Swing.swingPoint) + player.extendCableSpeed;
-
-                player.Swing.joint.maxDistance = extendedDistanceFromPoint * 0.8f;
-                player.Swing.joint.minDistance = extendedDistanceFromPoint * 0.25f;
-            }
         }
 
         private void SpeedControl()

@@ -69,8 +69,8 @@ namespace Player.Movement.State_Machine
         private void MovePlayer()
         {
             // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.VerticalInput +
-                                   player.orientation.right * player.HorizontalInput;
+            player.MoveDirection = player.orientation.forward * player.Moving.y +
+                                   player.orientation.right * player.Moving.x;
 
             // player is on a slope
             if (OnSlope() && !player.ExitingSlope)
