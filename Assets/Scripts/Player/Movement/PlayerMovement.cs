@@ -52,13 +52,10 @@ namespace Player.Movement
 
         [Header("References")] 
         public Transform orientation, swingOrigin;
-
-        public float HorizontalInput { get; private set; }
-        public float VerticalInput { get; private set; }
         public Vector3 MoveDirection { get; set; }
 
         public Rigidbody Rb { get; private set; }
-
+        
         public AudioSource crouchSound;
         public AudioSource uncrouchSound;
     
@@ -124,7 +121,6 @@ namespace Player.Movement
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
-        
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, Vector3.down,
                 playerHeight * 0.5f + 0.2f, ground);
@@ -144,12 +140,12 @@ namespace Player.Movement
             Destroy(Swing.joint);
         }
         // input callbacks
-        private void OnMove(InputValue value)
+        public void OnMove(InputValue value)
         {
             Moving = value.Get<Vector2>();
         }
 
-        private void OnJump()
+        public void OnJump()
         {
             if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState
                                                    || _manager.CurrentState == SprintingState)
@@ -158,7 +154,7 @@ namespace Player.Movement
             }
         }
 
-        private void OnSprint(InputValue value)
+        public void OnSprint(InputValue value)
         {
             Sprinting = value.isPressed;
 
@@ -170,12 +166,12 @@ namespace Player.Movement
             }
         }
 
-        private void OnFire(InputValue value)
+        public void OnFire(InputValue value)
         {
             Firing = value.isPressed;
         }
 
-        private void OnCrouch(InputValue value)
+        public void OnCrouch(InputValue value)
         {
             if(_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState)
                 _manager.SwitchState(CrouchingState);
@@ -194,7 +190,7 @@ namespace Player.Movement
             Crouching = value.isPressed;
         }
 
-        private void OnSlide(InputValue value)
+        public void OnSlide(InputValue value)
         {
             Sliding = value.isPressed;
             if(_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState 

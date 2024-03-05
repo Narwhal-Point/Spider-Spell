@@ -2517,8 +2517,6 @@ GameObject:
   - component: {fileID: 247806177}
   - component: {fileID: 247806176}
   - component: {fileID: 247806187}
-  - component: {fileID: 247806181}
-  - component: {fileID: 247806182}
   - component: {fileID: 247806184}
   - component: {fileID: 247806186}
   m_Layer: 3
@@ -2598,58 +2596,6 @@ Transform:
   - {fileID: 77005582}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &247806181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247806174}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 227409ef5e530a24ebdabdefc0527ee0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  walkSpeed: 7
-  sprintSpeed: 10
-  slideSpeed: 30
-  speedIncreaseMultiplier: 1.5
-  slopeIncreaseMultiplier: 2.5
-  groundDrag: 5
-  jumpForce: 6
-  airMultiplier: 0.001
-  jumpCooldown: 0.5
-  crouchSpeed: 3.5
-  crouchYScale: 0.5
-  jumpKey: 32
-  sprintKey: 304
-  crouchKey: 99
-  playerHeight: 2
-  ground:
-    serializedVersion: 2
-    m_Bits: 64
-  maxSlopeAngle: 90
-  orientation: {fileID: 2055444956}
-  state: 0
-  sliding: 0
---- !u!114 &247806182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247806174}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4dda3a0296d0a34fbc0153b0516fcae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orientation: {fileID: 2055444956}
-  playerObj: {fileID: 54836202}
-  maxSlideTime: 0.75
-  slideForce: 200
-  slideYScale: 0.5
-  slideKey: 306
 --- !u!114 &247806184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4070,6 +4016,7 @@ GameObject:
   - component: {fileID: 422276160}
   - component: {fileID: 422276159}
   - component: {fileID: 422276161}
+  - component: {fileID: 422276162}
   m_Layer: 0
   m_Name: Player Camera
   m_TagString: Untagged
@@ -4119,7 +4066,7 @@ MonoBehaviour:
   m_YAxis:
     Value: 0.5
     m_SpeedMode: 0
-    m_MaxSpeed: 2
+    m_MaxSpeed: 0.4
     m_AccelTime: 0.2
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
@@ -4143,7 +4090,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
-    m_MaxSpeed: 300
+    m_MaxSpeed: 120
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -4230,6 +4177,22 @@ MonoBehaviour:
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
+--- !u!114 &422276162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422276158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb7194dc27b9df64c8beca7482ee8e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerIndex: -1
+  AutoEnableInputs: 1
+  XYAxis: {fileID: -5630151704836100654, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  ZAxis: {fileID: 0}
 --- !u!43 &440677561
 Mesh:
   m_ObjectHideFlags: 0
@@ -5247,8 +5210,8 @@ MonoBehaviour:
   orientation: {fileID: 2055444956}
   player: {fileID: 247806180}
   playerObj: {fileID: 54836202}
+  playerObject: {fileID: 247806174}
   rotationSpeed: 7
-  viewDirHeight: {x: 0, y: 0, z: 0}
 --- !u!4 &1003728168 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a0447b5bbc1279241a65c4f6d134f71a, type: 3}

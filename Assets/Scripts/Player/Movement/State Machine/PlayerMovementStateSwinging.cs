@@ -32,7 +32,7 @@ namespace Player.Movement.State_Machine
             }
         
             if(player.Swing.joint != null) // currently swinging
-                OdmGearMovement();
+                SwingMovement();
         }
 
         public override void FixedUpdateState()
@@ -71,16 +71,22 @@ namespace Player.Movement.State_Machine
             player.DestroyJoint();
         }
     
-        private void OdmGearMovement()
+        private void SwingMovement()
         {
-            // TODO: Switch to new input system
-            // right
-            if (Input.GetKey(KeyCode.D)) player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
-            // left
-            if (Input.GetKey(KeyCode.A)) player.Rb.AddForce(-player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
+            if (player.Moving.y > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
+            }
 
-            // forward
-            if (Input.GetKey(KeyCode.W)) player.Rb.AddForce(player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
+            if (player.Moving.x > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
+            }
+
+            if (player.Moving.x < -0.6)
+            {
+                player.Rb.AddForce(-player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
+            }
         }
 
         private void SpeedControl()

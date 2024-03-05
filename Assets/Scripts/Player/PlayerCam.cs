@@ -1,20 +1,24 @@
+using Player.Movement;
 using UnityEngine;
 
 namespace Player
 {
     public class PlayerCam : MonoBehaviour
     {
-        public Transform orientation;
-        public Transform player;
-        public Transform playerObj;
+        [SerializeField] private Transform orientation;
+        [SerializeField] private Transform player;
+        [SerializeField] private Transform playerObj;
 
-        public float rotationSpeed = 1f;
+        // I don't like having to include this but it's the only way I figured out on how to get the move direction in this script
+        [SerializeField] private GameObject playerObject;
+        private PlayerMovement _playerMovement;
 
-        public Vector3 viewDirHeight;
+        [SerializeField] private float rotationSpeed = 1f;
     
         // Start is called before the first frame update
         void Start()
         {
+            _playerMovement = playerObject.GetComponent<PlayerMovement>();
             // Hide the cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -28,9 +32,13 @@ namespace Player
             orientation.forward = viewDir.normalized;
             
             // rotate player object
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
-            Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            // float horizontalInput = Input.GetAxis("Horizontal");
+            // float verticalInput = Input.GetAxis("Vertical");
+
+            Vector2 inputDirection = _playerMovement.Moving;
+            
+            // Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            Vector3 inputDir = orientation.forward * inputDirection.y + orientation.right * inputDirection.x;
 
             if (inputDir != Vector3.zero)
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
