@@ -31,15 +31,13 @@ namespace Player
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
             
-            // rotate player object
-            // float horizontalInput = Input.GetAxis("Horizontal");
-            // float verticalInput = Input.GetAxis("Vertical");
-
-            Vector2 inputDirection = _playerMovement.Moving;
+            // direction camera is looking
+            Vector2 viewDirection = _playerMovement.Moving;
             
-            // Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            Vector3 inputDir = orientation.forward * inputDirection.y + orientation.right * inputDirection.x;
+            // set direction of player
+            Vector3 inputDir = orientation.forward * viewDirection.y + orientation.right * viewDirection.x;
 
+            // rotate player to direction
             if (inputDir != Vector3.zero)
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
         }

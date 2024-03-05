@@ -35,7 +35,6 @@ namespace Player.Movement.State_Machine
                 }
                 else
                     manager.SwitchState(player.IdleState);
-            
             }
         }
     }

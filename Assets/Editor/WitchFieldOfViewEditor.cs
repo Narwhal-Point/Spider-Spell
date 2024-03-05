@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 [CustomEditor(typeof(WitchFov))]
-public class FieldOfViewEditor : Editor
+public class WitchFieldOfViewEditor : Editor
 {
     private void OnSceneGUI()
     {
