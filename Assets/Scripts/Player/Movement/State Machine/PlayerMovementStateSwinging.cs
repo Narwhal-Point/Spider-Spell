@@ -78,6 +78,9 @@ namespace Player.Movement.State_Machine
                 player.Rb.AddForce(player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
             }
 
+            if (player.Moving.y < -0.6)
+                player.Rb.AddForce(-player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
+            
             if (player.Moving.x > 0.6)
             {
                 player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));

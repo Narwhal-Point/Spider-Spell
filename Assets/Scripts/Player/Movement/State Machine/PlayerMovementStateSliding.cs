@@ -22,9 +22,16 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
-            StopSlide();
+            Sliding = false;
+            player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale,
+                player.transform.localScale.z);
         }
-    
+        public override void UpdateState()
+        {
+            if(!player.Grounded)
+                manager.SwitchState(player.FallingState);
+        }
+
         public override void FixedUpdateState()
         {
             SlidingMovement();
@@ -40,12 +47,23 @@ namespace Player.Movement.State_Machine
             SlideTimer = player.maxSlideTime;
 
         }
-    
+
         private void StopSlide()
         {
             Sliding = false;
-            player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale, player.transform.localScale.z);
+            player.transform.localScale = new Vector3(player.transform.localScale.x, player.StartYScale,
+                player.transform.localScale.z);
             
+            // makes it so the slide stops after the slidetimer is finished
+            if (player.Grounded && player.Moving == Vector2.zero)
+                manager.SwitchState(player.IdleState);
+            else if (player.Moving != Vector2.zero)
+            {
+                if (player.Sprinting)
+                    manager.SwitchState(player.SprintingState);
+                else
+                    manager.SwitchState(player.WalkingState);
+            }
         }
 
         private void SlidingMovement()

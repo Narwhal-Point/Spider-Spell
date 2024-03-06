@@ -86,7 +86,8 @@ namespace Player.Movement.State_Machine
             }
             else // limit speed on ground
             {
-                Vector3 flatVel = new Vector3(player.Rb.velocity.x, 0f, player.Rb.velocity.z);
+                var rbVelocity = player.Rb.velocity;
+                Vector3 flatVel = new Vector3(rbVelocity.x, 0f, rbVelocity.z);
 
                 // limit velocity if needed
                 if (flatVel.magnitude > MoveSpeed)
@@ -96,5 +97,7 @@ namespace Player.Movement.State_Machine
                 }
             }
         }
+        
+        
     }
 }
