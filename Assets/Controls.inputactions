@@ -56,7 +56,7 @@
                     "id": "7e403f40-9e8c-46eb-81dc-e354dd9fe11a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -66,6 +66,15 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlideRelease",
+                    "type": "Button",
+                    "id": "946027f0-59a3-4797-9d13-8453b7749b6a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
                     "initialStateCheck": false
                 }
             ],
@@ -375,6 +384,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "081c8257-d614-4cfa-bb2b-75db295ffe50",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SlideRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bcce79e2-0f6b-4773-90a4-cd48f0acbe7c",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SlideRelease",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

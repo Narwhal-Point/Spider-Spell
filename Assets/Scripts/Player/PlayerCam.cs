@@ -31,7 +31,7 @@ namespace Player
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
             
-            // direction camera is looking
+            // input direction
             Vector2 viewDirection = _playerMovement.Moving;
             
             // set direction of player
