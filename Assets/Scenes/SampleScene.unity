@@ -4527,18 +4527,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3ca0885cec4e9b9ebd12db31f279fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 7
-  sprintSpeed: 10
   swingSpeed: 20
   slideSpeed: 30
-  speedIncreaseMultiplier: 1.5
-  slopeIncreaseMultiplier: 2.5
   groundDrag: 5
   jumpForce: 10
   airMultiplier: 0.001
   jumpCooldown: 0.5
-  crouchSpeed: 3.5
-  crouchYScale: 0.5
   maxSlideTime: 0.75
   slideForce: 150
   slideYScale: 0.5
@@ -4558,7 +4552,10 @@ MonoBehaviour:
   uncrouchSound: {fileID: 77005583}
   text: {fileID: 107941925}
   movementState: 0
-  targetRotation: {x: 0, y: 0, z: 0, w: 0}
+  movementIdleBase: {fileID: 11400000, guid: a5f382b1b29661a47b9abda7303eefeb, type: 2}
+  movementWalkingBase: {fileID: 11400000, guid: 60e626a00f1332c4c990943904f6a738, type: 2}
+  movementSprintingBase: {fileID: 11400000, guid: a6615bbc886d67447a9998c206733b6c, type: 2}
+  movementCrouchingBase: {fileID: 11400000, guid: 351084b0774db4943a3e073d43db2661, type: 2}
 --- !u!114 &247806187
 MonoBehaviour:
   m_ObjectHideFlags: 0

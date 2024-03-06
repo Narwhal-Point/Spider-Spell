@@ -1,18 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
+using Player.Movement;
 using UnityEngine;
 
-public class MovementWalkingSOBASE : MonoBehaviour
+public class MovementWalkingSOBASE : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    protected PlayerMovement player;
+    protected Transform transform;
+    protected GameObject gameObject;
 
-    // Update is called once per frame
-    void Update()
+    protected Transform playerTransform;
+
+    public virtual void Initialize(GameObject gameObject, PlayerMovement player)
     {
-        
+        this.gameObject = gameObject;
+        this.player = player;
+        this.transform = gameObject.transform;
+
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
+    
+    public virtual void DoEnterLogic() {}
+    public virtual void DoExitLogic() {}
+    public virtual void DoUpdateLogic() {}
+    public virtual void DoFixedUpdateLogic() {}
 }

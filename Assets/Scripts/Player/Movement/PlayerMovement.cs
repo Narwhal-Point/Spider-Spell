@@ -1,40 +1,39 @@
+using Player.Movement.Movement_Logic.Idle;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Movement")] public float walkSpeed = 7;
-        public float sprintSpeed = 10;
+        [Header("Movement")] 
+
         public float swingSpeed = 20;
         public float slideSpeed = 30;
 
-        public float speedIncreaseMultiplier = 1.5f;
-        public float slopeIncreaseMultiplier = 2.5f;
-
         public float groundDrag = 5f;
 
-        [Header("Jumping")] public float jumpForce = 10;
+        [Header("Jumping")] 
+        public float jumpForce = 10;
         public float airMultiplier = 0.001f;
         public float jumpCooldown = 0.5f;
 
-        [Header("Crouching")] public float crouchSpeed = 3.5f;
-        public float crouchYScale = 0.5f;
-        public float StartYScale { get; private set; }
-
-        [Header("sliding")] public float maxSlideTime = 0.75f;
+        [Header("sliding")] 
+        public float maxSlideTime = 0.75f;
         public float slideForce = 150f;
 
         public float slideYScale = 0.5f;
 
-        [Header("Ground Check")] public float playerHeight = 2;
+        [Header("Ground Check")] 
+        public float playerHeight = 2;
         public LayerMask ground;
         public bool Grounded { get; private set; }
 
-        [Header("Slope Handling")] public float maxSlopeAngle;
+        [Header("Slope Handling")] 
+        public float maxSlopeAngle;
         public bool ExitingSlope { get; set; }
 
         [Header("Swinging")] public KeyCode swingKey = KeyCode.Mouse0;
@@ -47,8 +46,8 @@ namespace Player.Movement
         public Transform swingOrigin;
         public Transform playerObj;
         public Vector3 MoveDirection { get; set; }
-
         public Rigidbody Rb { get; private set; }
+        public float StartYScale { get; private set; } // default height of character
 
         public AudioSource crouchSound;
         public AudioSource uncrouchSound;
@@ -77,7 +76,11 @@ namespace Player.Movement
             Falling,
             Swinging
         }
+        
+        public Quaternion targetRotation { get; private set; }
 
+        #region Player Movement States
+        
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
@@ -87,12 +90,34 @@ namespace Player.Movement
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
+        
+        #endregion
 
 
-        public Quaternion targetRotation;
+        [FormerlySerializedAs("MovementIdleBase")]
+        [Header("Scriptable Objects")]
+        #region Scriptable objcts Variables
+
+        [SerializeField] private MovementIdleSOBASE movementIdleBase;
+        [SerializeField] private MovementWalkingSOBASE movementWalkingBase;
+        [SerializeField] private MovementSprintingSOBASE movementSprintingBase;
+        [SerializeField] private MovementCrouchingSOBASE movementCrouchingBase;
+
+        public MovementIdleSOBASE MovementIdleBaseInstance { get; set; }
+        public MovementWalkingSOBASE MovementWalkingBaseInstace { get; set; }
+        public MovementSprintingSOBASE MovementSprintingBaseInstance { get; set; }
+        public MovementCrouchingSOBASE MovementCrouchingBaseInstance { get; set; }
+        
+        
+        #endregion
 
         private void Awake()
         {
+            MovementIdleBaseInstance = Instantiate(movementIdleBase);
+            MovementWalkingBaseInstace = Instantiate(movementWalkingBase);
+            MovementSprintingBaseInstance = Instantiate(movementSprintingBase);
+            MovementCrouchingBaseInstance = Instantiate(movementCrouchingBase);
+            
             _manager = new PlayerMovementStateManager();
 
             IdleState = new PlayerMovementStateIdle(_manager, this);
@@ -112,6 +137,11 @@ namespace Player.Movement
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
+            MovementIdleBaseInstance.Initialize(gameObject, this);
+            MovementWalkingBaseInstace.Initialize(gameObject, this);
+            MovementSprintingBaseInstance.Initialize(gameObject, this);
+            MovementCrouchingBaseInstance.Initialize(gameObject, this);
+            
             _manager.Initialize(IdleState);
         }
 
@@ -209,7 +239,9 @@ namespace Player.Movement
             Sprinting = value.isPressed;
 
             if (_manager.CurrentState == WalkingState)
+            {
                 _manager.SwitchState(SprintingState);
+            }
             else if (_manager.CurrentState == SprintingState)
             {
                 _manager.SwitchState(WalkingState);

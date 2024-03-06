@@ -4,13 +4,16 @@ namespace Player.Movement.State_Machine
 {
     public class PlayerMovementStateSwinging : PlayerMovementBaseState
     {
+        private float _desiredMoveSpeed;
+        private float _moveSpeed;
+        
         public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
         {
         }
         public override void EnterState()
         {
-            DesiredMoveSpeed = player.swingSpeed;
-            MoveSpeed = DesiredMoveSpeed;
+            _desiredMoveSpeed = player.swingSpeed;
+            _moveSpeed = _desiredMoveSpeed;
         
             player.movementState = PlayerMovement.MovementState.Swinging;
             player.Rb.useGravity = true;
@@ -96,9 +99,9 @@ namespace Player.Movement.State_Machine
         {
             Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
 
-            if (flatVel.magnitude > (MoveSpeed * 1.2f))
+            if (flatVel.magnitude > (_moveSpeed * 1.2f))
             {
-                Vector3 limitedVel = flatVel.normalized * MoveSpeed;
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
                 player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
             }
         }

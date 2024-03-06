@@ -4,17 +4,17 @@ namespace Player.Movement.Movement_Logic.Idle
 {
     public class MovementIdleSOBASE : ScriptableObject
     {
-        protected PlayerMovement playerMovement;
+        protected PlayerMovement player;
         protected Transform transform;
         protected GameObject gameObject;
 
         protected Transform playerTransform;
 
-        public virtual void Initialize(GameObject gameObject, PlayerMovement playerMovement)
+        public virtual void Initialize(GameObject gameObject, PlayerMovement player)
         {
             this.gameObject = gameObject;
-            this.playerMovement = playerMovement;
-            this.gameObject = gameObject;
+            this.player = player;
+            this.transform = gameObject.transform;
 
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         }

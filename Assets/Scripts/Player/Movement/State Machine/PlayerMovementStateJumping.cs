@@ -6,6 +6,8 @@ namespace Player.Movement.State_Machine
     {
         private float _jumpTimer;
         private bool ReadyToJump { get; set; } = true;
+        private float _desiredMoveSpeed;
+        private float _moveSpeed;
 
         public PlayerMovementStateJumping(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
             player)
@@ -85,7 +87,7 @@ namespace Player.Movement.State_Machine
                                    player.orientation.right * player.Moving.x;
 
 
-            player.Rb.AddForce(player.MoveDirection.normalized * (MoveSpeed * 10f * player.airMultiplier),
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f * player.airMultiplier),
                 ForceMode.Force); // move
         }
     }
