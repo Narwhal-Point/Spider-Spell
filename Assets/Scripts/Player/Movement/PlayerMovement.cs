@@ -160,7 +160,7 @@ namespace Player.Movement
 
             Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
 
-            WallCheck();
+            // WallCheck();
             
             _manager.CurrentState.UpdateState();
         }
