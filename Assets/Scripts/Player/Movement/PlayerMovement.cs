@@ -135,7 +135,7 @@ namespace Player.Movement
 
             Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
 
-            // WallCheck();
+            WallCheck();
             
             _manager.CurrentState.UpdateState();
         }
@@ -144,18 +144,18 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
         }
-        private void WallCheck()
+        private void WallCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             // wall check
             RaycastHit frontWallHit;
             bool wallInFront = Physics.Raycast(transform.position, playerObj.forward,
-                out frontWallHit,
-                (playerHeight * 0.5f + 0.2f), ground);
+                out frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
             
-            bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, out var backWallHit, (playerHeight * 0.5f), ground);
+            bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, 
+                out var backWallHit, (playerHeight * 0.5f), ground);
             
-            // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
-            if (wallInFront)
+
+            if (wallInFront && Moving.y > 0.6f)
             {
                 Debug.DrawRay(transform.position,
                     playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
@@ -169,8 +169,9 @@ namespace Player.Movement
                 // Rotate the player towards the wall (with optional smoothing)
                 transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
             }
-            else if (wallInBack)
+            else if (wallInBack && Moving.y < 0.1f)
             {
+                Debug.Log(Moving.y);
                 // Project the wall normal onto the xz-plane
                 Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
 

@@ -24,7 +24,7 @@ namespace Player.Movement.State_Machine
 
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.crouchYScale,
                 player.transform.localScale.z);
-            player.Rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            player.Rb.AddForce(-player.transform.up * 5f, ForceMode.Impulse);
         }
 
         public override void ExitState()

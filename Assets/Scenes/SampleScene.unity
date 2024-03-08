@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4451,7 +4451,7 @@ Transform:
   m_GameObject: {fileID: 247806174}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.02, y: 6.58, z: -5}
+  m_LocalPosition: {x: -10.02, y: 6.58, z: 85.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4496,9 +4496,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3ca0885cec4e9b9ebd12db31f279fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 7
+  sprintSpeed: 10
   swingSpeed: 20
-  slideSpeed: 30
+  crouchSpeed: 3.5
   groundDrag: 5
+  crouchYScale: 0.5
   jumpForce: 10
   airMultiplier: 0.001
   jumpCooldown: 0.5
@@ -4521,10 +4524,6 @@ MonoBehaviour:
   uncrouchSound: {fileID: 77005583}
   text: {fileID: 107941925}
   movementState: 0
-  movementIdleBase: {fileID: 11400000, guid: a5f382b1b29661a47b9abda7303eefeb, type: 2}
-  movementWalkingBase: {fileID: 11400000, guid: 60e626a00f1332c4c990943904f6a738, type: 2}
-  movementSprintingBase: {fileID: 11400000, guid: a6615bbc886d67447a9998c206733b6c, type: 2}
-  movementCrouchingBase: {fileID: 11400000, guid: 351084b0774db4943a3e073d43db2661, type: 2}
 --- !u!114 &247806187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4698,7 +4697,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 258170938}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09252102, y: 0.000000017659858, z: -0.0000000016409465, w: 0.99571073}
+  m_LocalRotation: {x: 0.09252102, y: -0.000000017659856, z: 0.0000000016409463, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6496,7 +6495,7 @@ Transform:
   m_GameObject: {fileID: 422276158}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.02, y: 8.58, z: -12}
+  m_LocalPosition: {x: -10.02, y: 8.58, z: 78.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10118,7 +10117,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1387012, y: -0.000000014757133, z: 0.0000000020668092, w: 0.99033433}
-  m_LocalPosition: {x: -10.02, y: 8.58, z: -12}
+  m_LocalPosition: {x: -10.02, y: 8.58, z: 78.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10165,7 +10164,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51cc27157a5c85c4aab4510f8014801e, type: 3}
   m_Name: 
