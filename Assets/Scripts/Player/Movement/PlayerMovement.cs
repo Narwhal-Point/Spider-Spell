@@ -213,11 +213,11 @@ namespace Player.Movement
         {
             Sprinting = value.isPressed;
 
-            if (_manager.CurrentState == WalkingState)
+            if (_manager.CurrentState == WalkingState && Sprinting)
             {
                 _manager.SwitchState(SprintingState);
             }
-            else if (_manager.CurrentState == SprintingState)
+            else if (_manager.CurrentState == SprintingState && !Sprinting)
             {
                 _manager.SwitchState(WalkingState);
             }
@@ -230,9 +230,11 @@ namespace Player.Movement
 
         public void OnCrouch(InputValue value)
         {
-            if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState)
+            Crouching = value.isPressed;
+            
+            if (Crouching && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
                 _manager.SwitchState(CrouchingState);
-            else if (_manager.CurrentState == CrouchingState)
+            else if (!Crouching && _manager.CurrentState == CrouchingState)
             {
                 if (Moving != Vector2.zero)
                 {
@@ -243,26 +245,16 @@ namespace Player.Movement
                     _manager.SwitchState(IdleState);
                 }
             }
-
-            Crouching = value.isPressed;
         }
 
         public void OnSlide(InputValue value)
         {
             Sliding = value.isPressed;
-            if (_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState
+            if (Sliding && (_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState
                                                       || (Grounded && _manager.CurrentState == JumpingState)
-                                                      || Grounded && _manager.CurrentState == FallingState)
+                                                      || Grounded && _manager.CurrentState == FallingState))
                 _manager.SwitchState(SlidingState);
-        }
-
-
-        // function needed to stop sliding when slide button is released
-        private void OnSlideRelease()
-        {
-            Sliding = false;
-            // only switch states if released while in sliding state
-            if (_manager.CurrentState == SlidingState)
+            else if (!Sliding && _manager.CurrentState == SlidingState)
             {
                 if (Grounded && Moving == Vector2.zero)
                     _manager.SwitchState(IdleState);
@@ -275,5 +267,7 @@ namespace Player.Movement
                 }
             }
         }
+        
+        
     }
 }
