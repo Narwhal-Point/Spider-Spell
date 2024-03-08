@@ -1,4 +1,3 @@
-using Player.Movement.Movement_Logic.Idle;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
@@ -10,11 +9,14 @@ namespace Player.Movement
     public class PlayerMovement : MonoBehaviour
     {
         [Header("Movement")] 
-
+        public float walkSpeed = 7;
+        public float sprintSpeed = 10f;
         public float swingSpeed = 20;
-        public float slideSpeed = 30;
-
+        public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
+        
+        [Header("Crouching")]
+        public float crouchYScale = 0.5f;
 
         [Header("Jumping")] 
         public float jumpForce = 10;
@@ -40,7 +42,7 @@ namespace Player.Movement
         public float horizontalThrustForce = 200f;
         public float forwardThrustForce = 300f;
         public float extendCableSpeed = 20f;
-        public PlayerSwinging Swing { get; private set; }
+        public PlayerSwingHandler Swing { get; private set; }
 
         [Header("References")] public Transform orientation;
         public Transform swingOrigin;
@@ -54,6 +56,7 @@ namespace Player.Movement
 
         public TMP_Text text;
 
+        // input booleans
         public Vector2 Moving { get; private set; }
         public bool Sprinting { get; private set; }
         public bool Firing { get; private set; }
@@ -93,31 +96,8 @@ namespace Player.Movement
         
         #endregion
 
-
-        [FormerlySerializedAs("MovementIdleBase")]
-        [Header("Scriptable Objects")]
-        #region Scriptable objcts Variables
-
-        [SerializeField] private MovementIdleSOBASE movementIdleBase;
-        [SerializeField] private MovementWalkingSOBASE movementWalkingBase;
-        [SerializeField] private MovementSprintingSOBASE movementSprintingBase;
-        [SerializeField] private MovementCrouchingSOBASE movementCrouchingBase;
-
-        public MovementIdleSOBASE MovementIdleBaseInstance { get; set; }
-        public MovementWalkingSOBASE MovementWalkingBaseInstace { get; set; }
-        public MovementSprintingSOBASE MovementSprintingBaseInstance { get; set; }
-        public MovementCrouchingSOBASE MovementCrouchingBaseInstance { get; set; }
-        
-        
-        #endregion
-
         private void Awake()
         {
-            MovementIdleBaseInstance = Instantiate(movementIdleBase);
-            MovementWalkingBaseInstace = Instantiate(movementWalkingBase);
-            MovementSprintingBaseInstance = Instantiate(movementSprintingBase);
-            MovementCrouchingBaseInstance = Instantiate(movementCrouchingBase);
-            
             _manager = new PlayerMovementStateManager();
 
             IdleState = new PlayerMovementStateIdle(_manager, this);
@@ -132,15 +112,10 @@ namespace Player.Movement
 
         private void Start()
         {
-            Swing = GetComponent<PlayerSwinging>();
+            Swing = GetComponent<PlayerSwingHandler>();
             Rb = GetComponent<Rigidbody>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
-
-            MovementIdleBaseInstance.Initialize(gameObject, this);
-            MovementWalkingBaseInstace.Initialize(gameObject, this);
-            MovementSprintingBaseInstance.Initialize(gameObject, this);
-            MovementCrouchingBaseInstance.Initialize(gameObject, this);
             
             _manager.Initialize(IdleState);
         }
@@ -285,6 +260,7 @@ namespace Player.Movement
         // function needed to stop sliding when slide button is released
         private void OnSlideRelease()
         {
+            Sliding = false;
             // only switch states if released while in sliding state
             if (_manager.CurrentState == SlidingState)
             {

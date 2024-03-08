@@ -1,23 +1,29 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player.Movement.State_Machine
 {
     public class PlayerMovementStateWalking : PlayerMovementBaseState
     {
-
+        private RaycastHit _slopeHit;
+        private float _moveSpeed;
     
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
         {
         }
         public override void EnterState()
         {
-            player.MovementWalkingBaseInstace.DoEnterLogic();
+            player.Rb.useGravity = false;
+            player.movementState = PlayerMovement.MovementState.Walking;
+            _moveSpeed = player.walkSpeed;
+            
+            player.Rb.drag = player.groundDrag;
         }
 
         public override void UpdateState()
         {
-            player.MovementWalkingBaseInstace.DoUpdateLogic();
-            
+            SpeedControl();
+        
             // switch to another state
             if(!player.Grounded)
                 manager.SwitchState(player.FallingState);
@@ -27,9 +33,66 @@ namespace Player.Movement.State_Machine
     
         public override void FixedUpdateState()
         {
-            player.MovementWalkingBaseInstace.DoFixedUpdateLogic();
+            MovePlayer();
         }
     
+        private bool OnSlope()
+        {
+            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
+            {
+                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
+                return angle < player.maxSlopeAngle && angle != 0;
+            }
 
+            return false;
+        }
+
+        private Vector3 GetSlopeMoveDirection(Vector3 direction)
+        {
+            return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
+        }
+        private void MovePlayer()
+        {
+            // get the direction to move towards
+            player.MoveDirection = player.orientation.forward * player.Moving.y +
+                                   player.orientation.right * player.Moving.x;
+            
+            // player is on a slope
+            if (OnSlope() && !player.ExitingSlope)
+            {
+                player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (_moveSpeed * 20f), ForceMode.Force);
+
+                if (player.Rb.velocity.y > 0)
+                    player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+            }
+
+            // player on the ground
+            else if (player.Grounded)
+            {
+                // Debug.Log(player.MoveDirection);
+                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
+            }
+        }
+
+        private void SpeedControl()
+        {
+            // limit speed on slope
+            if (OnSlope() && !player.ExitingSlope)
+            {
+                if ( player.Rb.velocity.magnitude > _moveSpeed)
+                    player.Rb.velocity =  player.Rb.velocity.normalized * _moveSpeed;
+            }
+            else // limit speed on ground
+            {
+                Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
+
+                // limit velocity if needed
+                if (flatVel.magnitude > _moveSpeed)
+                {
+                    Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                    player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Player.Movement
 {
-    public class PlayerSwinging : MonoBehaviour
+    public class PlayerSwingHandler : MonoBehaviour
     {
         [Header("References")] 
         public LineRenderer lr;
