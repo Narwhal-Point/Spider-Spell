@@ -118,13 +118,14 @@ namespace Player.Movement
             _manager.Initialize(IdleState);
         }
 
+        private RaycastHit _groundHit;
         private void Update()
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
             
             // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down),
+            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out _groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
             
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 5, Color.magenta);
@@ -140,7 +141,15 @@ namespace Player.Movement
 
         private void FixedUpdate()
         {
+            AlignToSurface();
             _manager.CurrentState.FixedUpdateState();
+        }
+
+        private void AlignToSurface()
+        {
+            Quaternion targetAlign = Quaternion.FromToRotation(Vector3.up, _groundHit.normal);
+
+            transform.rotation = targetAlign;
         }
         private void WallCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
