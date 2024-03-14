@@ -38,15 +38,13 @@ namespace Player.Movement
         public float maxSlopeAngle;
         public bool ExitingSlope { get; set; }
 
-        [Header("Swinging")] public KeyCode swingKey = KeyCode.Mouse0;
-        public float horizontalThrustForce = 200f;
-        public float forwardThrustForce = 300f;
-        public float extendCableSpeed = 20f;
-        public PlayerSwingHandler Swing { get; private set; }
+        
 
         [Header("References")] public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
+        
+        public PlayerSwingHandler Swing { get; private set; }
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -122,6 +120,9 @@ namespace Player.Movement
 
         private void Update()
         {
+            // Debug.Log("playerobj forward: " + playerObj.forward);
+            // Debug.Log("transform forward: " + transform.forward);
+            
             // print the current movement state on the screen
             text.text = movementState.ToString();
             
@@ -171,7 +172,6 @@ namespace Player.Movement
             }
             else if (wallInBack && Moving.y < 0.1f)
             {
-                Debug.Log(Moving.y);
                 // Project the wall normal onto the xz-plane
                 Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
 
@@ -192,7 +192,7 @@ namespace Player.Movement
         // does it work? Also Yes.
         public void DestroyJoint()
         {
-            Destroy(Swing.joint);
+            Destroy(Swing.Joint);
         }
         
                 // input callbacks

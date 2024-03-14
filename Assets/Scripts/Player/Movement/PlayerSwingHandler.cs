@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -6,14 +7,14 @@ namespace Player.Movement
     {
         [Header("References")] 
         public LineRenderer lr;
-        public Transform gunTip, cam, player;
+        public Transform swingOrigin, cam, player;
         public LayerMask whatIsGrappleable;
     
         [Header("Swinging")]
         public float maxSwingDistance = 15f;
-        public Vector3 swingPoint { get; set; }
-        public SpringJoint joint { get; set; }
-        public Vector3 currentGrapplePosition { get; set; }
+        public Vector3 SwingPoint { get; set; }
+        public SpringJoint Joint { get; set; }
+        public Vector3 CurrentGrapplePosition { get; set; }
 
         [Header("Prediction")] 
         public RaycastHit predictionHit;
@@ -27,24 +28,24 @@ namespace Player.Movement
 
         private void LateUpdate()
         {
-            drawRope();
+            DrawRope();
         }
-        void drawRope()
+        void DrawRope()
         {
             // if not grappling don't draw rope
-            if(!joint)
+            if(!Joint)
                 return;
         
             // make it so the line doesn't appear instantly
-            currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, swingPoint, Time.deltaTime * 8f);
+            CurrentGrapplePosition = Vector3.Lerp(CurrentGrapplePosition, SwingPoint, Time.deltaTime * 8f);
         
-            lr.SetPosition(0, gunTip.position);
-            lr.SetPosition(1, swingPoint);
+            lr.SetPosition(0, swingOrigin.position);
+            lr.SetPosition(1, SwingPoint);
         }
 
         private void CheckForSwingPoints()
         {
-            if(joint != null)
+            if(Joint != null)
                 return;
 
             RaycastHit sphereCastHit;

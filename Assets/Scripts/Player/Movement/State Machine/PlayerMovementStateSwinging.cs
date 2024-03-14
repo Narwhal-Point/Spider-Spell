@@ -34,7 +34,7 @@ namespace Player.Movement.State_Machine
                 manager.SwitchState(player.FallingState);
             }
         
-            if(player.Swing.joint != null) // currently swinging
+            if(player.Swing.Joint != null) // currently swinging
                 SwingMovement();
         }
 
@@ -48,24 +48,23 @@ namespace Player.Movement.State_Machine
             if (player.Swing.predictionHit.point == Vector3.zero) 
                 return;
 
-            player.Swing.swingPoint = player.Swing.predictionHit.point;
-            player.Swing.joint = player.gameObject.AddComponent<SpringJoint>();
-            player.Swing.joint.autoConfigureConnectedAnchor = false;
-            player.Swing.joint.connectedAnchor = player.Swing.swingPoint;
+            player.Swing.SwingPoint = player.Swing.predictionHit.point;
+            player.Swing.Joint = player.gameObject.AddComponent<SpringJoint>();
+            player.Swing.Joint.autoConfigureConnectedAnchor = false;
+            player.Swing.Joint.connectedAnchor = player.Swing.SwingPoint;
 
-            float distanceFromPoint = Vector3.Distance(player.transform.position, player.Swing.swingPoint);
+            float distanceFromPoint = Vector3.Distance(player.transform.position, player.Swing.SwingPoint);
 
             // the distance grapple will try to keep from grapple point. 
-            player.Swing.joint.maxDistance = distanceFromPoint * 0.8f;
-            player.Swing.joint.minDistance = distanceFromPoint * 0.25f;
+            player.Swing.Joint.maxDistance = distanceFromPoint * 0.8f;
+            player.Swing.Joint.minDistance = distanceFromPoint * 0.25f;
 
-            // customize values as you like
-            player.Swing.joint.spring = 4.5f;
-            player.Swing.joint.damper = 7f;
-            player.Swing.joint.massScale = 4.5f;
+            player.Swing.Joint.spring = 4.5f;
+            player.Swing.Joint.damper = 7f;
+            player.Swing.Joint.massScale = 4.5f;
 
             player.Swing.lr.positionCount = 2;
-            player.Swing.currentGrapplePosition = player.swingOrigin.position;
+            player.Swing.CurrentGrapplePosition = player.swingOrigin.position;
         }
 
         void StopSwing()
@@ -78,20 +77,20 @@ namespace Player.Movement.State_Machine
         {
             if (player.Moving.y > 0.6)
             {
-                player.Rb.AddForce(player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.forward * (300f * Time.deltaTime));
             }
 
             if (player.Moving.y < -0.6)
-                player.Rb.AddForce(-player.orientation.forward * (player.horizontalThrustForce * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.forward * (200f * Time.deltaTime));
             
             if (player.Moving.x > 0.6)
             {
-                player.Rb.AddForce(player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.right * (200f * Time.deltaTime));
             }
 
             if (player.Moving.x < -0.6)
             {
-                player.Rb.AddForce(-player.orientation.right * (player.horizontalThrustForce * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.right * (300f * Time.deltaTime));
             }
         }
 
