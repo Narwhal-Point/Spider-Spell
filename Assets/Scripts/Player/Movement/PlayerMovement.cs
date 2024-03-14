@@ -120,9 +120,6 @@ namespace Player.Movement
 
         private void Update()
         {
-            // Debug.Log("playerobj forward: " + playerObj.forward);
-            // Debug.Log("transform forward: " + transform.forward);
-            
             // print the current movement state on the screen
             text.text = movementState.ToString();
             
