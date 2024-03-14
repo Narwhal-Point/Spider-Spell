@@ -18,8 +18,8 @@ namespace Player.Movement
 
         [Header("Prediction")] 
         public RaycastHit predictionHit;
-        public float predictionSphereCastRadius;
-        public Transform predicitionPoint;
+        [SerializeField] private float predictionSphereCastRadius;
+        [SerializeField] private Transform predicitionPoint;
 
         private void Update()
         {

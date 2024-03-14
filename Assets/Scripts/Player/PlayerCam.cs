@@ -27,8 +27,11 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            // TODO: try using quaternation.lookRotation
+            
             // rotate orientation
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
+            
             orientation.forward = viewDir.normalized;
             
             // input direction
@@ -36,7 +39,9 @@ namespace Player
             
             // set direction of player
             Vector3 inputDir = orientation.forward * viewDirection.y + orientation.right * viewDirection.x;
-
+            
+            // Debug.Log("inputDir: " + inputDir);
+            
             // rotate player to direction
             if (inputDir != Vector3.zero)
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
