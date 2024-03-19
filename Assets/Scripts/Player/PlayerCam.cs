@@ -30,6 +30,8 @@ namespace Player
             // TODO: try using quaternation.lookRotation
             
             // rotate orientation
+            // Vector3 cam2player = player.position - transform.position;
+            // transform.forward - transform.up * dot(transform.up)
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             
             orientation.forward = viewDir.normalized;
