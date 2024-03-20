@@ -6,9 +6,11 @@ namespace Player.Movement.State_Machine
     {
         private float _desiredMoveSpeed;
         private float _moveSpeed;
+        private readonly PlayerSwingHandler _swing;
         
-        public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+        public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player, PlayerSwingHandler swing) : base(manager, player)
         {
+            _swing = swing;
         }
         public override void EnterState()
         {
@@ -34,43 +36,40 @@ namespace Player.Movement.State_Machine
                 manager.SwitchState(player.FallingState);
             }
         
-            if(player.Swing.Joint != null) // currently swinging
+            if(_swing.Joint != null) // currently swinging
                 SwingMovement();
-        }
-
-        public override void FixedUpdateState()
-        {
         }
     
         private void StartSwing()
         {
             // return if predictionHit not found
-            if (player.Swing.predictionHit.point == Vector3.zero) 
+            if (_swing.predictionHit.point == Vector3.zero) 
                 return;
 
-            player.Swing.SwingPoint = player.Swing.predictionHit.point;
-            player.Swing.Joint = player.gameObject.AddComponent<SpringJoint>();
-            player.Swing.Joint.autoConfigureConnectedAnchor = false;
-            player.Swing.Joint.connectedAnchor = player.Swing.SwingPoint;
+            _swing.SwingPoint = _swing.predictionHit.point;
+            _swing.Joint = player.gameObject.AddComponent<SpringJoint>();
+            _swing.Joint.autoConfigureConnectedAnchor = false;
+            _swing.Joint.connectedAnchor = _swing.SwingPoint;
 
-            float distanceFromPoint = Vector3.Distance(player.transform.position, player.Swing.SwingPoint);
+            float distanceFromPoint = Vector3.Distance(player.transform.position, _swing.SwingPoint);
 
             // the distance grapple will try to keep from grapple point. 
-            player.Swing.Joint.maxDistance = distanceFromPoint * 0.8f;
-            player.Swing.Joint.minDistance = distanceFromPoint * 0.25f;
+            float maxDistance = Mathf.Min(distanceFromPoint * 0.8f, _swing.maxSwingDistance);
+            
+            _swing.Joint.minDistance = maxDistance;
 
-            player.Swing.Joint.spring = 4.5f;
-            player.Swing.Joint.damper = 7f;
-            player.Swing.Joint.massScale = 4.5f;
+            _swing.Joint.spring = 4.5f;
+            _swing.Joint.damper = 7f;
+            _swing.Joint.massScale = 4.5f;
 
-            player.Swing.lr.positionCount = 2;
-            player.Swing.CurrentGrapplePosition = player.swingOrigin.position;
+            _swing.lr.positionCount = 2;
+            _swing.CurrentGrapplePosition = player.swingOrigin.position;
         }
 
         void StopSwing()
         {
-            player.Swing.lr.positionCount = 0;
-            player.DestroyJoint();
+            _swing.lr.positionCount = 0;
+            _swing.DestroyJoint();
         }
     
         private void SwingMovement()

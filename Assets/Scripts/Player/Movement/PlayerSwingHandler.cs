@@ -11,7 +11,10 @@ namespace Player.Movement
         public LayerMask whatIsGrappleable;
     
         [Header("Swinging")]
-        public float maxSwingDistance = 15f;
+        public float maxSwingAimDistance = 25f;
+
+        // maximum length of line. Line will shorten if player is further away than this value
+        public float maxSwingDistance = 12f;
         public Vector3 SwingPoint { get; set; }
         public SpringJoint Joint { get; set; }
         public Vector3 CurrentGrapplePosition { get; set; }
@@ -36,7 +39,7 @@ namespace Player.Movement
             if(!Joint)
                 return;
         
-            // make it so the line doesn't appear instantly
+            // make it so the line doesn't appear instantly (doesn't work)
             CurrentGrapplePosition = Vector3.Lerp(CurrentGrapplePosition, SwingPoint, Time.deltaTime * 8f);
         
             lr.SetPosition(0, swingOrigin.position);
@@ -48,25 +51,34 @@ namespace Player.Movement
             if(Joint != null)
                 return;
 
-            RaycastHit sphereCastHit;
-
             Vector3 castPosition = new Vector3(player.position.x, cam.position.y, player.position.z);
         
-            Physics.SphereCast(castPosition, predictionSphereCastRadius, cam.forward, out sphereCastHit, maxSwingDistance,
-                whatIsGrappleable);
-
-            RaycastHit raycastHit;
-            Physics.Raycast(cam.position, cam.forward, out raycastHit, maxSwingDistance, whatIsGrappleable);
+            Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, 
+                out var sphereCastHit, maxSwingAimDistance, whatIsGrappleable);
+            
+            // draw direction of spherecast
+            Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.cyan);
+            
+            Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingAimDistance, whatIsGrappleable);
+            
+            // draw direction of raycast
+            Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.yellow);
 
             Vector3 realHitPoint;
 
             // direct hit
             if (raycastHit.point != Vector3.zero)
+            {
+                Debug.Log("Direct");
                 realHitPoint = raycastHit.point;
-        
+            }
+
             // indirect (predicted) hit
             else if (sphereCastHit.point != Vector3.zero)
+            {
+                Debug.Log("Indirect");
                 realHitPoint = sphereCastHit.point;
+            }
             else
                 realHitPoint = Vector3.zero;
 
@@ -79,6 +91,11 @@ namespace Player.Movement
                 predicitionPoint.gameObject.SetActive(false);
 
             predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
+        }
+        
+        public void DestroyJoint()
+        {
+            Destroy(Joint);
         }
     }
 }

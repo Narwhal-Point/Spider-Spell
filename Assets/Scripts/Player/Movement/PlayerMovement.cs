@@ -44,7 +44,7 @@ namespace Player.Movement
         public Transform swingOrigin;
         public Transform playerObj;
         
-        public PlayerSwingHandler Swing { get; private set; }
+        private PlayerSwingHandler Swing { get;  set; }
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -105,7 +105,7 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this);
+            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
         }
 
         private void Start()
@@ -193,14 +193,6 @@ namespace Player.Movement
                     playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.red);
             }
         }
-        
-        // is this stupid? Yes.
-        // does it work? Also Yes.
-        public void DestroyJoint()
-        {
-            Destroy(Swing.Joint);
-        }
-        
                 // input callbacks
         public void OnMove(InputValue value)
         {
@@ -233,6 +225,9 @@ namespace Player.Movement
         public void OnFire(InputValue value)
         {
             Firing = value.isPressed;
+            
+            if(_manager.CurrentState == IdleState)
+                _manager.SwitchState(SwingingState);
         }
 
         public void OnCrouch(InputValue value)
