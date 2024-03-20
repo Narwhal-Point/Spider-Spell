@@ -68,14 +68,14 @@ namespace Player.Movement
             // direct hit
             if (raycastHit.point != Vector3.zero)
             {
-                Debug.Log("Direct");
+                // Debug.Log("Direct");
                 realHitPoint = raycastHit.point;
             }
 
             // indirect (predicted) hit
             else if (sphereCastHit.point != Vector3.zero)
             {
-                Debug.Log("Indirect");
+                // Debug.Log("Indirect");
                 realHitPoint = sphereCastHit.point;
             }
             else

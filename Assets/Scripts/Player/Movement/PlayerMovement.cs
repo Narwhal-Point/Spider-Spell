@@ -2,7 +2,6 @@ using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -62,6 +61,8 @@ namespace Player.Movement
         public bool Sliding { get; private set; }
 
         public bool Crouching { get; private set; }
+        
+        public bool Aiming { get; private set; }
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -269,7 +270,10 @@ namespace Player.Movement
                 }
             }
         }
-        
-        
+
+        public void OnAim(InputValue value)
+        {
+            Aiming = value.isPressed;
+        }
     }
 }

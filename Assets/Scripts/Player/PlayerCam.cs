@@ -1,3 +1,4 @@
+using Cinemachine;
 using Player.Movement;
 using UnityEngine;
 
@@ -16,13 +17,16 @@ namespace Player
         [SerializeField] private float rotationSpeed = 1f;
         [SerializeField] private Transform combatLookAt;
 
+        [SerializeField] private CinemachineVirtualCameraBase[] cameras;
+        [SerializeField] private GameObject crosshair;
+
         enum CameraStyle
         {
             Normal,
             Aiming
         }
 
-        private CameraStyle _currentCamera = CameraStyle.Aiming;
+        private CameraStyle _currentCamera = CameraStyle.Normal;
         
         
         
@@ -39,11 +43,17 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            _currentCamera = _playerMovement.Aiming ? CameraStyle.Aiming : CameraStyle.Normal;
+            
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
 
             if (_currentCamera == CameraStyle.Normal)
             {
+                cameras[1].gameObject.SetActive(false);
+                cameras[0].gameObject.SetActive(true);
+                if(crosshair.activeSelf)
+                    crosshair.SetActive(false);
                 // input direction
                 Vector2 viewDirection = _playerMovement.Moving;
             
@@ -59,13 +69,15 @@ namespace Player
             
             else if (_currentCamera == CameraStyle.Aiming)
             {
+                if(!crosshair.activeSelf)
+                    crosshair.SetActive(true);
+                cameras[0].gameObject.SetActive(false);
+                cameras[1].gameObject.SetActive(true);
                 Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
                 orientation.forward = dirToCombatLookAt.normalized;
 
                 playerObj.forward = dirToCombatLookAt.normalized;
             }
-            
-           
         }
     }
 }
