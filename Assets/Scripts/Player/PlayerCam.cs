@@ -22,7 +22,7 @@ namespace Player
             Aiming
         }
 
-        private CameraStyle _currenCamera = CameraStyle.Aiming;
+        private CameraStyle _currentCamera = CameraStyle.Aiming;
         
         
         
@@ -42,7 +42,7 @@ namespace Player
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
 
-            if (_currenCamera == CameraStyle.Normal)
+            if (_currentCamera == CameraStyle.Normal)
             {
                 // input direction
                 Vector2 viewDirection = _playerMovement.Moving;
@@ -57,7 +57,7 @@ namespace Player
                     playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
             }
             
-            else if (_currenCamera == CameraStyle.Aiming)
+            else if (_currentCamera == CameraStyle.Aiming)
             {
                 Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
                 orientation.forward = dirToCombatLookAt.normalized;
