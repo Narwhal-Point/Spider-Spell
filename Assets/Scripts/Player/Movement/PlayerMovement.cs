@@ -213,6 +213,8 @@ namespace Player.Movement
         {
             Sprinting = value.isPressed;
 
+            // might be better to handle this in the current state using a special function for checking if a state switch is logical
+            
             if (_manager.CurrentState == WalkingState && Sprinting)
             {
                 _manager.SwitchState(SprintingState);

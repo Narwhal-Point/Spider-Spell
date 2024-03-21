@@ -47,10 +47,8 @@ namespace Player.Movement
 
         private void CheckForSwingPoints()
         {
-            if(Joint != null)
+            if (Joint != null)
                 return;
-
-            Vector3 castPosition = new Vector3(player.position.x, cam.position.y, player.position.z);
         
             Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, 
                 out var sphereCastHit, maxSwingAimDistance, whatIsGrappleable);
@@ -58,6 +56,7 @@ namespace Player.Movement
             // draw direction of spherecast
             Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.cyan);
             
+            // TODO: Change to create the ray once and then just change the positions
             Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingAimDistance, whatIsGrappleable);
             
             // draw direction of raycast
