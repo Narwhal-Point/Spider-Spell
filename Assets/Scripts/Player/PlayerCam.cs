@@ -20,17 +20,17 @@ namespace Player
         [SerializeField] private CinemachineVirtualCameraBase[] cameras;
         [SerializeField] private GameObject crosshair;
 
-        enum CameraStyle
+        public enum CameraStyle
         {
             Normal,
             Aiming
         }
 
-        private CameraStyle _currentCamera = CameraStyle.Normal;
-        
-        
-        
-        
+        public CameraStyle CurrentCamera { get; private set; } = CameraStyle.Normal;
+
+
+
+
         // Start is called before the first frame update
         void Start()
         {
@@ -43,12 +43,12 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            _currentCamera = _playerMovement.Aiming ? CameraStyle.Aiming : CameraStyle.Normal;
+            CurrentCamera = _playerMovement.Aiming ? CameraStyle.Aiming : CameraStyle.Normal;
             
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
 
-            if (_currentCamera == CameraStyle.Normal)
+            if (CurrentCamera == CameraStyle.Normal)
             {
                 cameras[1].gameObject.SetActive(false);
                 cameras[0].gameObject.SetActive(true);
@@ -67,7 +67,7 @@ namespace Player
                     playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
             }
             
-            else if (_currentCamera == CameraStyle.Aiming)
+            else if (CurrentCamera == CameraStyle.Aiming)
             {
                 if(!crosshair.activeSelf)
                     crosshair.SetActive(true);

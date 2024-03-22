@@ -32,7 +32,7 @@ namespace Player.Movement.State_Machine
 
             if (_jumpTimer <= 0)
             {
-                if(player.Firing)
+                if(player.Firing && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                     manager.SwitchState(player.SwingingState);
                 ResetJump();
                 if (!player.Grounded && player.Rb.velocity.y < 0)

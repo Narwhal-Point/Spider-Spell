@@ -21,7 +21,7 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            if (player.Firing) // start swinging
+            if(player.Firing && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
                 manager.SwitchState(player.SwingingState);
             else if (player.Grounded)
             {

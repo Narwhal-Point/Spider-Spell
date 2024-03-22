@@ -39,9 +39,11 @@ namespace Player.Movement
 
         
 
-        [Header("References")] public Transform orientation;
+        [Header("References")] 
+        public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
+        public PlayerCam camScript;
         
         private PlayerSwingHandler Swing { get;  set; }
         public Vector3 MoveDirection { get; set; }
@@ -229,7 +231,7 @@ namespace Player.Movement
         {
             Firing = value.isPressed;
             
-            if(_manager.CurrentState == IdleState)
+            if(_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                 _manager.SwitchState(SwingingState);
         }
 
