@@ -54,8 +54,9 @@ namespace Player.Movement.State_Machine
         private void MovePlayer()
         {
             // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
+            // player.MoveDirection = player.orientation.forward * player.Moving.y +
+            //                        player.orientation.right * player.Moving.x;
+            player.MoveDirection = CalculateMoveDirection(player.facingAngles.Item1);
             
             // player is on a slope
             if (OnSlope() && !player.ExitingSlope)
@@ -93,6 +94,15 @@ namespace Player.Movement.State_Machine
                     player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
                 }
             }
+        }
+        
+        public Vector3 CalculateMoveDirection(float angle)
+        {
+            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, player.groundHit.normal);
+            Quaternion combinedRotation = surfaceRotation * facingRotation;
+            Vector3 moveDirection = combinedRotation * Vector3.forward;
+            return moveDirection;
         }
     }
 }

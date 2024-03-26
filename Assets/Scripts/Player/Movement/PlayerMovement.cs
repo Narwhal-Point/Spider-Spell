@@ -2,6 +2,7 @@ using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -37,8 +38,6 @@ namespace Player.Movement
         public float maxSlopeAngle;
         public bool ExitingSlope { get; set; }
 
-        
-
         [Header("References")] 
         public Transform orientation;
         public Transform swingOrigin;
@@ -54,7 +53,7 @@ namespace Player.Movement
         public AudioSource uncrouchSound;
 
         public TMP_Text text;
-
+        
         // input booleans
         public Vector2 Moving { get; private set; }
         public bool Sprinting { get; private set; }
@@ -65,6 +64,9 @@ namespace Player.Movement
         public bool Crouching { get; private set; }
         
         public bool Aiming { get; private set; }
+        
+        [FormerlySerializedAs("_turnSmoothTime")]
+        [Header("turning")]
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -80,8 +82,12 @@ namespace Player.Movement
             Falling,
             Swinging
         }
+        #region wallclimbing and rotation
+        public bool wallInFront { get; private set; }
+        public RaycastHit frontWallHit;
+        public (float, float) facingAngles;
         
-        public Quaternion targetRotation { get; private set; }
+        #endregion
 
         #region Player Movement States
         
@@ -96,6 +102,7 @@ namespace Player.Movement
         public PlayerMovementStateSwinging SwingingState { get; private set; }
         
         #endregion
+        
 
         private void Awake()
         {
@@ -121,19 +128,17 @@ namespace Player.Movement
             _manager.Initialize(IdleState);
         }
 
-        private RaycastHit _groundHit;
+        public RaycastHit groundHit;
         private void Update()
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
             
             // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out _groundHit,
+            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
             
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 5, Color.magenta);
-
-            // transform.up = groundHit.normal;
 
             Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
 
@@ -150,56 +155,68 @@ namespace Player.Movement
 
         private void AlignToSurface()
         {
-            Quaternion targetAlign = Quaternion.FromToRotation(Vector3.up, _groundHit.normal);
+            Quaternion targetAlign = Quaternion.FromToRotation(Vector3.up, groundHit.normal);
 
             transform.rotation = targetAlign;
         }
         private void WallCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             // wall check
-            RaycastHit frontWallHit;
-            bool wallInFront = Physics.Raycast(transform.position, playerObj.forward,
+            wallInFront = Physics.Raycast(transform.position, playerObj.forward,
                 out frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
             
-            bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, 
-                out var backWallHit, (playerHeight * 0.5f), ground);
+            // bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, 
+            //     out var backWallHit, (playerHeight * 0.5f), ground);
             
 
-            if (wallInFront && Moving.y > 0.6f)
+            // if (wallInFront && Moving.y > 0.6f)
+            // {
+            //     Debug.DrawRay(transform.position,
+            //         playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
+            //     
+            //     // Project the wall normal onto the xz-plane
+            //     Vector3 projectedNormal = Vector3.ProjectOnPlane(frontWallHit.normal, Vector3.up);
+            //
+            //     // Calculate a target rotation based on the projected normal:
+            //     targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
+            //
+            //     // Rotate the player towards the wall (with optional smoothing)
+            //     transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
+            // }
+            // else if (wallInBack && Moving.y < 0.1f)
+            // {
+            //     // Project the wall normal onto the xz-plane
+            //     Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
+            //
+            //     // Calculate a target rotation based on the projected normal:
+            //     targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
+            //
+            //     // Rotate the player towards the wall (with optional smoothing)
+            //     transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
+            // }
+            if (wallInFront)
             {
                 Debug.DrawRay(transform.position,
                     playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
-                
-                // Project the wall normal onto the xz-plane
-                Vector3 projectedNormal = Vector3.ProjectOnPlane(frontWallHit.normal, Vector3.up);
-
-                // Calculate a target rotation based on the projected normal:
-                targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-
-                // Rotate the player towards the wall (with optional smoothing)
-                transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
-            }
-            else if (wallInBack && Moving.y < 0.1f)
-            {
-                // Project the wall normal onto the xz-plane
-                Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
-
-                // Calculate a target rotation based on the projected normal:
-                targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-
-                // Rotate the player towards the wall (with optional smoothing)
-                transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
             }
             else
             {
-                Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.red);
+            
+            Debug.DrawRay(transform.position,
+                playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.red);
             }
         }
-                // input callbacks
+        
+        
+        
+        
+        // input callbacks
         public void OnMove(InputValue value)
         {
             Moving = value.Get<Vector2>();
+            
+            
+            
         }
 
         public void OnJump()
