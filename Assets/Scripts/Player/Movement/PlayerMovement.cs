@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,9 @@ namespace Player.Movement
         public float slideForce = 150f;
 
         public float slideYScale = 0.5f;
+
+        [Header("Dashing")] public float dashDuration = 10f;
+        public float dashForce = 20f;
 
         [Header("Ground Check")] public float playerHeight = 2;
         public LayerMask ground;
@@ -58,8 +62,6 @@ namespace Player.Movement
 
         public bool Aiming { get; private set; }
 
-        [FormerlySerializedAs("_turnSmoothTime")] [Header("turning")]
-
         // enum to display active state on screen
         public MovementState movementState;
 
@@ -77,6 +79,9 @@ namespace Player.Movement
 
         #region wallclimbing and rotation
 
+        [Header("wall climbing")] 
+        [SerializeField] private float spherecastRadius;
+        [SerializeField] private float spherecastDistance;
         public bool wallInFront { get; private set; }
         public RaycastHit currentHit;
         public (float, float) facingAngles;
@@ -94,6 +99,8 @@ namespace Player.Movement
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
+        
+        public PlayerMovementStateDashing DashingState { get; private set; }
 
         #endregion
 
@@ -110,6 +117,8 @@ namespace Player.Movement
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
+            DashingState = new PlayerMovementStateDashing(_manager, this);
+
         }
 
         private void Start()
@@ -124,7 +133,6 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log(Rb.velocity);
             // print the current movement state on the screen
             text.text = movementState.ToString();
 
@@ -139,7 +147,15 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
         }
-
+        
+        public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
+        {
+            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceRotation * facingRotation;
+            Vector3 moveDirection = combinedRotation * Vector3.forward;
+            return moveDirection;
+        }
 
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
@@ -154,7 +170,7 @@ namespace Player.Movement
             // wall check
             wallInFront = Physics.Raycast(transform.position, playerObj.forward,
                 out var frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
-
+            
             if (wallInFront)
             {
                 currentHit = frontWallHit;
@@ -167,18 +183,62 @@ namespace Player.Movement
                 Debug.DrawRay(transform.position,
                     playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
             }
+
+            // spherecastTest();
+
         }
-
-        public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
-        {
-            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
-            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            Quaternion combinedRotation = surfaceRotation * facingRotation;
-            Vector3 moveDirection = combinedRotation * Vector3.forward;
-            return moveDirection;
-        }
-
-
+        
+        // private void spherecastTest()
+        // {
+        //     RaycastHit[] a = Physics.SphereCastAll(transform.position - playerObj.up, spherecastRadius, -playerObj.up, spherecastDistance, ground);
+        //     Vector3 mostCommon = FindNormal(a);
+        //     // Debug.Log(mostCommon);
+        //     // Debug.Log(a.Length);
+        // }
+        //
+        // private Vector3 FindNormal(RaycastHit[] hits)
+        // {
+        //     Dictionary<Vector3, int> normalCounts = new Dictionary<Vector3, int>();
+        //
+        //     foreach (var hit in hits)
+        //     {
+        //         Vector3 normal = hit.normal;
+        //         
+        //         // If the normal vector is already in the dictionary, increment its count
+        //         if (normalCounts.ContainsKey(normal))
+        //         {
+        //             normalCounts[normal]++;
+        //         }
+        //         // Otherwise, add it to the dictionary with a count of 1
+        //         else
+        //         {
+        //             normalCounts.Add(normal, 1);
+        //         }
+        //     }
+        //     // Find the normal vector with the highest count
+        //     Vector3 mostCommonNormal = Vector3.zero;
+        //     int maxCount = 0;
+        //
+        //     foreach (var pair in normalCounts)
+        //     {
+        //         // Debug.Log(pair);
+        //         if (pair.Value > maxCount && pair.Key != currentHit.normal)
+        //         {
+        //             maxCount = pair.Value;
+        //             mostCommonNormal = pair.Key;
+        //         }
+        //     }
+        //
+        //     return mostCommonNormal;
+        //     
+        // }
+        //
+        // void OnDrawGizmos()
+        // {
+        //     Gizmos.color=Color.yellow;
+        //     Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
+        // }
+        
         // input callbacks
         public void OnMove(InputValue value)
         {
@@ -208,6 +268,11 @@ namespace Player.Movement
             {
                 _manager.SwitchState(WalkingState);
             }
+        }
+
+        public void OnDash()
+        {
+            _manager.SwitchState(DashingState);
         }
 
         public void OnFire(InputValue value)
