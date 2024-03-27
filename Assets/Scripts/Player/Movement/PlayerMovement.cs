@@ -8,43 +8,36 @@ namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Movement")] 
-        public float walkSpeed = 7;
+        [Header("Movement")] public float walkSpeed = 7;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
-        
-        [Header("Crouching")]
-        public float crouchYScale = 0.5f;
 
-        [Header("Jumping")] 
-        public float jumpForce = 10;
+        [Header("Crouching")] public float crouchYScale = 0.5f;
+
+        [Header("Jumping")] public float jumpForce = 10;
         public float airMultiplier = 0.001f;
         public float jumpCooldown = 0.5f;
 
-        [Header("sliding")] 
-        public float maxSlideTime = 0.75f;
+        [Header("sliding")] public float maxSlideTime = 0.75f;
         public float slideForce = 150f;
 
         public float slideYScale = 0.5f;
 
-        [Header("Ground Check")] 
-        public float playerHeight = 2;
+        [Header("Ground Check")] public float playerHeight = 2;
         public LayerMask ground;
         public bool Grounded { get; private set; }
 
-        [Header("Slope Handling")] 
-        public float maxSlopeAngle;
+        [Header("Slope Handling")] public float maxSlopeAngle;
         public bool ExitingSlope { get; set; }
 
-        [Header("References")] 
-        public Transform orientation;
+        [Header("References")] public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
         public PlayerCam camScript;
-        
-        private PlayerSwingHandler Swing { get;  set; }
+
+        private PlayerSwingHandler Swing { get; set; }
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -53,7 +46,7 @@ namespace Player.Movement
         public AudioSource uncrouchSound;
 
         public TMP_Text text;
-        
+
         // input booleans
         public Vector2 Moving { get; private set; }
         public bool Sprinting { get; private set; }
@@ -62,11 +55,10 @@ namespace Player.Movement
         public bool Sliding { get; private set; }
 
         public bool Crouching { get; private set; }
-        
+
         public bool Aiming { get; private set; }
-        
-        [FormerlySerializedAs("_turnSmoothTime")]
-        [Header("turning")]
+
+        [FormerlySerializedAs("_turnSmoothTime")] [Header("turning")]
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -82,15 +74,17 @@ namespace Player.Movement
             Falling,
             Swinging
         }
+
         #region wallclimbing and rotation
+
         public bool wallInFront { get; private set; }
-        public RaycastHit frontWallHit;
+        public RaycastHit currentHit;
         public (float, float) facingAngles;
-        
+
         #endregion
 
         #region Player Movement States
-        
+
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
@@ -100,9 +94,9 @@ namespace Player.Movement
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
-        
+
         #endregion
-        
+
 
         private void Awake()
         {
@@ -124,92 +118,56 @@ namespace Player.Movement
             Rb = GetComponent<Rigidbody>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
-            
+
             _manager.Initialize(IdleState);
         }
 
-        public RaycastHit groundHit;
-        public RaycastHit currentHit;
         private void Update()
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
-            
-            // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
-                playerHeight * 0.5f + 0.2f, ground);
-            if(!Grounded)
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * 5, Color.magenta);
-            else
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * 5, Color.green);
 
-            Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
-
-            WallCheck();
+            // raycasts to check if a surface has been hit
+            SurfaceCheck();
             
+            // state update
             _manager.CurrentState.UpdateState();
         }
 
         private void FixedUpdate()
         {
-            AlignToSurface();
             _manager.CurrentState.FixedUpdateState();
         }
 
-        private void AlignToSurface()
-        {
-            Quaternion targetAlign = Quaternion.FromToRotation(Vector3.up, groundHit.normal);
 
-            transform.rotation = targetAlign;
-        }
-        private void WallCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
+        private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
+            // check if player is on the ground
+            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out var groundHit,
+                playerHeight * 0.5f + 0.2f, ground);
+            if (!Grounded)
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.red);
+            else
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.green);
+            
             // wall check
             wallInFront = Physics.Raycast(transform.position, playerObj.forward,
-                out frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
-            
-            // bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, 
-            //     out var backWallHit, (playerHeight * 0.5f), ground);
-            
+                out var frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
 
-            // if (wallInFront && Moving.y > 0.6f)
-            // {
-            //     Debug.DrawRay(transform.position,
-            //         playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
-            //     
-            //     // Project the wall normal onto the xz-plane
-            //     Vector3 projectedNormal = Vector3.ProjectOnPlane(frontWallHit.normal, Vector3.up);
-            //
-            //     // Calculate a target rotation based on the projected normal:
-            //     targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-            //
-            //     // Rotate the player towards the wall (with optional smoothing)
-            //     transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
-            // }
-            // else if (wallInBack && Moving.y < 0.1f)
-            // {
-            //     // Project the wall normal onto the xz-plane
-            //     Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
-            //
-            //     // Calculate a target rotation based on the projected normal:
-            //     targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-            //
-            //     // Rotate the player towards the wall (with optional smoothing)
-            //     transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
-            // }
             if (wallInFront)
             {
+                currentHit = frontWallHit;
                 Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
+                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.green);
             }
             else
             {
-            
-            Debug.DrawRay(transform.position,
-                playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.red);
+                currentHit = groundHit;
+                Debug.DrawRay(transform.position,
+                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
             }
         }
-        
+
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
             Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
@@ -218,15 +176,12 @@ namespace Player.Movement
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
         }
-        
-        
+
+
         // input callbacks
         public void OnMove(InputValue value)
         {
             Moving = value.Get<Vector2>();
-            
-            
-            
         }
 
         public void OnJump()
@@ -243,7 +198,7 @@ namespace Player.Movement
             Sprinting = value.isPressed;
 
             // might be better to handle this in the current state using a special function for checking if a state switch is logical
-            
+
             if (_manager.CurrentState == WalkingState && Sprinting)
             {
                 _manager.SwitchState(SprintingState);
@@ -257,15 +212,15 @@ namespace Player.Movement
         public void OnFire(InputValue value)
         {
             Firing = value.isPressed;
-            
-            if(_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
+
+            if (_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                 _manager.SwitchState(SwingingState);
         }
 
         public void OnCrouch(InputValue value)
         {
             Crouching = value.isPressed;
-            
+
             if (Crouching && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
                 _manager.SwitchState(CrouchingState);
             else if (!Crouching && _manager.CurrentState == CrouchingState)
@@ -285,8 +240,8 @@ namespace Player.Movement
         {
             Sliding = value.isPressed;
             if (Sliding && (_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState
-                                                      || (Grounded && _manager.CurrentState == JumpingState)
-                                                      || Grounded && _manager.CurrentState == FallingState))
+                                                                  || (Grounded && _manager.CurrentState == JumpingState)
+                                                                  || Grounded && _manager.CurrentState == FallingState))
                 _manager.SwitchState(SlidingState);
             else if (!Sliding && _manager.CurrentState == SlidingState)
             {

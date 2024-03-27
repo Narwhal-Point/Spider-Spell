@@ -68,28 +68,31 @@ namespace Player
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, _playerMovement.facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, _playerMovement.frontWallHit.normal);
+                    Quaternion.FromToRotation(Vector3.up, _playerMovement.currentHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                _playerMovement.currentHit = _playerMovement.frontWallHit;
+                playerObj.rotation = orientation.rotation;
             }
             else if (_playerMovement.Grounded && _playerMovement.Moving != Vector2.zero)
             {
+                
                 Quaternion cameraRotation = Quaternion.Euler(0f, _playerMovement.facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, _playerMovement.groundHit.normal);
+                    Quaternion.FromToRotation(Vector3.up, _playerMovement.currentHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                _playerMovement.currentHit = _playerMovement.groundHit;
+                
+                // slerp the rotation to the turning smooth
+                playerObj.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation, Time.deltaTime * rotationSpeed);
             }
             else if(_playerMovement.Moving != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, _playerMovement.facingAngles.Item2, 0f);
+                playerObj.rotation = orientation.rotation;
             }
+
             
-            // slerp the rotation to the turning smooth
-            Quaternion targetRotation = orientation.rotation;
-            playerObj.rotation = Quaternion.Slerp(playerObj.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
