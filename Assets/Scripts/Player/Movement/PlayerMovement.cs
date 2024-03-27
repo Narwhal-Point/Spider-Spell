@@ -129,16 +129,19 @@ namespace Player.Movement
         }
 
         public RaycastHit groundHit;
+        public RaycastHit currentHit;
         private void Update()
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
             
             // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out groundHit,
+            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
-            
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 5, Color.magenta);
+            if(!Grounded)
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * 5, Color.magenta);
+            else
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * 5, Color.green);
 
             Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
 
@@ -207,7 +210,14 @@ namespace Player.Movement
             }
         }
         
-        
+        public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
+        {
+            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceRotation * facingRotation;
+            Vector3 moveDirection = combinedRotation * Vector3.forward;
+            return moveDirection;
+        }
         
         
         // input callbacks

@@ -7,18 +7,19 @@ namespace Player.Movement.State_Machine
         private float _moveSpeed;
         private RaycastHit _slopeHit;
 
-        public PlayerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+        public PlayerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
+            player)
         {
         }
-    
+
         public override void EnterState()
         {
-            player.crouchSound.Play();   
+            player.crouchSound.Play();
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Crouching;
 
             _moveSpeed = player.crouchSpeed;
-            
+
             player.Rb.drag = player.groundDrag;
 
 
@@ -48,10 +49,11 @@ namespace Player.Movement.State_Machine
         {
             MovePlayer();
         }
-    
+
         private bool OnSlope()
         {
-            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
+            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit,
+                    player.playerHeight * 0.5f + 0.3f))
             {
                 float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
                 return angle < player.maxSlopeAngle && angle != 0;
@@ -67,25 +69,8 @@ namespace Player.Movement.State_Machine
 
         private void MovePlayer()
         {
-            // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
-
-            // player is on a slope
-            if (OnSlope() && !player.ExitingSlope)
-            {
-                player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (_moveSpeed * 20f), ForceMode.Force);
-
-                if (player.Rb.velocity.y > 0)
-                    player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
-
-            // player on the ground
-            else if (player.Grounded)
-            {
-                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f),
-                    ForceMode.Force); // move
-            }
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
         }
 
         private void SpeedControl()

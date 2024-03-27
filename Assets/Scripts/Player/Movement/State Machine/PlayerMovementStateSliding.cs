@@ -69,8 +69,7 @@ namespace Player.Movement.State_Machine
         private void SlidingMovement()
         {
             // sliding normally
-            Vector3 inputDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
+           Vector3 inputDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
 
             if (!OnSlope() || player.Rb.velocity.y > -0.1f)
             {

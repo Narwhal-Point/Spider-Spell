@@ -14,16 +14,16 @@ namespace Player
         [SerializeField] private GameObject playerObject;
         private PlayerMovement _playerMovement;
 
-        [SerializeField] private float rotationSpeed = 1f;
+        [SerializeField] private float rotationSpeed = 10f;
         [SerializeField] private Transform combatLookAt;
 
         [SerializeField] private CinemachineVirtualCameraBase[] cameras;
         [SerializeField] private GameObject crosshair;
 
-        [SerializeField] float turnSmoothTime = 0.1f;
+        [SerializeField] private float turnSmoothTime = 0.1f;
         private float _turnSmoothVelocity;
-
-
+        public bool Rotating { get; private set; }
+        
         public enum CameraStyle
         {
             Normal,
@@ -45,42 +45,6 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            // CurrentCamera = _playerMovement.Aiming ? CameraStyle.Aiming : CameraStyle.Normal;
-            //
-            // Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-            // orientation.forward = viewDir.normalized;
-            //
-            // if (CurrentCamera == CameraStyle.Normal)
-            // {
-            //     cameras[1].gameObject.SetActive(false);
-            //     cameras[0].gameObject.SetActive(true);
-            //     if(crosshair.activeSelf)
-            //         crosshair.SetActive(false);
-            //     // input direction
-            //     Vector2 viewDirection = _playerMovement.Moving;
-            //
-            //     // set direction of player
-            //     Vector3 inputDir = orientation.forward * viewDirection.y + orientation.right * viewDirection.x;
-            //
-            //     // Debug.Log("inputDir: " + inputDir);
-            //
-            //     // rotate player to direction
-            //     if (inputDir != Vector3.zero)
-            //         playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
-            // }
-            //
-            // else if (CurrentCamera == CameraStyle.Aiming)
-            // {
-            //     if(!crosshair.activeSelf)
-            //         crosshair.SetActive(true);
-            //     cameras[0].gameObject.SetActive(false);
-            //     cameras[1].gameObject.SetActive(true);
-            //     Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
-            //     orientation.forward = dirToCombatLookAt.normalized;
-            //
-            //     playerObj.forward = dirToCombatLookAt.normalized;
-            // }
-
             CurrentCamera = _playerMovement.Aiming ? CameraStyle.Aiming : CameraStyle.Normal;
 
             if (CurrentCamera == CameraStyle.Normal)
@@ -107,6 +71,7 @@ namespace Player
                     Quaternion.FromToRotation(Vector3.up, _playerMovement.frontWallHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
+                _playerMovement.currentHit = _playerMovement.frontWallHit;
             }
             else if (_playerMovement.Grounded && _playerMovement.Moving != Vector2.zero)
             {
@@ -115,13 +80,16 @@ namespace Player
                     Quaternion.FromToRotation(Vector3.up, _playerMovement.groundHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
+                _playerMovement.currentHit = _playerMovement.groundHit;
             }
             else if(_playerMovement.Moving != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, _playerMovement.facingAngles.Item2, 0f);
             }
-
-            playerObj.rotation = orientation.rotation;
+            
+            // slerp the rotation to the turning smooth
+            Quaternion targetRotation = orientation.rotation;
+            playerObj.rotation = Quaternion.Slerp(playerObj.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
