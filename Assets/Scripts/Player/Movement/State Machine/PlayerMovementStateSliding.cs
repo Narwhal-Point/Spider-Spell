@@ -42,7 +42,7 @@ namespace Player.Movement.State_Machine
             Sliding = true;
 
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.slideYScale, player.transform.localScale.z);
-            player.Rb.AddForce(-player.transform.up * 5f, ForceMode.Impulse);
+            player.Rb.AddForce(-player.playerObj.transform.up * 5f, ForceMode.Impulse);
 
             SlideTimer = player.maxSlideTime;
 
