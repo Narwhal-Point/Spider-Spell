@@ -124,6 +124,7 @@ namespace Player.Movement
 
         private void Update()
         {
+            Debug.Log(Rb.velocity);
             // print the current movement state on the screen
             text.text = movementState.ToString();
 

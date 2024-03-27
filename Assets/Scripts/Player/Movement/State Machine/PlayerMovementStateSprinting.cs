@@ -38,18 +38,6 @@ namespace Player.Movement.State_Machine
             MovePlayer();
         }
 
-        private bool OnSlope()
-        {
-            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit,
-                    player.playerHeight * 0.5f + 0.3f))
-            {
-                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-                return angle < player.maxSlopeAngle && angle != 0;
-            }
-
-            return false;
-        }
-
         private Vector3 GetSlopeMoveDirection(Vector3 direction)
         {
             return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
@@ -63,23 +51,13 @@ namespace Player.Movement.State_Machine
 
         private void SpeedControl()
         {
-            // limit speed on slope
-            if (OnSlope() && !player.ExitingSlope)
-            {
-                if (player.Rb.velocity.magnitude > _moveSpeed)
-                    player.Rb.velocity = player.Rb.velocity.normalized * _moveSpeed;
-            }
-            else // limit speed on ground
-            {
-                var rbVelocity = player.Rb.velocity;
-                Vector3 flatVel = new Vector3(rbVelocity.x, 0f, rbVelocity.z);
+            Vector3 flatVel = player.Rb.velocity;
 
-                // limit velocity if needed
-                if (flatVel.magnitude > _moveSpeed)
-                {
-                    Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-                    player.Rb.velocity = new Vector3(limitedVel.x, player.Rb.velocity.y, limitedVel.z);
-                }
+            // limit velocity if needed
+            if (flatVel.magnitude > _moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                player.Rb.velocity = limitedVel;
             }
         }
     }
