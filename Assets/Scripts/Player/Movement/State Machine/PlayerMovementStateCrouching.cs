@@ -62,15 +62,13 @@ namespace Player.Movement.State_Machine
             return false;
         }
 
-        private Vector3 GetSlopeMoveDirection(Vector3 direction)
-        {
-            return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
-        }
-
         private void MovePlayer()
         {
-            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
+            if (player.Moving != Vector2.zero)
+            {
+                player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
+            }
         }
 
         private void SpeedControl()
