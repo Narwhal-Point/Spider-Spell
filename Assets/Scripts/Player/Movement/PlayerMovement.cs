@@ -190,10 +190,14 @@ namespace Player.Movement
         
         // private void spherecastTest()
         // {
-        //     RaycastHit[] a = Physics.SphereCastAll(transform.position - playerObj.up, spherecastRadius, -playerObj.up, spherecastDistance, ground);
+        //     RaycastHit[] a = Physics.SphereCastAll(transform.position - playerObj.up, spherecastRadius, -playerObj.forward, spherecastDistance, ground);
         //     Vector3 mostCommon = FindNormal(a);
         //     // Debug.Log(mostCommon);
-        //     // Debug.Log(a.Length);
+        //     Debug.Log(a.Length);
+        //     foreach (var hit in a)
+        //     {
+        //         Debug.Log(hit.transform);
+        //     }
         // }
         //
         // private Vector3 FindNormal(RaycastHit[] hits)
