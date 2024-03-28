@@ -19,10 +19,11 @@ namespace Player.Movement.State_Machine
             player.Rb.useGravity = true;
 
             ReadyToJump = false;
-            Jump();
             _jumpTimer = player.jumpCooldown;
             player.movementState = PlayerMovement.MovementState.Jumping;
             player.Rb.drag = 0; // no ground drag because we're in the air
+            
+            Jump();
         }
 
         public override void UpdateState()
@@ -70,7 +71,7 @@ namespace Player.Movement.State_Machine
             velocity = new Vector3(velocity.x, 0f, velocity.z);
             player.Rb.velocity = velocity;
 
-            player.Rb.AddForce(player.transform.up * player.jumpForce, ForceMode.Impulse);
+            player.Rb.AddForce(player.playerObj.transform.up * player.jumpForce, ForceMode.Impulse);
         }
 
         private void ResetJump()
