@@ -26,7 +26,7 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Dashing")] public float dashDuration = 10f;
+        [Header("Dashing")] public float dashDuration = 10f;    
         public float dashForce = 20f;
 
         [Header("Ground Check")] public float playerHeight = 2;
@@ -163,14 +163,14 @@ namespace Player.Movement
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out var groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
             if (!Grounded)
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.red);
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.red);
             else
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.green);
-            
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
+
             // wall check
             wallInFront = Physics.Raycast(transform.position, playerObj.forward,
                 out var frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
-            
+
             if (wallInFront)
             {
                 currentHit = frontWallHit;
@@ -242,7 +242,7 @@ namespace Player.Movement
         //     Gizmos.color=Color.yellow;
         //     Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
         // }
-        
+
         // input callbacks
         public void OnMove(InputValue value)
         {
