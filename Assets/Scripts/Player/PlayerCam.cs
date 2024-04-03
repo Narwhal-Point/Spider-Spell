@@ -17,7 +17,7 @@ namespace Player
         [SerializeField] private float rotationSpeed = 1f;
         [SerializeField] private Transform combatLookAt;
 
-        [SerializeField] private CinemachineVirtualCameraBase[] cameras;
+        [SerializeField] private CinemachineFreeLook[] cameras;
         [SerializeField] private GameObject crosshair;
 
         public enum CameraStyle
@@ -27,7 +27,8 @@ namespace Player
         }
 
         public CameraStyle CurrentCamera { get; private set; } = CameraStyle.Normal;
-
+        private CameraStyle prevStyle = CameraStyle.Normal;
+        
 
 
 
@@ -50,34 +51,62 @@ namespace Player
 
             if (CurrentCamera == CameraStyle.Normal)
             {
-                cameras[1].gameObject.SetActive(false);
-                cameras[0].gameObject.SetActive(true);
-                if(crosshair.activeSelf)
-                    crosshair.SetActive(false);
-                // input direction
-                Vector2 viewDirection = _playerMovement.Moving;
-            
-                // set direction of player
-                Vector3 inputDir = orientation.forward * viewDirection.y + orientation.right * viewDirection.x;
-            
-                // Debug.Log("inputDir: " + inputDir);
-            
-                // rotate player to direction
-                if (inputDir != Vector3.zero)
-                    playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+                // set the position of the aiming camera as the position of the normal camera
+                if (prevStyle == CameraStyle.Aiming)
+                {
+                    prevStyle = CameraStyle.Normal;
+                    cameras[0].m_YAxis.Value = cameras[1].m_YAxis.Value;
+                }
+
+                UseNormalCamera();
             }
             
             else if (CurrentCamera == CameraStyle.Aiming)
             {
-                if(!crosshair.activeSelf)
-                    crosshair.SetActive(true);
-                cameras[0].gameObject.SetActive(false);
-                cameras[1].gameObject.SetActive(true);
-                Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
-                orientation.forward = dirToCombatLookAt.normalized;
-
-                playerObj.forward = dirToCombatLookAt.normalized;
+                // set the position of the normal camera as the position of the aiming camera
+                // fixes the weird issue where the cameras would look at a completely different direction from each other
+                if (prevStyle == CameraStyle.Normal)
+                {
+                    prevStyle = CameraStyle.Aiming;
+                    cameras[1].m_YAxis.Value = cameras[0].m_YAxis.Value;
+                }
+                
+                UseAimingCamera();
             }
         }
+
+        private void UseNormalCamera()
+        {
+            cameras[1].gameObject.SetActive(false);
+            cameras[0].gameObject.SetActive(true);
+            if(crosshair.activeSelf)
+                crosshair.SetActive(false);
+            // input direction
+            Vector2 viewDirection = _playerMovement.Moving;
+            
+            // set direction of player
+            Vector3 inputDir = orientation.forward * viewDirection.y + orientation.right * viewDirection.x;
+            
+            // Debug.Log("inputDir: " + inputDir);
+            
+            // rotate player to direction
+            if (inputDir != Vector3.zero)
+                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+        }
+
+        private void UseAimingCamera()
+        {
+            if(!crosshair.activeSelf)
+                crosshair.SetActive(true);
+            cameras[0].gameObject.SetActive(false);
+            cameras[1].gameObject.SetActive(true);
+            Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
+            orientation.forward = dirToCombatLookAt.normalized;
+
+            playerObj.forward = dirToCombatLookAt.normalized;
+        }
+        
+        
+        
     }
 }
