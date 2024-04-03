@@ -42,7 +42,7 @@ namespace Player.Movement.State_Machine
             Sliding = true;
 
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.slideYScale, player.transform.localScale.z);
-            player.Rb.AddForce(-player.transform.up * 5f, ForceMode.Impulse);
+            player.Rb.AddForce(-player.playerObj.transform.up * 5f, ForceMode.Impulse);
 
             SlideTimer = player.maxSlideTime;
 
@@ -69,8 +69,7 @@ namespace Player.Movement.State_Machine
         private void SlidingMovement()
         {
             // sliding normally
-            Vector3 inputDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
+           Vector3 inputDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
 
             if (!OnSlope() || player.Rb.velocity.y > -0.1f)
             {
