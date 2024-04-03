@@ -54,9 +54,9 @@ namespace Player.Movement.State_Machine
             float distanceFromPoint = Vector3.Distance(player.transform.position, _swing.SwingPoint);
 
             // the distance grapple will try to keep from grapple point. 
-            float maxDistance = Mathf.Min(distanceFromPoint * 0.8f, _swing.maxSwingDistance);
+            float distance = Mathf.Min(distanceFromPoint * 0.8f, _swing.maxSwingDistance);
             
-            _swing.Joint.minDistance = maxDistance;
+            _swing.Joint.minDistance = distance;
 
             _swing.Joint.spring = 4.5f;
             _swing.Joint.damper = 7f;

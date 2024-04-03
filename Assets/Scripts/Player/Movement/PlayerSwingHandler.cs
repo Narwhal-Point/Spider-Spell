@@ -6,7 +6,7 @@ namespace Player.Movement
     {
         [Header("References")] 
         public LineRenderer lr;
-        public Transform swingOrigin, cam, player;
+        public Transform swingOrigin, cam;
         [SerializeField] private PlayerCam camScript;
         public LayerMask whatIsGrappleable;
 
@@ -21,7 +21,6 @@ namespace Player.Movement
 
         [Header("Prediction")] 
         public RaycastHit predictionHit;
-        [SerializeField] private float predictionSphereCastRadius;
         [SerializeField] private Transform predicitionPoint;
 
         private void Update()
@@ -41,7 +40,7 @@ namespace Player.Movement
                 return;
 
             // make it so the line doesn't appear instantly (doesn't work)
-            CurrentGrapplePosition = Vector3.Lerp(CurrentGrapplePosition, SwingPoint, Time.deltaTime * 8f);
+            CurrentGrapplePosition = Vector3.Lerp(CurrentGrapplePosition, SwingPoint, Time.deltaTime * 1f);
 
             lr.SetPosition(0, swingOrigin.position);
             lr.SetPosition(1, SwingPoint);
@@ -51,13 +50,7 @@ namespace Player.Movement
         {
             if (Joint != null || camScript.CurrentCamera == PlayerCam.CameraStyle.Normal)
                 return;
-
-            // Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, 
-            //     out var sphereCastHit, maxSwingAimDistance, whatIsGrappleable);
-            //
-            // // draw direction of spherecast
-            // Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.cyan);
-
+            
             // TODO: Change to create the ray once and then just change the positions
             Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingAimDistance, whatIsGrappleable);
 
@@ -69,16 +62,8 @@ namespace Player.Movement
             // direct hit
             if (raycastHit.point != Vector3.zero)
             {
-                // Debug.Log("Direct");
                 realHitPoint = raycastHit.point;
             }
-
-            // // indirect (predicted) hit
-            // else if (sphereCastHit.point != Vector3.zero)
-            // {
-            //     // Debug.Log("Indirect");
-            //     realHitPoint = sphereCastHit.point;
-            // }
             else
                 realHitPoint = Vector3.zero;
 
@@ -89,8 +74,6 @@ namespace Player.Movement
             }
             else
                 predicitionPoint.gameObject.SetActive(false);
-
-            // predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
             predictionHit = raycastHit;
         }
