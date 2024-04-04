@@ -1,51 +1,47 @@
+using System.Collections.Generic;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Movement")] 
-        public float walkSpeed = 7;
+        [Header("Movement")] public float walkSpeed = 7;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
-        
-        [Header("Crouching")]
-        public float crouchYScale = 0.5f;
 
-        [Header("Jumping")] 
-        public float jumpForce = 10;
+        [Header("Crouching")] public float crouchYScale = 0.5f;
+
+        [Header("Jumping")] public float jumpForce = 10;
         public float airMultiplier = 0.001f;
         public float jumpCooldown = 0.5f;
 
-        [Header("sliding")] 
-        public float maxSlideTime = 0.75f;
+        [Header("sliding")] public float maxSlideTime = 0.75f;
         public float slideForce = 150f;
 
         public float slideYScale = 0.5f;
 
-        [Header("Ground Check")] 
-        public float playerHeight = 2;
+        [Header("Dashing")] public float dashDuration = 10f;
+        public float dashForce = 20f;
+
+        [Header("Ground Check")] public float playerHeight = 2;
         public LayerMask ground;
         public bool Grounded { get; private set; }
 
-        [Header("Slope Handling")] 
-        public float maxSlopeAngle;
+        [Header("Slope Handling")] public float maxSlopeAngle;
         public bool ExitingSlope { get; set; }
 
-        
-
-        [Header("References")] 
-        public Transform orientation;
+        [Header("References")] public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
         public PlayerCam camScript;
-        
-        private PlayerSwingHandler Swing { get;  set; }
+
+        private PlayerSwingHandler Swing { get; set; }
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -63,7 +59,7 @@ namespace Player.Movement
         public bool Sliding { get; private set; }
 
         public bool Crouching { get; private set; }
-        
+
         public bool Aiming { get; private set; }
 
         // enum to display active state on screen
@@ -80,11 +76,20 @@ namespace Player.Movement
             Falling,
             Swinging
         }
-        
-        public Quaternion targetRotation { get; private set; }
+
+        #region wallclimbing and rotation
+
+        [Header("wall climbing")] 
+        [SerializeField] private float spherecastRadius;
+        [SerializeField] private float spherecastDistance;
+        public bool wallInFront { get; private set; }
+        public RaycastHit currentHit;
+        public (float, float) facingAngles;
+
+        #endregion
 
         #region Player Movement States
-        
+
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
@@ -95,7 +100,10 @@ namespace Player.Movement
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
         
+        public PlayerMovementStateDashing DashingState { get; private set; }
+
         #endregion
+
 
         private void Awake()
         {
@@ -109,6 +117,8 @@ namespace Player.Movement
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
+            DashingState = new PlayerMovementStateDashing(_manager, this);
+
         }
 
         private void Start()
@@ -117,86 +127,123 @@ namespace Player.Movement
             Rb = GetComponent<Rigidbody>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
-            
+
             _manager.Initialize(IdleState);
         }
 
-        private RaycastHit _groundHit;
         private void Update()
         {
             // print the current movement state on the screen
             text.text = movementState.ToString();
-            
-            // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out _groundHit,
-                playerHeight * 0.5f + 0.2f, ground);
-            
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 5, Color.magenta);
 
-            // transform.up = groundHit.normal;
-
-            Debug.DrawRay(transform.position, transform.up * 5, Color.blue);
-
-            WallCheck();
+            // raycasts to check if a surface has been hit
+            SurfaceCheck();
             
+            // state update
             _manager.CurrentState.UpdateState();
         }
 
         private void FixedUpdate()
         {
-            AlignToSurface();
             _manager.CurrentState.FixedUpdateState();
         }
-
-        private void AlignToSurface()
+        
+        public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
-            Quaternion targetAlign = Quaternion.FromToRotation(Vector3.up, _groundHit.normal);
-
-            transform.rotation = targetAlign;
+            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceRotation * facingRotation;
+            Vector3 moveDirection = combinedRotation * Vector3.forward;
+            return moveDirection;
         }
-        private void WallCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
+
+        private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
+            // check if player is on the ground
+            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out var groundHit,
+                playerHeight * 0.5f + 0.2f, ground);
+            if (!Grounded)
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.red);
+            else
+                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight* 0.5f + 0.2f), Color.green);
+            
             // wall check
-            RaycastHit frontWallHit;
-            bool wallInFront = Physics.Raycast(transform.position, playerObj.forward,
-                out frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
+            wallInFront = Physics.Raycast(transform.position, playerObj.forward,
+                out var frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
             
-            bool wallInBack = Physics.Raycast(transform.position, -playerObj.forward, 
-                out var backWallHit, (playerHeight * 0.5f), ground);
-            
-
-            if (wallInFront && Moving.y > 0.6f)
+            if (wallInFront)
             {
+                currentHit = frontWallHit;
                 Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.green);
-                
-                // Project the wall normal onto the xz-plane
-                Vector3 projectedNormal = Vector3.ProjectOnPlane(frontWallHit.normal, Vector3.up);
-
-                // Calculate a target rotation based on the projected normal:
-                targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-
-                // Rotate the player towards the wall (with optional smoothing)
-                transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
-            }
-            else if (wallInBack && Moving.y < 0.1f)
-            {
-                // Project the wall normal onto the xz-plane
-                Vector3 projectedNormal = Vector3.ProjectOnPlane(backWallHit.normal, Vector3.up);
-
-                // Calculate a target rotation based on the projected normal:
-                targetRotation = Quaternion.FromToRotation(transform.up, projectedNormal);
-
-                // Rotate the player towards the wall (with optional smoothing)
-                transform.rotation = targetRotation; //Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
+                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.green);
             }
             else
             {
+                currentHit = groundHit;
                 Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f + 10f), Color.red);
+                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
             }
+
+            // spherecastTest();
+
         }
-                // input callbacks
+        
+        // private void spherecastTest()
+        // {
+        //     RaycastHit[] a = Physics.SphereCastAll(transform.position - playerObj.up, spherecastRadius, -playerObj.forward, spherecastDistance, ground);
+        //     Vector3 mostCommon = FindNormal(a);
+        //     // Debug.Log(mostCommon);
+        //     Debug.Log(a.Length);
+        //     foreach (var hit in a)
+        //     {
+        //         Debug.Log(hit.transform);
+        //     }
+        // }
+        //
+        // private Vector3 FindNormal(RaycastHit[] hits)
+        // {
+        //     Dictionary<Vector3, int> normalCounts = new Dictionary<Vector3, int>();
+        //
+        //     foreach (var hit in hits)
+        //     {
+        //         Vector3 normal = hit.normal;
+        //         
+        //         // If the normal vector is already in the dictionary, increment its count
+        //         if (normalCounts.ContainsKey(normal))
+        //         {
+        //             normalCounts[normal]++;
+        //         }
+        //         // Otherwise, add it to the dictionary with a count of 1
+        //         else
+        //         {
+        //             normalCounts.Add(normal, 1);
+        //         }
+        //     }
+        //     // Find the normal vector with the highest count
+        //     Vector3 mostCommonNormal = Vector3.zero;
+        //     int maxCount = 0;
+        //
+        //     foreach (var pair in normalCounts)
+        //     {
+        //         // Debug.Log(pair);
+        //         if (pair.Value > maxCount && pair.Key != currentHit.normal)
+        //         {
+        //             maxCount = pair.Value;
+        //             mostCommonNormal = pair.Key;
+        //         }
+        //     }
+        //
+        //     return mostCommonNormal;
+        //     
+        // }
+        //
+        // void OnDrawGizmos()
+        // {
+        //     Gizmos.color=Color.yellow;
+        //     Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
+        // }
+        
+        // input callbacks
         public void OnMove(InputValue value)
         {
             Moving = value.Get<Vector2>();
@@ -216,7 +263,7 @@ namespace Player.Movement
             Sprinting = value.isPressed;
 
             // might be better to handle this in the current state using a special function for checking if a state switch is logical
-            
+
             if (_manager.CurrentState == WalkingState && Sprinting)
             {
                 _manager.SwitchState(SprintingState);
@@ -227,18 +274,23 @@ namespace Player.Movement
             }
         }
 
+        public void OnDash()
+        {
+            _manager.SwitchState(DashingState);
+        }
+
         public void OnFire(InputValue value)
         {
             Firing = value.isPressed;
-            
-            if(_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
+
+            if (_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                 _manager.SwitchState(SwingingState);
         }
 
         public void OnCrouch(InputValue value)
         {
             Crouching = value.isPressed;
-            
+
             if (Crouching && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
                 _manager.SwitchState(CrouchingState);
             else if (!Crouching && _manager.CurrentState == CrouchingState)
@@ -258,8 +310,8 @@ namespace Player.Movement
         {
             Sliding = value.isPressed;
             if (Sliding && (_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState
-                                                      || (Grounded && _manager.CurrentState == JumpingState)
-                                                      || Grounded && _manager.CurrentState == FallingState))
+                                                                  || (Grounded && _manager.CurrentState == JumpingState)
+                                                                  || Grounded && _manager.CurrentState == FallingState))
                 _manager.SwitchState(SlidingState);
             else if (!Sliding && _manager.CurrentState == SlidingState)
             {

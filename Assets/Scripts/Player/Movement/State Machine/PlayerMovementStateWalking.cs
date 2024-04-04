@@ -7,91 +7,52 @@ namespace Player.Movement.State_Machine
     {
         private RaycastHit _slopeHit;
         private float _moveSpeed;
-    
-        public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+
+        public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
+            player)
         {
         }
+
         public override void EnterState()
         {
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Walking;
             _moveSpeed = player.walkSpeed;
-            
+
             player.Rb.drag = player.groundDrag;
         }
 
         public override void UpdateState()
         {
             SpeedControl();
-        
+
             // switch to another state
-            if(!player.Grounded)
+            if (!player.Grounded)
                 manager.SwitchState(player.FallingState);
             else if (player.Moving == Vector2.zero)
                 manager.SwitchState(player.IdleState);
         }
-    
+
         public override void FixedUpdateState()
         {
             MovePlayer();
         }
-    
-        private bool OnSlope()
-        {
-            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
-            {
-                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-                return angle < player.maxSlopeAngle && angle != 0;
-            }
 
-            return false;
-        }
-
-        private Vector3 GetSlopeMoveDirection(Vector3 direction)
-        {
-            return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
-        }
         private void MovePlayer()
         {
-            // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
-            
-            // player is on a slope
-            if (OnSlope() && !player.ExitingSlope)
-            {
-                player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (_moveSpeed * 20f), ForceMode.Force);
-
-                if (player.Rb.velocity.y > 0)
-                    player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
-
-            // player on the ground
-            else if (player.Grounded)
-            {
-                // Debug.Log(player.MoveDirection);
-                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
-            }
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
         }
 
         private void SpeedControl()
         {
-            // limit speed on slope
-            if (OnSlope() && !player.ExitingSlope)
-            {
-                if ( player.Rb.velocity.magnitude > _moveSpeed)
-                    player.Rb.velocity =  player.Rb.velocity.normalized * _moveSpeed;
-            }
-            else // limit speed on ground
-            {
-                Vector3 flatVel = new Vector3( player.Rb.velocity.x, 0f,  player.Rb.velocity.z);
+            Vector3 flatVel = player.Rb.velocity;
 
-                // limit velocity if needed
-                if (flatVel.magnitude > _moveSpeed)
-                {
-                    Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-                    player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
-                }
+            // limit velocity if needed
+            if (flatVel.magnitude > _moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                player.Rb.velocity = limitedVel;
             }
         }
     }

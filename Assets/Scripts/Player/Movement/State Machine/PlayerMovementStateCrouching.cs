@@ -7,24 +7,25 @@ namespace Player.Movement.State_Machine
         private float _moveSpeed;
         private RaycastHit _slopeHit;
 
-        public PlayerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager, player)
+        public PlayerMovementStateCrouching(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
+            player)
         {
         }
-    
+
         public override void EnterState()
         {
-            player.crouchSound.Play();   
+            player.crouchSound.Play();
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Crouching;
 
             _moveSpeed = player.crouchSpeed;
-            
+
             player.Rb.drag = player.groundDrag;
 
 
             player.transform.localScale = new Vector3(player.transform.localScale.x, player.crouchYScale,
                 player.transform.localScale.z);
-            player.Rb.AddForce(-player.transform.up * 5f, ForceMode.Impulse);
+            player.Rb.AddForce(-player.playerObj.transform.up * 5f, ForceMode.Impulse);
         }
 
         public override void ExitState()
@@ -48,64 +49,25 @@ namespace Player.Movement.State_Machine
         {
             MovePlayer();
         }
-    
-        private bool OnSlope()
-        {
-            if (Physics.Raycast(player.transform.position, Vector3.down, out _slopeHit, player.playerHeight * 0.5f + 0.3f))
-            {
-                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-                return angle < player.maxSlopeAngle && angle != 0;
-            }
-
-            return false;
-        }
-
-        private Vector3 GetSlopeMoveDirection(Vector3 direction)
-        {
-            return Vector3.ProjectOnPlane(direction, _slopeHit.normal).normalized;
-        }
 
         private void MovePlayer()
         {
-            // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
-
-            // player is on a slope
-            if (OnSlope() && !player.ExitingSlope)
+            if (player.Moving != Vector2.zero)
             {
-                player.Rb.AddForce(GetSlopeMoveDirection(player.MoveDirection) * (_moveSpeed * 20f), ForceMode.Force);
-
-                if (player.Rb.velocity.y > 0)
-                    player.Rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
-
-            // player on the ground
-            else if (player.Grounded)
-            {
-                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f),
-                    ForceMode.Force); // move
+                player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
             }
         }
 
         private void SpeedControl()
         {
-            // limit speed on slope
-            if (OnSlope() && !player.ExitingSlope)
-            {
-                if (player.Rb.velocity.magnitude > _moveSpeed)
-                    player.Rb.velocity = player.Rb.velocity.normalized * _moveSpeed;
-            }
-            else // limit speed on ground
-            {
-                Vector3 flatVel = new Vector3(player.Rb.velocity.x, 0f, player.Rb.velocity.z);
+            Vector3 flatVel = player.Rb.velocity;
 
-                // limit velocity if needed
-                if (flatVel.magnitude > _moveSpeed)
-                {
-                    Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-                    player.Rb.velocity = new Vector3(limitedVel.x, player.Rb.velocity.y, limitedVel.z);
-                }
+            // limit velocity if needed
+            if (flatVel.magnitude > _moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                player.Rb.velocity = limitedVel;
             }
         }
     }
