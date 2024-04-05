@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -14,6 +12,7 @@ namespace Player.Movement
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
+        [SerializeField] private float rotationSpeed = 10f;
 
         [Header("Crouching")] public float crouchYScale = 0.5f;
 
@@ -32,16 +31,17 @@ namespace Player.Movement
         [Header("Ground Check")] public float playerHeight = 2;
         public LayerMask ground;
         public bool Grounded { get; private set; }
+        public bool EdgeFound { get; private set; }
 
         [Header("Slope Handling")] public float maxSlopeAngle;
-        public bool ExitingSlope { get; set; }
 
         [Header("References")] public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
+        public Transform cam;
         public PlayerCam camScript;
 
-        private PlayerSwingHandler Swing { get; set; }
+        private PlayerSwingHandler _swing;
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -52,15 +52,17 @@ namespace Player.Movement
         public TMP_Text text;
 
         // input booleans
-        public Vector2 Moving { get; private set; }
-        public bool Sprinting { get; private set; }
-        public bool Firing { get; private set; }
+        public Vector2 InputDirection { get; private set; }
+        public bool IsSprinting { get; private set; }
+        public bool IsFiring { get; private set; }
 
-        public bool Sliding { get; private set; }
+        public bool IsSliding { get; private set; }
 
-        public bool Crouching { get; private set; }
+        public bool IsCrouching { get; private set; }
 
-        public bool Aiming { get; private set; }
+        public bool IsAiming { get; private set; }
+        
+        public bool IsSnapping { get; set; }
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -69,8 +71,8 @@ namespace Player.Movement
         {
             Idle,
             Walking,
-            Sprinting,
-            Crouching,
+            // Sprinting,
+            // Crouching,
             Sliding,
             Jumping,
             Falling,
@@ -82,8 +84,13 @@ namespace Player.Movement
         [Header("wall climbing")] 
         [SerializeField] private float spherecastRadius;
         [SerializeField] private float spherecastDistance;
-        public bool wallInFront { get; private set; }
-        public RaycastHit currentHit;
+        [SerializeField] private float turnSmoothTime = 0.1f;
+        private float _turnSmoothVelocity;
+        public bool WallInFront { get; private set; }
+        public RaycastHit groundHit;
+        public RaycastHit angleHit;
+        public RaycastHit wallHit;
+
         public (float, float) facingAngles;
 
         #endregion
@@ -93,8 +100,8 @@ namespace Player.Movement
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
-        public PlayerMovementStateSprinting SprintingState { get; private set; }
-        public PlayerMovementStateCrouching CrouchingState { get; private set; }
+        // public PlayerMovementStateSprinting SprintingState { get; private set; }
+        // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
@@ -111,8 +118,8 @@ namespace Player.Movement
 
             IdleState = new PlayerMovementStateIdle(_manager, this);
             WalkingState = new PlayerMovementStateWalking(_manager, this);
-            SprintingState = new PlayerMovementStateSprinting(_manager, this);
-            CrouchingState = new PlayerMovementStateCrouching(_manager, this);
+            // SprintingState = new PlayerMovementStateSprinting(_manager, this);
+            // CrouchingState = new PlayerMovementStateCrouching(_manager, this);
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
@@ -123,7 +130,7 @@ namespace Player.Movement
 
         private void Start()
         {
-            Swing = GetComponent<PlayerSwingHandler>();
+            _swing = GetComponent<PlayerSwingHandler>();
             Rb = GetComponent<Rigidbody>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
@@ -138,6 +145,7 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
+            HandleRotation();
             
             // state update
             _manager.CurrentState.UpdateState();
@@ -156,11 +164,10 @@ namespace Player.Movement
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
         }
-
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out var groundHit,
+            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
             if (!Grounded)
                 Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.red);
@@ -168,115 +175,122 @@ namespace Player.Movement
                 Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
 
             // wall check
-            wallInFront = Physics.Raycast(transform.position, playerObj.forward,
-                out var frontWallHit, (playerHeight * 0.5f + 0.2f), ground);
+            WallInFront = Physics.Raycast(transform.position, playerObj.forward,
+                out wallHit, (playerHeight * 0.5f + 0.2f), ground);
 
-            if (wallInFront)
+            float castDistance = 1.5f;
+            EdgeFound = Physics.Raycast(transform.position + playerObj.forward, -playerObj.up + (0.2f * -playerObj.forward), out angleHit, castDistance, ground);
+            
+            Debug.DrawRay(transform.position + playerObj.forward, -playerObj.up + -playerObj.forward * (0.2f * castDistance), Color.yellow);
+            // if (EdgeFound && _angleHit.normal != _groundHit.normal)
+            //     Debug.Log(_angleHit.normal);
+            
+            if (WallInFront)
             {
-                currentHit = frontWallHit;
                 Debug.DrawRay(transform.position,
                     playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.green);
             }
+            // else if (EdgeFound && (angleHit.normal != groundHit.normal))
+            // {
+            //     Debug.Log("hi");
+            // }
             else
             {
-                currentHit = groundHit;
                 Debug.DrawRay(transform.position,
                     playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
             }
-
-            spherecastTest();
-
         }
-        
-        private void spherecastTest()
+
+        private void HandleRotation()
         {
-            RaycastHit[] a = Physics.SphereCastAll(transform.position, spherecastRadius, 
-                -playerObj.up + (0.01f * playerObj.right) + (0.01f * -playerObj.forward), spherecastDistance, ground);
-            Vector3 mostCommon = FindNormal(a);
-            // Debug.Log(mostCommon);
-            Debug.Log(a.Length);
-            foreach (var hit in a)
+            facingAngles = GetFacingAngle(InputDirection);
+            if (WallInFront && InputDirection != Vector2.zero)
             {
-                Debug.DrawLine(hit.point, hit.point + hit.normal, Color.cyan);
-                Debug.Log(hit.transform);
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                playerObj.rotation = orientation.rotation;
             }
-        }
-        
-        private Vector3 FindNormal(RaycastHit[] hits)
-        {
-            Dictionary<Vector3, int> normalCounts = new Dictionary<Vector3, int>();
-        
-            foreach (var hit in hits)
+            else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal)
             {
-                Vector3 normal = hit.normal;
+                Rb.velocity = Vector3.zero;
+                Vector3 newPlayerPos = angleHit.point;
+                Vector3 offset = playerHeight * 0.5f * angleHit.normal;
                 
-                // If the normal vector is already in the dictionary, increment its count
-                if (normalCounts.ContainsKey(normal))
-                {
-                    normalCounts[normal]++;
-                }
-                // Otherwise, add it to the dictionary with a count of 1
-                else
-                {
-                    normalCounts.Add(normal, 1);
-                }
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, angleHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                playerObj.rotation = orientation.rotation;
+                
+                transform.position = newPlayerPos + offset;
+
+                // AlignToSurface(facingAngles.Item1, currentHit);
             }
-            // Find the normal vector with the highest count
-            Vector3 mostCommonNormal = Vector3.zero;
-            int maxCount = 0;
-        
-            foreach (var pair in normalCounts)
+            else if (Grounded && InputDirection != Vector2.zero)
             {
-                // Debug.Log(pair);
-                if (pair.Value > maxCount && pair.Key != currentHit.normal)
-                {
-                    maxCount = pair.Value;
-                    mostCommonNormal = pair.Key;
-                }
+                IsSnapping = true;
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                
+                // slerp the rotation to the turning smooth
+                playerObj.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation, Time.deltaTime * rotationSpeed);
+                IsSnapping  = false;
             }
-        
-            return mostCommonNormal;
-            
+            else if(InputDirection != Vector2.zero)
+            {
+                orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
+                playerObj.rotation = orientation.rotation;
+            }
         }
         
-        void OnDrawGizmos()
+        private (float, float) GetFacingAngle(Vector2 direction)
         {
-            Gizmos.color=Color.red;
-            Gizmos.DrawSphere(transform.position,spherecastRadius);
-            Gizmos.color=Color.yellow;
-            Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
+            // Target angle based on camera
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            // Angle to face before reaching target to make it smoother
+            float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
+                turnSmoothTime);
+            return (targetAngle, angle);
         }
+
 
         // input callbacks
         public void OnMove(InputValue value)
         {
-            Moving = value.Get<Vector2>();
+            InputDirection = value.Get<Vector2>();
         }
 
         public void OnJump()
         {
             if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState
-                                                   || _manager.CurrentState == SprintingState)
+                                                   /*|| _manager.CurrentState == SprintingState*/)
             {
                 _manager.SwitchState(JumpingState);
             }
         }
 
-        public void OnSprint(InputValue value)
-        {
-            Sprinting = value.isPressed;
-
-            // might be better to handle this in the current state using a special function for checking if a state switch is logical
-
-            if (_manager.CurrentState == WalkingState && Sprinting)
-            {
-                _manager.SwitchState(SprintingState);
-            }
-            else if (_manager.CurrentState == SprintingState && !Sprinting)
-            {
-                _manager.SwitchState(WalkingState);
-            }
-        }
+        // public void OnSprint(InputValue value)
+        // {
+        //     IsSprinting = value.isPressed;
+        //     
+        //     // might be better to handle this in the current state using a special function for checking if a state switch is logical
+        //     
+        //     if (_manager.CurrentState == WalkingState && IsSprinting)
+        //     {
+        //         _manager.SwitchState(SprintingState);
+        //     }
+        //     else if (_manager.CurrentState == SprintingState && !IsSprinting)
+        //     {
+        //         _manager.SwitchState(WalkingState);
+        //     }
+        // }
 
         public void OnDash()
         {
@@ -285,47 +299,47 @@ namespace Player.Movement
 
         public void OnFire(InputValue value)
         {
-            Firing = value.isPressed;
+            IsFiring = value.isPressed;
 
             if (_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                 _manager.SwitchState(SwingingState);
         }
 
-        public void OnCrouch(InputValue value)
-        {
-            Crouching = value.isPressed;
-
-            if (Crouching && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
-                _manager.SwitchState(CrouchingState);
-            else if (!Crouching && _manager.CurrentState == CrouchingState)
-            {
-                if (Moving != Vector2.zero)
-                {
-                    _manager.SwitchState(WalkingState);
-                }
-                else
-                {
-                    _manager.SwitchState(IdleState);
-                }
-            }
-        }
+        // public void OnCrouch(InputValue value)
+        // {
+        //     IsCrouching = value.isPressed;
+        //     
+        //     if (IsCrouching && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
+        //         _manager.SwitchState(CrouchingState);
+        //     else if (!IsCrouching && _manager.CurrentState == CrouchingState)
+        //     {
+        //         if (InputDirection != Vector2.zero)
+        //         {
+        //             _manager.SwitchState(WalkingState);
+        //         }
+        //         else
+        //         {
+        //             _manager.SwitchState(IdleState);
+        //         }
+        //     }
+        // }
 
         public void OnSlide(InputValue value)
         {
-            Sliding = value.isPressed;
-            if (Sliding && (_manager.CurrentState == WalkingState || _manager.CurrentState == SprintingState
+            IsSliding = value.isPressed;
+            if (IsSliding && (_manager.CurrentState == WalkingState /*|| _manager.CurrentState == SprintingState*/
                                                                   || (Grounded && _manager.CurrentState == JumpingState)
                                                                   || Grounded && _manager.CurrentState == FallingState))
                 _manager.SwitchState(SlidingState);
-            else if (!Sliding && _manager.CurrentState == SlidingState)
+            else if (!IsSliding && _manager.CurrentState == SlidingState)
             {
-                if (Grounded && Moving == Vector2.zero)
+                if (Grounded && InputDirection == Vector2.zero)
                     _manager.SwitchState(IdleState);
-                else if (Moving != Vector2.zero)
+                else if (InputDirection != Vector2.zero)
                 {
-                    if (Sprinting)
-                        _manager.SwitchState(SprintingState);
-                    else
+                    // if (IsSprinting)
+                    //     _manager.SwitchState(SprintingState);
+                    // else
                         _manager.SwitchState(WalkingState);
                 }
             }
@@ -333,7 +347,7 @@ namespace Player.Movement
 
         public void OnAim(InputValue value)
         {
-            Aiming = value.isPressed;
+            IsAiming = value.isPressed;
         }
     }
 }
