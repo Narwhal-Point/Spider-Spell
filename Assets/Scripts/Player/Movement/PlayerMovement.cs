@@ -215,7 +215,7 @@ namespace Player.Movement
             }
             else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal)
             {
-                Rb.velocity = Vector3.zero;
+
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = playerHeight * 0.5f * angleHit.normal;
                 
@@ -227,8 +227,7 @@ namespace Player.Movement
                 playerObj.rotation = orientation.rotation;
                 
                 transform.position = newPlayerPos + offset;
-
-                // AlignToSurface(facingAngles.Item1, currentHit);
+                Rb.velocity = Vector3.zero;
             }
             else if (Grounded && InputDirection != Vector2.zero)
             {
