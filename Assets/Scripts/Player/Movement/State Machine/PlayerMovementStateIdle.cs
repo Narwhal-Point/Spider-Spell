@@ -17,15 +17,15 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            if (player.Moving != Vector2.zero)
+            if (player.InputDirection != Vector2.zero)
             {
-                if(player.Sprinting)
-                    manager.SwitchState(player.SprintingState);
-                else
+                // if(player.IsSprinting)
+                //     manager.SwitchState(player.SprintingState);
+                // else
                     manager.SwitchState(player.WalkingState);
             }
-            else if(player.Crouching)
-                manager.SwitchState(player.CrouchingState);
+            // else if(player.IsCrouching)
+            //     manager.SwitchState(player.CrouchingState);
             else if(!player.Grounded)
                 manager.SwitchState(player.FallingState);
             

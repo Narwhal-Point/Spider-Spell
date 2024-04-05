@@ -55,13 +55,13 @@ namespace Player.Movement.State_Machine
                 player.transform.localScale.z);
             
             // makes it so the slide stops after the slidetimer is finished
-            if (player.Grounded && player.Moving == Vector2.zero)
+            if (player.Grounded && player.InputDirection == Vector2.zero)
                 manager.SwitchState(player.IdleState);
-            else if (player.Moving != Vector2.zero)
+            else if (player.InputDirection != Vector2.zero)
             {
-                if (player.Sprinting)
-                    manager.SwitchState(player.SprintingState);
-                else
+            //     if (player.IsSprinting)
+            //         manager.SwitchState(player.SprintingState);
+            //     else
                     manager.SwitchState(player.WalkingState);
             }
         }
@@ -69,7 +69,7 @@ namespace Player.Movement.State_Machine
         private void SlidingMovement()
         {
             // sliding normally
-           Vector3 inputDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+           Vector3 inputDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             if (!OnSlope() || player.Rb.velocity.y > -0.1f)
             {

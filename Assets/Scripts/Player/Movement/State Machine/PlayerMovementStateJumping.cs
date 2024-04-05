@@ -32,7 +32,7 @@ namespace Player.Movement.State_Machine
 
             if (_jumpTimer <= 0)
             {
-                if(player.Firing && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
+                if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                     manager.SwitchState(player.SwingingState);
                 ResetJump();
                 if (!player.Grounded && player.Rb.velocity.y < 0)
@@ -44,11 +44,11 @@ namespace Player.Movement.State_Machine
 
             if (player.Grounded && ReadyToJump)
             {
-                if (player.Moving != Vector2.zero)
+                if (player.InputDirection != Vector2.zero)
                 {
-                    if (player.Sprinting)
-                        manager.SwitchState(player.SprintingState);
-                    else
+                    // if (player.IsSprinting)
+                    //     manager.SwitchState(player.SprintingState);
+                    // else
                         manager.SwitchState(player.WalkingState);
                 }
                 else
@@ -63,7 +63,6 @@ namespace Player.Movement.State_Machine
 
         private void Jump()
         {
-            player.ExitingSlope = true;
             player.Rb.useGravity = true;
 
             // reset y velocity
@@ -77,14 +76,13 @@ namespace Player.Movement.State_Machine
         private void ResetJump()
         {
             ReadyToJump = true;
-            player.ExitingSlope = false;
         }
 
         private void MovePlayer()
         {
             // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.Moving.y +
-                                   player.orientation.right * player.Moving.x;
+            player.MoveDirection = player.orientation.forward * player.InputDirection.y +
+                                   player.orientation.right * player.InputDirection.x;
 
 
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f * player.airMultiplier),

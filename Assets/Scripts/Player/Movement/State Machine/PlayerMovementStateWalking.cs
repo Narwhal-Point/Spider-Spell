@@ -13,50 +13,6 @@ namespace Player.Movement.State_Machine
              player)
          {
          }
-        /*
-         public override void EnterState()
-         {
-             player.Rb.useGravity = false;
-             player.movementState = PlayerMovement.MovementState.Walking;
-             _moveSpeed = player.walkSpeed;
-
-             player.Rb.drag = player.groundDrag;
-         }
-
-         public override void UpdateState()
-         {
-             SpeedControl();
-
-             // switch to another state
-             if (!player.Grounded)
-                 manager.SwitchState(player.FallingState);
-             else if (player.Moving == Vector2.zero)
-                 manager.SwitchState(player.IdleState);
-         }
-
-         public override void FixedUpdateState()
-         {
-             MovePlayer();
-         }
-
-         private void MovePlayer()
-         {
-             player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
-             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force); // move
-         }
-
-         private void SpeedControl()
-         {
-             Vector3 flatVel = player.Rb.velocity;
-
-             // limit velocity if needed
-             if (flatVel.magnitude > _moveSpeed)
-             {
-                 Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-                 player.Rb.velocity = limitedVel;
-             }
-         }
-     }*/
         public override void EnterState()
         {
             player.Rb.useGravity = false;
@@ -70,9 +26,9 @@ namespace Player.Movement.State_Machine
         public override void UpdateState()
         {
             SpeedControl();
-            /*if (!player.Grounded)
+            if (!player.Grounded)
                 manager.SwitchState(player.FallingState);
-            else*/ if (player.Moving == Vector2.zero)
+            else if (player.InputDirection == Vector2.zero)
                 manager.SwitchState(player.IdleState);
 
             DetectClimbableSurfaces();
@@ -85,9 +41,11 @@ namespace Player.Movement.State_Machine
 
         private void MovePlayer()
         {
-            Vector3 moveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+            if (player.IsSnapping)
+                return;
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
-            player.Rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
         }
 
         private void SpeedControl()
@@ -135,10 +93,10 @@ namespace Player.Movement.State_Machine
         }
         private void ClimbSurface(Vector3 surfaceNormal)
         {
-            // Vector3 movementDirection = Vector3.ProjectOnPlane(player.transform.forward, surfaceNormal);
+            // Vector3 movementDirection = Vector3.ProjectOnPlane(player.playerObj.forward, surfaceNormal);
 
             // Move the player along the surface *Climb speed*
-            Vector3 movementDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+            Vector3 movementDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.MovePosition(player.Rb.position + movementDirection * 0.5f * Time.deltaTime);
         }
