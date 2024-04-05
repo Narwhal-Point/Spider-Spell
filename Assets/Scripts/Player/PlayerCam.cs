@@ -9,10 +9,8 @@ namespace Player
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform player;
         [SerializeField] private Transform playerObj;
-
-        // I don't like having to include this but it's the only way I figured out on how to get the move direction in this script
-        [SerializeField] private GameObject playerObject;
-        private PlayerMovement _playerMovement;
+        
+        [SerializeField] private PlayerMovement _playerMovement;
 
         [SerializeField] private float rotationSpeed = 10f;
         [SerializeField] private Transform combatLookAt;
@@ -36,7 +34,6 @@ namespace Player
         // Start is called before the first frame update
         void Start()
         {
-            _playerMovement = playerObject.GetComponent<PlayerMovement>();
             // Hide the cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -71,7 +68,7 @@ namespace Player
                     Quaternion.FromToRotation(Vector3.up, _playerMovement.currentHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                playerObj.rotation = orientation.rotation;
+                transform.rotation = orientation.rotation;
             }
             else if (_playerMovement.Grounded && _playerMovement.Moving != Vector2.zero)
             {

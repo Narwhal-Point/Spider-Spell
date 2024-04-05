@@ -64,14 +64,15 @@ namespace Player.Movement.State_Machine
             _moveSpeed = player.walkSpeed;
 
             player.Rb.drag = player.groundDrag;
+            
         }
 
         public override void UpdateState()
         {
             SpeedControl();
-            if (!player.Grounded)
+            /*if (!player.Grounded)
                 manager.SwitchState(player.FallingState);
-            else if (player.Moving == Vector2.zero)
+            else*/ if (player.Moving == Vector2.zero)
                 manager.SwitchState(player.IdleState);
 
             DetectClimbableSurfaces();
@@ -105,20 +106,21 @@ namespace Player.Movement.State_Machine
         {
             // Array of raycast directions covering different angles around the character
             Vector3[] raycastDirections = {
-                player.transform.forward,
-                -player.transform.forward,
-                player.transform.right,
-                -player.transform.right,
-                player.transform.forward + player.transform.right,
-                player.transform.forward - player.transform.right,
-                -player.transform.forward + player.transform.right,
-                -player.transform.forward - player.transform.right
+                player.playerObj.forward,
+                -player.playerObj.forward,
+                player.playerObj.right,
+                -player.playerObj.right,
+                player.playerObj.forward + player.playerObj.right,
+                player.playerObj.forward - player.playerObj.right,
+                -player.playerObj.forward + player.playerObj.right,
+                -player.playerObj.forward - player.playerObj.right
             };
 
             // Perform raycasts in all directions to detect climbable surfaces
             RaycastHit hit;
             foreach (Vector3 dir in raycastDirections)
             {
+                Debug.DrawRay(player.transform.position - player.playerObj.up, dir * raycastDistance, Color.magenta);
                 if (Physics.Raycast(player.transform.position, dir, out hit, this.raycastDistance))
                 {
                     Vector3 surfaceNormal = hit.normal;
@@ -133,9 +135,11 @@ namespace Player.Movement.State_Machine
         }
         private void ClimbSurface(Vector3 surfaceNormal)
         {
-            Vector3 movementDirection = Vector3.ProjectOnPlane(player.transform.forward, surfaceNormal);
+            // Vector3 movementDirection = Vector3.ProjectOnPlane(player.transform.forward, surfaceNormal);
 
             // Move the player along the surface *Climb speed*
+            Vector3 movementDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+
             player.Rb.MovePosition(player.Rb.position + movementDirection * 0.5f * Time.deltaTime);
         }
     }

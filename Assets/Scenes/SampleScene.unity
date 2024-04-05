@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4556,8 +4556,8 @@ MonoBehaviour:
   uncrouchSound: {fileID: 77005583}
   text: {fileID: 107941925}
   movementState: 0
-  spherecastRadius: 4
-  spherecastDistance: 4
+  spherecastRadius: 0.5
+  spherecastDistance: 2
 --- !u!114 &247806187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4731,7 +4731,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 258170938}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.092521034, y: -0.000000017659854, z: 0.0000000016409464, w: 0.99571073}
+  m_LocalRotation: {x: 0.092521034, y: 0.00000001765986, z: -0.0000000016409469, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8728,7 +8728,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820511018}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.077862896, y: 0.1122154, z: -0.008820422, w: 0.9905894}
+  m_LocalRotation: {x: 0.07786288, y: 0.11221542, z: -0.008820422, w: 0.9905894}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10854,7 +10854,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0136728, y: 0.11255086, z: 0.0015488741, w: 0.9935507}
+  m_LocalRotation: {x: -0.0136728, y: 0.11255086, z: 0.001548875, w: 0.9935507}
   m_LocalPosition: {x: -27.3, y: 4.34, z: -29.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10910,7 +10910,7 @@ MonoBehaviour:
   orientation: {fileID: 2055444956}
   player: {fileID: 247806180}
   playerObj: {fileID: 54836202}
-  playerObject: {fileID: 247806174}
+  _playerMovement: {fileID: 247806186}
   rotationSpeed: 10
   combatLookAt: {fileID: 195712918}
   cameras:
@@ -11468,7 +11468,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 701831912}
+  m_Mesh: {fileID: 1172722962}
 --- !u!33 &1082639571
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -15809,7 +15809,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874384847}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013672794, y: 0.11255086, z: 0.0015488737, w: 0.9935507}
+  m_LocalRotation: {x: -0.013672802, y: 0.11255086, z: 0.0015488747, w: 0.9935507}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

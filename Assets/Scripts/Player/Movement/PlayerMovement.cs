@@ -184,64 +184,68 @@ namespace Player.Movement
                     playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
             }
 
-            // spherecastTest();
+            spherecastTest();
 
         }
         
-        // private void spherecastTest()
-        // {
-        //     RaycastHit[] a = Physics.SphereCastAll(transform.position - playerObj.up, spherecastRadius, -playerObj.forward, spherecastDistance, ground);
-        //     Vector3 mostCommon = FindNormal(a);
-        //     // Debug.Log(mostCommon);
-        //     Debug.Log(a.Length);
-        //     foreach (var hit in a)
-        //     {
-        //         Debug.Log(hit.transform);
-        //     }
-        // }
-        //
-        // private Vector3 FindNormal(RaycastHit[] hits)
-        // {
-        //     Dictionary<Vector3, int> normalCounts = new Dictionary<Vector3, int>();
-        //
-        //     foreach (var hit in hits)
-        //     {
-        //         Vector3 normal = hit.normal;
-        //         
-        //         // If the normal vector is already in the dictionary, increment its count
-        //         if (normalCounts.ContainsKey(normal))
-        //         {
-        //             normalCounts[normal]++;
-        //         }
-        //         // Otherwise, add it to the dictionary with a count of 1
-        //         else
-        //         {
-        //             normalCounts.Add(normal, 1);
-        //         }
-        //     }
-        //     // Find the normal vector with the highest count
-        //     Vector3 mostCommonNormal = Vector3.zero;
-        //     int maxCount = 0;
-        //
-        //     foreach (var pair in normalCounts)
-        //     {
-        //         // Debug.Log(pair);
-        //         if (pair.Value > maxCount && pair.Key != currentHit.normal)
-        //         {
-        //             maxCount = pair.Value;
-        //             mostCommonNormal = pair.Key;
-        //         }
-        //     }
-        //
-        //     return mostCommonNormal;
-        //     
-        // }
-        //
-        // void OnDrawGizmos()
-        // {
-        //     Gizmos.color=Color.yellow;
-        //     Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
-        // }
+        private void spherecastTest()
+        {
+            RaycastHit[] a = Physics.SphereCastAll(transform.position, spherecastRadius, 
+                -playerObj.up + (0.01f * playerObj.right) + (0.01f * -playerObj.forward), spherecastDistance, ground);
+            Vector3 mostCommon = FindNormal(a);
+            // Debug.Log(mostCommon);
+            Debug.Log(a.Length);
+            foreach (var hit in a)
+            {
+                Debug.DrawLine(hit.point, hit.point + hit.normal, Color.cyan);
+                Debug.Log(hit.transform);
+            }
+        }
+        
+        private Vector3 FindNormal(RaycastHit[] hits)
+        {
+            Dictionary<Vector3, int> normalCounts = new Dictionary<Vector3, int>();
+        
+            foreach (var hit in hits)
+            {
+                Vector3 normal = hit.normal;
+                
+                // If the normal vector is already in the dictionary, increment its count
+                if (normalCounts.ContainsKey(normal))
+                {
+                    normalCounts[normal]++;
+                }
+                // Otherwise, add it to the dictionary with a count of 1
+                else
+                {
+                    normalCounts.Add(normal, 1);
+                }
+            }
+            // Find the normal vector with the highest count
+            Vector3 mostCommonNormal = Vector3.zero;
+            int maxCount = 0;
+        
+            foreach (var pair in normalCounts)
+            {
+                // Debug.Log(pair);
+                if (pair.Value > maxCount && pair.Key != currentHit.normal)
+                {
+                    maxCount = pair.Value;
+                    mostCommonNormal = pair.Key;
+                }
+            }
+        
+            return mostCommonNormal;
+            
+        }
+        
+        void OnDrawGizmos()
+        {
+            Gizmos.color=Color.red;
+            Gizmos.DrawSphere(transform.position,spherecastRadius);
+            Gizmos.color=Color.yellow;
+            Gizmos.DrawSphere(transform.position-playerObj.up*spherecastDistance,spherecastRadius);
+        }
 
         // input callbacks
         public void OnMove(InputValue value)
