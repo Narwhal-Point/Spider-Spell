@@ -25,7 +25,7 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Dashing")] public float dashDuration = 10f;    
+        [Header("Dashing")] public float dashDuration = 10f;
         public float dashForce = 20f;
 
         [Header("Ground Check")] public float playerHeight = 2;
@@ -61,7 +61,7 @@ namespace Player.Movement
         public bool IsCrouching { get; private set; }
 
         public bool IsAiming { get; private set; }
-        
+
         public bool IsSnapping { get; set; }
 
         // enum to display active state on screen
@@ -106,7 +106,6 @@ namespace Player.Movement
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
-        
         public PlayerMovementStateDashing DashingState { get; private set; }
 
         #endregion
@@ -125,7 +124,6 @@ namespace Player.Movement
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
             DashingState = new PlayerMovementStateDashing(_manager, this);
-
         }
 
         private void Start()
@@ -155,7 +153,7 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
         }
-        
+
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
             Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
@@ -164,27 +162,32 @@ namespace Player.Movement
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
         }
+
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
             if (!Grounded)
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.red);
+                Debug.DrawRay(transform.position,
+                    playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.red);
             else
-                Debug.DrawRay(transform.position, playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
+                Debug.DrawRay(transform.position,
+                    playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
 
             // wall check
             WallInFront = Physics.Raycast(transform.position, playerObj.forward,
                 out wallHit, (playerHeight * 0.5f + 0.2f), ground);
 
             float castDistance = 1.5f;
-            EdgeFound = Physics.Raycast(transform.position + playerObj.forward, -playerObj.up + (0.2f * -playerObj.forward), out angleHit, castDistance, ground);
-            
-            Debug.DrawRay(transform.position + playerObj.forward, -playerObj.up + -playerObj.forward * (0.2f * castDistance), Color.yellow);
+            EdgeFound = Physics.Raycast(transform.position + playerObj.forward,
+                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, castDistance, ground);
+
+            Debug.DrawRay(transform.position + playerObj.forward,
+                -playerObj.up + -playerObj.forward * (0.45f * castDistance), Color.yellow);
             // if (EdgeFound && _angleHit.normal != _groundHit.normal)
             //     Debug.Log(_angleHit.normal);
-            
+
             if (WallInFront)
             {
                 Debug.DrawRay(transform.position,
@@ -203,6 +206,9 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
+            if (_manager.CurrentState == JumpingState || _manager.CurrentState == SwingingState)
+                return;
+            
             facingAngles = GetFacingAngle(InputDirection);
             if (WallInFront && InputDirection != Vector2.zero)
             {
@@ -215,17 +221,16 @@ namespace Player.Movement
             }
             else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal)
             {
-
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = playerHeight * 0.5f * angleHit.normal;
-                
+
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
                 playerObj.rotation = orientation.rotation;
-                
+
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
             }
@@ -237,18 +242,19 @@ namespace Player.Movement
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                
+
                 // slerp the rotation to the turning smooth
-                playerObj.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation, Time.deltaTime * rotationSpeed);
-                IsSnapping  = false;
+                playerObj.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                    Time.deltaTime * rotationSpeed);
+                IsSnapping = false;
             }
-            else if(InputDirection != Vector2.zero)
+            else if (InputDirection != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 playerObj.rotation = orientation.rotation;
             }
         }
-        
+
         private (float, float) GetFacingAngle(Vector2 direction)
         {
             // Target angle based on camera
@@ -269,7 +275,7 @@ namespace Player.Movement
         public void OnJump()
         {
             if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState
-                                                   /*|| _manager.CurrentState == SprintingState*/)
+                /*|| _manager.CurrentState == SprintingState*/)
             {
                 _manager.SwitchState(JumpingState);
             }
@@ -327,8 +333,8 @@ namespace Player.Movement
         {
             IsSliding = value.isPressed;
             if (IsSliding && (_manager.CurrentState == WalkingState /*|| _manager.CurrentState == SprintingState*/
-                                                                  || (Grounded && _manager.CurrentState == JumpingState)
-                                                                  || Grounded && _manager.CurrentState == FallingState))
+                              || (Grounded && _manager.CurrentState == JumpingState)
+                              || Grounded && _manager.CurrentState == FallingState))
                 _manager.SwitchState(SlidingState);
             else if (!IsSliding && _manager.CurrentState == SlidingState)
             {
@@ -339,7 +345,7 @@ namespace Player.Movement
                     // if (IsSprinting)
                     //     _manager.SwitchState(SprintingState);
                     // else
-                        _manager.SwitchState(WalkingState);
+                    _manager.SwitchState(WalkingState);
                 }
             }
         }
