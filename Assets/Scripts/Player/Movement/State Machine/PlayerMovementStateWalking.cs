@@ -31,7 +31,7 @@ namespace Player.Movement.State_Machine
             else if (player.InputDirection == Vector2.zero)
                 manager.SwitchState(player.IdleState);
 
-            DetectClimbableSurfaces();
+            // DetectClimbableSurfaces();
         }
 
         public override void FixedUpdateState()
