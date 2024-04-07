@@ -11,8 +11,8 @@ namespace Player.Movement.State_Machine
 
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
              player)
-         {
-         }
+        {
+        }
         /*
          public override void EnterState()
          {
@@ -63,30 +63,36 @@ namespace Player.Movement.State_Machine
             player.movementState = PlayerMovement.MovementState.Walking;
             _moveSpeed = player.walkSpeed;
 
-            player.Rb.drag = player.groundDrag;
+            //player.Rb.drag = player.groundDrag;
         }
 
         public override void UpdateState()
         {
             SpeedControl();
-            if (!player.Grounded)
-                manager.SwitchState(player.FallingState);
-            else if (player.Moving == Vector2.zero)
+            /*if (!player.Grounded)
+                manager.SwitchState(player.FallingState);*/
+           if (player.Moving == Vector2.zero)
                 manager.SwitchState(player.IdleState);
 
             DetectClimbableSurfaces();
+            MovePlayer();
         }
 
         public override void FixedUpdateState()
         {
-            MovePlayer();
+           
         }
 
         private void MovePlayer()
         {
             Vector3 moveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+            Vector3 newPosition = player.transform.position + moveDirection.normalized * (_moveSpeed * Time.deltaTime);
 
-            player.Rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            // Move the player's position directly
+            player.transform.position = newPosition;
+            /*Vector3 moveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.currentHit);
+
+            player.Rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);*/
         }
 
         private void SpeedControl()
@@ -103,30 +109,45 @@ namespace Player.Movement.State_Machine
 
         private void DetectClimbableSurfaces()
         {
+            /*//WOrking sphere casting
+            RaycastHit[] hits = Physics.SphereCastAll(player.transform.position, 0.8f, Vector3.down, 0.8f);
+            Debug.DrawRay(player.transform.position, Vector3.down * 0.8f, Color.blue);
+
+            foreach (RaycastHit hit in hits)
+            {
+                Vector3 surfaceNormal = hit.normal;
+
+                if (Mathf.Abs(surfaceNormal.y) < 0.1f)
+                {
+                    ClimbSurface(surfaceNormal);
+                    return;
+                    // Exit the loop after finding a climbable surface
+                }
+            }*/
+            Vector3 bottomPosition = player.transform.position - Vector3.up * (player.GetComponent<Collider>().bounds.extents.y);
             // Array of raycast directions covering different angles around the character
             Vector3[] raycastDirections = {
-                player.transform.forward,
-                -player.transform.forward,
-                player.transform.right,
-                -player.transform.right,
-                player.transform.forward + player.transform.right,
-                player.transform.forward - player.transform.right,
-                -player.transform.forward + player.transform.right,
-                -player.transform.forward - player.transform.right
-            };
-
-            // Perform raycasts in all directions to detect climbable surfaces
+                  player.transform.forward,
+                  -player.transform.forward,
+                  player.transform.right,
+                  -player.transform.right,
+                  player.transform.forward + player.transform.right,
+                  player.transform.forward - player.transform.right,
+                  -player.transform.forward + player.transform.right,
+                  -player.transform.forward - player.transform.right,
+                  -player.transform.up
+              };
             RaycastHit hit;
             foreach (Vector3 dir in raycastDirections)
             {
-                if (Physics.Raycast(player.transform.position, dir, out hit, this.raycastDistance))
+                if (Physics.Raycast(bottomPosition, dir, out hit, this.raycastDistance))
                 {
                     Vector3 surfaceNormal = hit.normal;
 
                     if (Mathf.Abs(surfaceNormal.y) < 0.1f)
                     {
                         ClimbSurface(surfaceNormal);
-                        return; 
+                        return;
                     }
                 }
             }
@@ -135,8 +156,15 @@ namespace Player.Movement.State_Machine
         {
             Vector3 movementDirection = Vector3.ProjectOnPlane(player.transform.forward, surfaceNormal);
 
-            // Move the player along the surface *Climb speed*
-            player.Rb.MovePosition(player.Rb.position + movementDirection * 0.5f * Time.deltaTime);
+            // Calculate the new position based on the movement direction
+            Vector3 newPosition = player.transform.position + movementDirection * 0.5f * Time.deltaTime;
+
+            // Move the player's position directly
+            player.transform.position = newPosition;
+            /* Vector3 movementDirection = Vector3.ProjectOnPlane(player.transform.forward, surfaceNormal);
+
+             // Move the player along the surface *Climb speed*
+             player.Rb.MovePosition(player.Rb.position + movementDirection * 0.5f * Time.deltaTime);*/
         }
     }
 }
