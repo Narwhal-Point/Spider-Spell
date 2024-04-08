@@ -28,7 +28,7 @@ namespace Player.Movement
         [Header("Dashing")] public float dashDuration = 10f;
         public float dashForce = 20f;
 
-        [Header("Ground Check")] public float playerHeight = 2;
+        [Header("Ground Check")] public float playerHeight = 1;
         public LayerMask ground;
         public bool Grounded { get; private set; }
         public bool EdgeFound { get; private set; }
@@ -143,7 +143,6 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
-            HandleRotation();
             
             // state update
             _manager.CurrentState.UpdateState();
@@ -152,6 +151,7 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
+            HandleRotation();
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -176,22 +176,25 @@ namespace Player.Movement
                     playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
 
             // wall check
-            WallInFront = Physics.Raycast(transform.position, playerObj.forward,
-                out wallHit, (playerHeight * 0.5f + 0.2f), ground);
+            WallInFront = Physics.Raycast(transform.position + (playerObj.up * 0.5f), playerObj.forward,
+                out wallHit, (4 * 0.5f + 0.2f), ground);
 
             float castDistance = 1.5f;
-            EdgeFound = Physics.Raycast(transform.position + playerObj.forward,
+            EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, castDistance, ground);
-
-            Debug.DrawRay(transform.position + playerObj.forward,
+            
+            Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * castDistance), Color.yellow);
             // if (EdgeFound && _angleHit.normal != _groundHit.normal)
             //     Debug.Log(_angleHit.normal);
 
+            // if(EdgeFound && !Grounded)
+            //     Debug.Log("edge found");
+            
             if (WallInFront)
             {
-                Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.green);
+                Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
+                    playerObj.forward * (4 * 0.5f + 0.2f), Color.green);
             }
             // else if (EdgeFound && (angleHit.normal != groundHit.normal))
             // {
@@ -199,8 +202,8 @@ namespace Player.Movement
             // }
             else
             {
-                Debug.DrawRay(transform.position,
-                    playerObj.forward * (playerHeight * 0.5f + 0.2f), Color.red);
+                Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
+                    playerObj.forward * (4 * 0.5f + 0.2f), Color.red);
             }
         }
 
@@ -217,20 +220,20 @@ namespace Player.Movement
                     Quaternion.FromToRotation(Vector3.up, wallHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                playerObj.rotation = orientation.rotation;
+                transform.rotation = orientation.rotation;
             }
             else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal)
             {
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = playerHeight * 0.5f * angleHit.normal;
-
+            
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-                playerObj.rotation = orientation.rotation;
-
+                transform.rotation = orientation.rotation;
+                // transform.position = Vector3.Slerp(transform.position, newPlayerPos + offset, 0.5f * Time.deltaTime);
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
             }
@@ -244,14 +247,14 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
 
                 // slerp the rotation to the turning smooth
-                playerObj.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
                 IsSnapping = false;
             }
             else if (InputDirection != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
-                playerObj.rotation = orientation.rotation;
+                transform.rotation = orientation.rotation;
             }
         }
 

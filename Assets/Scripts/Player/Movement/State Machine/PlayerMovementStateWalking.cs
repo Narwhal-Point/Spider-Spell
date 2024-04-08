@@ -32,6 +32,8 @@ namespace Player.Movement.State_Machine
                 manager.SwitchState(player.IdleState);
 
             // DetectClimbableSurfaces();
+            
+            // MovePlayer();
         }
 
         public override void FixedUpdateState()
@@ -45,6 +47,11 @@ namespace Player.Movement.State_Machine
                 return;
             player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
+            // Vector3 newPos = player.transform.position +
+            //                  player.MoveDirection.normalized * (_moveSpeed * Time.deltaTime);
+            //
+            // player.transform.position = newPos;
+            player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
         }
 
