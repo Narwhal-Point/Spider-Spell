@@ -62,7 +62,7 @@ namespace Player.Movement
 
         public bool IsAiming { get; private set; }
 
-        public bool IsSnapping { get; set; }
+        public bool IsSnapping { get; set; } = false;
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -209,11 +209,11 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
-            if (_manager.CurrentState == JumpingState || _manager.CurrentState == SwingingState)
+            if (_manager.CurrentState == JumpingState)
                 return;
             
             facingAngles = GetFacingAngle(InputDirection);
-            if (WallInFront && InputDirection != Vector2.zero)
+            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -222,7 +222,7 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal)
+            else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal && _manager.CurrentState != SwingingState)
             {
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = playerHeight * 0.5f * angleHit.normal;
@@ -237,9 +237,8 @@ namespace Player.Movement
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
             }
-            else if (Grounded && InputDirection != Vector2.zero)
+            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                IsSnapping = true;
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
@@ -249,7 +248,6 @@ namespace Player.Movement
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
-                IsSnapping = false;
             }
             else if (InputDirection != Vector2.zero)
             {
