@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Player.Movement
@@ -22,6 +23,11 @@ namespace Player.Movement
         [Header("Prediction")] 
         public RaycastHit predictionHit;
         [SerializeField] private Transform predicitionPoint;
+
+        private void Start()
+        {
+            predicitionPoint.gameObject.SetActive(false);
+        }
 
         private void Update()
         {
@@ -69,11 +75,8 @@ namespace Player.Movement
 
             if (realHitPoint != Vector3.zero)
             {
-                predicitionPoint.gameObject.SetActive(true);
                 predicitionPoint.position = realHitPoint;
             }
-            else
-                predicitionPoint.gameObject.SetActive(false);
 
             predictionHit = raycastHit;
         }
