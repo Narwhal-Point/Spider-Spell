@@ -41,18 +41,62 @@ namespace Player.Movement.State_Machine
             MovePlayer();
         }
 
+        // private void MovePlayer()
+        // {
+        //     if (player.IsSnapping)
+        //         return;
+        //     player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+        //
+        //     // Vector3 newPos = player.transform.position +
+        //     //                  player.MoveDirection.normalized * (_moveSpeed * Time.deltaTime);
+        //     //
+        //     // player.transform.position = newPos;
+        //     player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
+        //     player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+        // }
+        
+        private void MoveCubeAngles()
+        {
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+
+            player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+        }
+
+        private void MoveSmoothObject()
+        {
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+
+            Vector3 targetPosition = player.transform.position +
+                                     player.MoveDirection.normalized * (_moveSpeed * Time.deltaTime);
+            float smoothTime = _moveSpeed > 0 ? 10f / _moveSpeed : 100f;
+            Vector3 newPos = Vector3.Lerp(player.transform.position, targetPosition, smoothTime);
+            player.transform.position = newPos;
+        }
         private void MovePlayer()
         {
             if (player.IsSnapping)
                 return;
-            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
-            // Vector3 newPos = player.transform.position +
-            //                  player.MoveDirection.normalized * (_moveSpeed * Time.deltaTime);
-            //
-            // player.transform.position = newPos;
-            player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            if (player.groundHit.transform.tag == "SmoothObject")
+            {
+                MoveSmoothObject();
+            }
+            else
+            {
+                MoveCubeAngles();
+            }
+            /*  if (player.IsSnapping)
+                  return;
+              player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+
+              //Vector3 targetPosition = player.transform.position +
+                                player.MoveDirection.normalized * (_moveSpeed * Time.deltaTime);
+              float smoothTime = _moveSpeed > 0 ? 10f / _moveSpeed : 100f;
+              Vector3 newPos = Vector3.Lerp(player.transform.position, targetPosition, smoothTime);
+              player.transform.position = newPos;//
+              player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
+              player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);*/
         }
 
         private void SpeedControl()
