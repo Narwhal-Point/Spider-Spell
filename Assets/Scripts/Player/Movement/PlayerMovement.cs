@@ -260,7 +260,7 @@ namespace Player.Movement
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
-            // Target angle based on camera
+            // Target angle based on camera cam.eulerAngles.y
             float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
