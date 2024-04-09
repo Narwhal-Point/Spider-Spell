@@ -21,16 +21,16 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            if(player.Firing && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
+            if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
                 manager.SwitchState(player.SwingingState);
             else if (player.Grounded)
             {
-                if (player.Moving != Vector2.zero)
+                if (player.InputDirection != Vector2.zero)
                 {
-                    if (player.Sliding)
+                    if (player.IsSliding)
                         manager.SwitchState(player.SlidingState);
-                    else if (player.Sprinting)
-                        manager.SwitchState(player.SprintingState);
+                    // else if (player.IsSprinting)
+                    //     manager.SwitchState(player.SprintingState);
                     else
                         manager.SwitchState(player.WalkingState);
                 }
