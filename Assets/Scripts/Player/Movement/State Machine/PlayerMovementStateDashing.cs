@@ -25,7 +25,6 @@ namespace Player.Movement.State_Machine
 
         public override void EnterState()
         {
-            Debug.Log(Time.time - lastDashTime);
             if (Time.time - lastDashTime <= _dashCooldown)
             {
                 manager.SwitchState(player.FallingState);

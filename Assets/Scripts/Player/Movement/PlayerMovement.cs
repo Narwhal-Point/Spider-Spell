@@ -306,7 +306,6 @@ namespace Player.Movement
 
         public void OnDash()
         {
-            Debug.Log(_manager.CurrentState);
             if(_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
                 _manager.SwitchState(DashingState);
         }
