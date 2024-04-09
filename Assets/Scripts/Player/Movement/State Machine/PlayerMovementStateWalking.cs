@@ -78,7 +78,7 @@ namespace Player.Movement.State_Machine
             if (player.IsSnapping)
                 return;
 
-            if (player.groundHit.transform.tag == "SmoothObject")
+            if (player.groundHit.transform.CompareTag("SmoothObject"))
             {
                 MoveSmoothObject();
             }
