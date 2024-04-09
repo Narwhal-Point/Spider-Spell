@@ -4409,8 +4409,9 @@ MonoBehaviour:
   slideForce: 150
   slideYScale: 0.5
   dashDuration: 0.2
-  dashForce: 20
+  dashForce: 10
   dashCooldown: 1
+  DashUpwardForce: 5
   playerHeight: 1
   ground:
     serializedVersion: 2
