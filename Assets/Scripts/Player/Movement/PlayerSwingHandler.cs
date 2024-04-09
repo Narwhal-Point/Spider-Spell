@@ -67,6 +67,7 @@ namespace Player.Movement
         {
             if (Joint != null || camScript.CurrentCamera == PlayerCam.CameraStyle.Normal)
             {
+                // set the color back to white while swinging
                 if (crosshairImages[4].color != Color.white)
                 {
                     foreach (var image in crosshairImages)
@@ -83,8 +84,6 @@ namespace Player.Movement
             // draw direction of raycast
             Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.yellow);
 
-            Vector3 realHitPoint;
-
             // direct hit
             if (raycastHit.point != Vector3.zero)
             {
@@ -92,20 +91,14 @@ namespace Player.Movement
                 {
                     image.color = Color.red;
                 }
-                realHitPoint = raycastHit.point;
+                predicitionPoint.position = raycastHit.point;
             }
             else
             {
-                realHitPoint = Vector3.zero;
                 foreach (var image in crosshairImages)
                 {
                     image.color = Color.white;
                 }
-            }
-
-            if (realHitPoint != Vector3.zero)
-            {
-                predicitionPoint.position = realHitPoint;
             }
 
             predictionHit = raycastHit;
