@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Player.Movement
 {
@@ -23,10 +24,20 @@ namespace Player.Movement
         [Header("Prediction")] 
         public RaycastHit predictionHit;
         [SerializeField] private Transform predicitionPoint;
+        [SerializeField] private Transform crosshair;
+
+        private Image[] crosshairImages = new Image[5];
 
         private void Start()
         {
             predicitionPoint.gameObject.SetActive(false);
+
+            for (int i = 0; i < crosshair.childCount; i++)
+            {
+                GameObject childObject = crosshair.GetChild(i).gameObject;
+                crosshairImages[i] = childObject.GetComponent<Image>();
+
+            }
         }
 
         private void Update()
@@ -55,27 +66,39 @@ namespace Player.Movement
         private void CheckForSwingPoints()
         {
             if (Joint != null || camScript.CurrentCamera == PlayerCam.CameraStyle.Normal)
+            {
+                // set the color back to white while swinging
+                if (crosshairImages[4].color != Color.white)
+                {
+                    foreach (var image in crosshairImages)
+                    {
+                        image.color = Color.white;
+                    }
+                }
                 return;
-            
+            }
+
             // TODO: Change to create the ray once and then just change the positions
             Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingAimDistance, whatIsGrappleable);
 
             // draw direction of raycast
             Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.yellow);
 
-            Vector3 realHitPoint;
-
             // direct hit
             if (raycastHit.point != Vector3.zero)
             {
-                realHitPoint = raycastHit.point;
+                foreach (var image in crosshairImages)
+                {
+                    image.color = Color.red;
+                }
+                predicitionPoint.position = raycastHit.point;
             }
             else
-                realHitPoint = Vector3.zero;
-
-            if (realHitPoint != Vector3.zero)
             {
-                predicitionPoint.position = realHitPoint;
+                foreach (var image in crosshairImages)
+                {
+                    image.color = Color.white;
+                }
             }
 
             predictionHit = raycastHit;
