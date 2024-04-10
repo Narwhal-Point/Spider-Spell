@@ -38,5 +38,11 @@ namespace Player.Movement.State_Machine
                     manager.SwitchState(player.IdleState);
             }
         }
+
+        public override void ExitState()
+        {
+            if(player.Grounded)
+                player.PlayLandVFX();
+        }
     }
 }

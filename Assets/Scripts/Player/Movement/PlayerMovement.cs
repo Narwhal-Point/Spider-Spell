@@ -25,8 +25,12 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Dashing")] public float dashDuration = 10f;
-        public float dashForce = 20f;
+        [Header("Dashing")] 
+        [SerializeField] private float dashDuration = 0.25f;
+        [SerializeField] private float dashForce = 20f;
+        [SerializeField] private float dashCooldown = 2f;
+        [SerializeField] private float DashUpwardForce = 5f;
+        public bool IsDashing { get; set; }
 
         [Header("Ground Check")] public float playerHeight = 1;
         public LayerMask ground;
@@ -50,6 +54,8 @@ namespace Player.Movement
         public AudioSource uncrouchSound;
 
         public TMP_Text text;
+
+        [SerializeField] private GameObject dustVFX;
 
         // input booleans
         public Vector2 InputDirection { get; private set; }
@@ -129,7 +135,7 @@ namespace Player.Movement
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
-            DashingState = new PlayerMovementStateDashing(_manager, this);
+            DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown, DashUpwardForce);
         }
 
         private void Start()
@@ -171,6 +177,8 @@ namespace Player.Movement
 
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
+            if(IsDashing)
+                return;
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
@@ -326,7 +334,8 @@ namespace Player.Movement
 
         public void OnDash()
         {
-            _manager.SwitchState(DashingState);
+            if(_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
+                _manager.SwitchState(DashingState);
         }
 
         public void OnFire(InputValue value)
@@ -380,6 +389,16 @@ namespace Player.Movement
         public void OnAim(InputValue value)
         {
             IsAiming = value.isPressed;
+        }
+
+        public void PlayLandVFX()
+        {
+            ParticleSystem particleSystem = dustVFX.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                // Play the particle system
+                particleSystem.Play();
+            }
         }
     }
 }

@@ -1,3 +1,3 @@
-# Iwan's Movement Prototype
+# Spider Spell
 
-Unity movement prototype for the spider game.
+The code base for Spider Spell. Based on the Rigidbody Movement Prototype
