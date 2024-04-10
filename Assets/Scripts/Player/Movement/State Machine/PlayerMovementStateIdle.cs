@@ -10,6 +10,7 @@ namespace Player.Movement.State_Machine
 
         public override void EnterState()
         {
+            player.Rb.AddForce(-player.transform.up * 2f, ForceMode.Impulse);
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Idle;
             player.Rb.drag = player.groundDrag;
