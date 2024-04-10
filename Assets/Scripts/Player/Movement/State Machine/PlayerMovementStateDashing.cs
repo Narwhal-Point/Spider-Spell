@@ -37,7 +37,7 @@ namespace Player.Movement.State_Machine
             _dashTimer = _dashDuration;
             lastDashTime = Time.time;
             Vector3 forceToApply = player.orientation.forward * _dashForce + player.orientation.up * _dashUpwardForce;
-
+            player.PlayLandVFX();
             player.Rb.AddForce(forceToApply, ForceMode.Impulse);
             
         }
