@@ -89,7 +89,9 @@ namespace Player.Movement
         [SerializeField] private float turnSmoothTime = 0.1f;
         private float _turnSmoothVelocity;
         public bool WallInFront { get; private set; }
+        public bool IsHeadHit { get; private set; }
         public RaycastHit groundHit;
+        public RaycastHit headHit;
         public RaycastHit angleHit;
         public RaycastHit wallHit;
 
@@ -179,6 +181,10 @@ namespace Player.Movement
             WallInFront = Physics.Raycast(transform.position + wallCastHeight, playerObj.forward,
                 out wallHit, (wallCastDistance), ground);
 
+            IsHeadHit = Physics.Raycast(transform.position, playerObj.up, out headHit,
+                playerHeight * 0.5f + 0.2f, ground);
+            Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
+            
             // check if an angled surface is in front of the player
             float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
@@ -259,6 +265,15 @@ namespace Player.Movement
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
+            }
+            else if (IsHeadHit && InputDirection != Vector2.zero)
+            {
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, headHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                transform.rotation = orientation.rotation;
             }
             else if (InputDirection != Vector2.zero)
             {
