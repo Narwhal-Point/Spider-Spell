@@ -41,7 +41,8 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
-            player.PlayLandVFX();
+            if(player.Grounded)
+                player.PlayLandVFX();
         }
     }
 }
