@@ -71,6 +71,7 @@ namespace Player.Movement
         {
             Idle,
             Walking,
+
             // Sprinting,
             // Crouching,
             Sliding,
@@ -81,8 +82,9 @@ namespace Player.Movement
 
         #region wallclimbing and rotation
 
-        [Header("wall climbing")] 
-        [SerializeField] private float spherecastRadius;
+        [Header("wall climbing")] [SerializeField]
+        private float spherecastRadius;
+
         [SerializeField] private float spherecastDistance;
         [SerializeField] private float turnSmoothTime = 0.1f;
         private float _turnSmoothVelocity;
@@ -99,7 +101,9 @@ namespace Player.Movement
 
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
+
         public PlayerMovementStateWalking WalkingState { get; private set; }
+
         // public PlayerMovementStateSprinting SprintingState { get; private set; }
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
@@ -143,7 +147,7 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
-            
+
             // state update
             _manager.CurrentState.UpdateState();
         }
@@ -168,51 +172,53 @@ namespace Player.Movement
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
                 playerHeight * 0.5f + 0.2f, ground);
+
+            // wall check
+            WallInFront = Physics.Raycast(transform.position + (playerObj.up * 0.5f), playerObj.forward,
+                out wallHit, (4 * 0.5f + 0.2f), ground);
+
+            // check if an angled surface is in front of the player
+            float castDistance = 1.5f;
+            EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
+                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, castDistance, ground);
+            
+            // debug ray drawings
+            // to the ground
             if (!Grounded)
                 Debug.DrawRay(transform.position,
                     playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.red);
             else
                 Debug.DrawRay(transform.position,
                     playerObj.TransformDirection(Vector3.down) * (playerHeight * 0.5f + 0.2f), Color.green);
-
-            // wall check
-            WallInFront = Physics.Raycast(transform.position + (playerObj.up * 0.5f), playerObj.forward,
-                out wallHit, (4 * 0.5f + 0.2f), ground);
-
-            float castDistance = 1.5f;
-            EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
-                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, castDistance, ground);
-            
-            Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
-                -playerObj.up + -playerObj.forward * (0.45f * castDistance), Color.yellow);
-            // if (EdgeFound && _angleHit.normal != _groundHit.normal)
-            //     Debug.Log(_angleHit.normal);
-
-            // if(EdgeFound && !Grounded)
-            //     Debug.Log("edge found");
-            
+            // to the front
             if (WallInFront)
             {
                 Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
                     playerObj.forward * (4 * 0.5f + 0.2f), Color.green);
             }
-            // else if (EdgeFound && (angleHit.normal != groundHit.normal))
-            // {
-            //     Debug.Log("hi");
-            // }
             else
             {
                 Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
                     playerObj.forward * (4 * 0.5f + 0.2f), Color.red);
             }
+            
+            // angled in the front
+            Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
+                -playerObj.up + -playerObj.forward * (0.45f * castDistance), Color.yellow);
+            
+
         }
 
         private void HandleRotation()
         {
+            // get the dot product of the ground normal and the angleHit normal to check the angle between them.
+            float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
+
             if (_manager.CurrentState == JumpingState)
                 return;
-            
+
             facingAngles = GetFacingAngle(InputDirection);
+            
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -222,18 +228,21 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            else if (EdgeFound && InputDirection != Vector2.zero && groundHit.normal != angleHit.normal && _manager.CurrentState != SwingingState)
+            // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
+            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= 0 && _manager.CurrentState != SwingingState)
             {
-                Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = playerHeight * 0.5f * angleHit.normal;
-            
+                // rotate towards the new surface
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
-                // transform.position = Vector3.Slerp(transform.position, newPlayerPos + offset, 0.5f * Time.deltaTime);
+                
+                // move the player to the new surface
+                Vector3 newPlayerPos = angleHit.point;
+                Vector3 offset = playerHeight * 0.5f * angleHit.normal;
+                
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
             }
