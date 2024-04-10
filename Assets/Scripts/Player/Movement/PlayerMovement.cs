@@ -55,6 +55,8 @@ namespace Player.Movement
 
         public TMP_Text text;
 
+        [SerializeField] private GameObject dustVFX;
+
         // input booleans
         public Vector2 InputDirection { get; private set; }
         public bool IsSprinting { get; private set; }
@@ -361,6 +363,16 @@ namespace Player.Movement
         public void OnAim(InputValue value)
         {
             IsAiming = value.isPressed;
+        }
+
+        public void PlayLandVFX()
+        {
+            ParticleSystem particleSystem = dustVFX.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                // Play the particle system
+                particleSystem.Play();
+            }
         }
     }
 }
