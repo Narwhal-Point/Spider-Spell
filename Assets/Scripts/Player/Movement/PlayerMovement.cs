@@ -174,7 +174,8 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // wall check
-            WallInFront = Physics.Raycast(transform.position + (playerObj.up * 0.5f), playerObj.forward,
+            Vector3 wallCastHeight = playerObj.up * 0.05f;
+            WallInFront = Physics.Raycast(transform.position + wallCastHeight, playerObj.forward,
                 out wallHit, (4 * 0.5f + 0.2f), ground);
 
             // check if an angled surface is in front of the player
@@ -193,12 +194,12 @@ namespace Player.Movement
             // to the front
             if (WallInFront)
             {
-                Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
+                Debug.DrawRay(transform.position + wallCastHeight,
                     playerObj.forward * (4 * 0.5f + 0.2f), Color.green);
             }
             else
             {
-                Debug.DrawRay(transform.position + (playerObj.up * 0.5f),
+                Debug.DrawRay(transform.position + wallCastHeight,
                     playerObj.forward * (4 * 0.5f + 0.2f), Color.red);
             }
             
