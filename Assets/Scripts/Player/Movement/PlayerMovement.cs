@@ -174,7 +174,7 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // wall check
-            Vector3 wallCastHeight = -playerObj.up * 0.4f;
+            Vector3 wallCastHeight = playerObj.up * 0.4f;
             float wallCastDistance = 1f;
             WallInFront = Physics.Raycast(transform.position + wallCastHeight, playerObj.forward,
                 out wallHit, (wallCastDistance), ground);
