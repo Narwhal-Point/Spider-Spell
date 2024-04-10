@@ -4411,7 +4411,7 @@ MonoBehaviour:
   slideYScale: 0.5
   dashDuration: 0.2
   dashForce: 40
-  playerHeight: 1
+  playerHeight: 1.5
   ground:
     serializedVersion: 2
     m_Bits: 64

@@ -174,14 +174,15 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // wall check
-            Vector3 wallCastHeight = playerObj.up * 0.05f;
+            Vector3 wallCastHeight = -playerObj.up * 0.4f;
+            float wallCastDistance = 1f;
             WallInFront = Physics.Raycast(transform.position + wallCastHeight, playerObj.forward,
-                out wallHit, (4 * 0.5f + 0.2f), ground);
+                out wallHit, (wallCastDistance), ground);
 
             // check if an angled surface is in front of the player
-            float castDistance = 1.5f;
+            float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
-                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, castDistance, ground);
+                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
             
             // debug ray drawings
             // to the ground
@@ -195,17 +196,17 @@ namespace Player.Movement
             if (WallInFront)
             {
                 Debug.DrawRay(transform.position + wallCastHeight,
-                    playerObj.forward * (4 * 0.5f + 0.2f), Color.green);
+                    playerObj.forward * wallCastDistance, Color.green);
             }
             else
             {
                 Debug.DrawRay(transform.position + wallCastHeight,
-                    playerObj.forward * (4 * 0.5f + 0.2f), Color.red);
+                    playerObj.forward * wallCastDistance, Color.red);
             }
             
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
-                -playerObj.up + -playerObj.forward * (0.45f * castDistance), Color.yellow);
+                -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
             
 
         }
@@ -242,7 +243,7 @@ namespace Player.Movement
                 
                 // move the player to the new surface
                 Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = playerHeight * 0.5f * angleHit.normal;
+                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
                 
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
