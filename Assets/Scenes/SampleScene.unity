@@ -4409,8 +4409,10 @@ MonoBehaviour:
   maxSlideTime: 0.75
   slideForce: 150
   slideYScale: 0.5
-  dashDuration: 0.2
-  dashForce: 40
+  dashDuration: 0.25
+  dashForce: 10
+  dashCooldown: 1
+  DashUpwardForce: 5
   playerHeight: 2
   ground:
     serializedVersion: 2
