@@ -380,26 +380,26 @@ namespace Player.Movement
         //     }
         // }
 
-        public void OnSlide(InputValue value)
-        {
-            IsSliding = value.isPressed;
-            if (IsSliding && (_manager.CurrentState == WalkingState /*|| _manager.CurrentState == SprintingState*/
-                              || (Grounded && _manager.CurrentState == JumpingState)
-                              || Grounded && _manager.CurrentState == FallingState))
-                _manager.SwitchState(SlidingState);
-            else if (!IsSliding && _manager.CurrentState == SlidingState)
-            {
-                if (Grounded && InputDirection == Vector2.zero)
-                    _manager.SwitchState(IdleState);
-                else if (InputDirection != Vector2.zero)
-                {
-                    // if (IsSprinting)
-                    //     _manager.SwitchState(SprintingState);
-                    // else
-                    _manager.SwitchState(WalkingState);
-                }
-            }
-        }
+        // public void OnSlide(InputValue value)
+        // {
+        //     IsSliding = value.isPressed;
+        //     if (IsSliding && (_manager.CurrentState == WalkingState /*|| _manager.CurrentState == SprintingState*/
+        //                       || (Grounded && _manager.CurrentState == JumpingState)
+        //                       || Grounded && _manager.CurrentState == FallingState))
+        //         _manager.SwitchState(SlidingState);
+        //     else if (!IsSliding && _manager.CurrentState == SlidingState)
+        //     {
+        //         if (Grounded && InputDirection == Vector2.zero)
+        //             _manager.SwitchState(IdleState);
+        //         else if (InputDirection != Vector2.zero)
+        //         {
+        //             // if (IsSprinting)
+        //             //     _manager.SwitchState(SprintingState);
+        //             // else
+        //             _manager.SwitchState(WalkingState);
+        //         }
+        //     }
+        // }
 
         public void OnAim(InputValue value)
         {
