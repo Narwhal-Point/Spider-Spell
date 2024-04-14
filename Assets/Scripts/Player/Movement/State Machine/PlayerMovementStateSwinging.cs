@@ -46,6 +46,7 @@ namespace Player.Movement.State_Machine
             if (_swing.predictionHit.point == Vector3.zero) 
                 return;
 
+            
             _swing.SwingPoint = _swing.predictionHit.point;
             _swing.Joint = player.gameObject.AddComponent<SpringJoint>();
             _swing.Joint.autoConfigureConnectedAnchor = false;
@@ -64,6 +65,8 @@ namespace Player.Movement.State_Machine
 
             _swing.lr.positionCount = 2;
             _swing.CurrentGrapplePosition = player.swingOrigin.position;
+            player.webShootSound.Play();
+            player.midAirSound.Play();
         }
 
         void StopSwing()
@@ -102,6 +105,11 @@ namespace Player.Movement.State_Machine
                 Vector3 limitedVel = flatVel.normalized * _moveSpeed;
                 player.Rb.velocity = new Vector3(limitedVel.x,  player.Rb.velocity.y, limitedVel.z);
             }
+        }
+
+        public override void ExitState()
+        {
+            player.midAirSound.Stop();
         }
     }
 }

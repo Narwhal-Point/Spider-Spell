@@ -14,6 +14,7 @@ namespace Player.Movement.State_Machine
          }
         public override void EnterState()
         {
+            player.walkingSound.Play();
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Walking;
             _moveSpeed = player.walkSpeed;
@@ -53,6 +54,11 @@ namespace Player.Movement.State_Machine
                 Vector3 limitedVel = flatVel.normalized * _moveSpeed;
                 player.Rb.velocity = limitedVel;
             }
+        }
+
+        public override void ExitState()
+        {
+            player.walkingSound.Stop();
         }
     }
 }
