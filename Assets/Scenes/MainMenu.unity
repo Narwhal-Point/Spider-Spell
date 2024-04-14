@@ -1102,10 +1102,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4697849299060177825, guid: cb8158c2b7559d9429d9c4e5adcd9b22, type: 3}
-      propertyPath: disableDataPersistence
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4049581209876063048, guid: 67e98a73f7963e943a265093ba3c5baf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1153,6 +1149,10 @@ PrefabInstance:
     - target: {fileID: 6048822482663991180, guid: 67e98a73f7963e943a265093ba3c5baf, type: 3}
       propertyPath: m_Name
       value: DataPersistenceManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4697849299060177825, guid: cb8158c2b7559d9429d9c4e5adcd9b22, type: 3}
+      propertyPath: disableDataPersistence
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1905,7 +1905,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
