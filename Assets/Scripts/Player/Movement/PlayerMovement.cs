@@ -285,6 +285,8 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
+            float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
+            
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
 
@@ -312,7 +314,7 @@ namespace Player.Movement
                 transform.rotation = orientation.rotation;
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= 0 && _manager.CurrentState != SwingingState)
+            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 && _manager.CurrentState != SwingingState)
             {
                 // rotate towards the new surface
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -382,7 +384,7 @@ namespace Player.Movement
             {
                 isJumping = true;
                 jumpAnimation = true;
-                StartCoroutine(DelayedStateSwitch(JumpingState, 80)); // 80 frames delay
+                StartCoroutine(DelayedStateSwitch(JumpingState, 50)); // 50 frames delay
             }
         }
 
