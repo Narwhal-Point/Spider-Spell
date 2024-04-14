@@ -1,11 +1,13 @@
+using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Player.Movement
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour, IDataPersistence
     {
         [Header("Movement")] public float walkSpeed = 7;
         public float sprintSpeed = 10f;
@@ -50,8 +52,17 @@ namespace Player.Movement
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
 
-        public AudioSource crouchSound;
-        public AudioSource uncrouchSound;
+        // public AudioSource crouchSound;
+        // public AudioSource uncrouchSound;
+        
+        // sfx for spider
+        public AudioSource webShootSound;
+        public AudioSource landingSound;
+        public AudioSource walkingSound;
+        public AudioSource midAirSound;
+        public AudioSource jumpingSound;
+        public bool jumpAnimation;
+        
 
         public TMP_Text text;
 
@@ -121,8 +132,26 @@ namespace Player.Movement
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
         public PlayerMovementStateDashing DashingState { get; private set; }
+        
+        public int jumpCount;
+        private bool canIncrementJumpCount = true;
+        public float jumpCountCooldown = 0.5f; // Adjust the cooldown duration as needed
+        private float jumpCountCooldownTimer = 0f;
 
         #endregion
+        
+        public void LoadData(GameData data)
+        {
+            Rb.position = data.position;
+            jumpCount = data.jumpCount;
+
+        }
+
+        public void SaveData(GameData data)
+        {
+            data.position = Rb.position;
+            data.jumpCount = jumpCount;
+        }
 
 
         private void Awake()
@@ -138,12 +167,12 @@ namespace Player.Movement
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown, DashUpwardForce);
+            Rb = GetComponent<Rigidbody>();
         }
 
         private void Start()
         {
             _swing = GetComponent<PlayerSwingHandler>();
-            Rb = GetComponent<Rigidbody>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
@@ -160,6 +189,29 @@ namespace Player.Movement
 
             // state update
             _manager.CurrentState.UpdateState();
+            
+            if (_manager.CurrentState == JumpingState && Grounded && canIncrementJumpCount)
+            {
+                jumpCount++;
+                canIncrementJumpCount = false;
+                jumpCountCooldownTimer = jumpCountCooldown;
+            }
+
+            // Update jump count cooldown timer
+            if (!canIncrementJumpCount)
+            {
+                jumpCountCooldownTimer -= Time.deltaTime;
+                if (jumpCountCooldownTimer <= 0)
+                {
+                    canIncrementJumpCount = true;
+                }
+            }
+            
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                DataPersistenceManager.instance.SaveGame();
+                SceneManager.LoadSceneAsync("MainMenu");
+            }
         }
 
         private void FixedUpdate()
@@ -322,14 +374,30 @@ namespace Player.Movement
             InputDirection = value.Get<Vector2>();
         }
 
+        private bool isJumping = false;
+
         public void OnJump()
         {
-            if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState
-                /*|| _manager.CurrentState == SprintingState*/)
+            if (!isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
-                _manager.SwitchState(JumpingState);
+                isJumping = true;
+                jumpAnimation = true;
+                StartCoroutine(DelayedStateSwitch(JumpingState, 80)); // 80 frames delay
             }
         }
+
+        private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, int frameCount)
+        {
+            for (int i = 0; i < frameCount; i++)
+            {
+                yield return null; // Wait for one frame
+            }
+
+            jumpAnimation = false;
+            _manager.SwitchState(nextState);
+            isJumping = false; // Reset jump flag
+        }
+
 
         // public void OnSprint(InputValue value)
         // {

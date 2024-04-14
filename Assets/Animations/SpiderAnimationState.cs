@@ -17,13 +17,31 @@ public class spiderAnimationState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (player.movementState.ToString() == "Idle")
+        {
+            animator.SetBool("isWalking",false);
+            animator.SetBool("isFalling",false);
+            animator.SetBool("isJumping",false);
+        }
         if (player.movementState.ToString() == "Walking")
         {
             animator.SetBool("isWalking",true);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping",false);
         }
-        else
+        if (player.movementState.ToString() == "Falling")
         {
+            animator.SetBool("isFalling", true);
             animator.SetBool("isWalking",false);
+            animator.SetBool("isJumping",false);
         }
+        if (player.jumpAnimation)
+        {
+            animator.SetBool("isJumping",true);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isWalking",false);
+            
+        }
+        
     }
 }

@@ -23,7 +23,7 @@ namespace Player.Movement.State_Machine
             player.movementState = PlayerMovement.MovementState.Jumping;
             player.Rb.drag = 0; // no ground drag because we're in the air
             
-            
+            player.jumpingSound.Play();
             Jump();
             
         }

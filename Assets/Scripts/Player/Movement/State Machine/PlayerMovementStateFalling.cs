@@ -41,8 +41,11 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
-            if(player.Grounded)
+            if (player.Grounded)
+            {
+                player.landingSound.Play();
                 player.PlayLandVFX();
+            }
         }
     }
 }
