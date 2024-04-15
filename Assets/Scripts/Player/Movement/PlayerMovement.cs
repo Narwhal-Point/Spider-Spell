@@ -384,16 +384,22 @@ namespace Player.Movement
             {
                 isJumping = true;
                 jumpAnimation = true;
-                StartCoroutine(DelayedStateSwitch(JumpingState, 50)); // 50 frames delay
+                StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
             }
         }
 
-        private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, int frameCount)
+        private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, float frameCount)
         {
-            for (int i = 0; i < frameCount; i++)
+            float elapsedTime = 0f;
+            while (elapsedTime < frameCount)
             {
-                yield return null; // Wait for one frame
+                yield return null;
+                elapsedTime += Time.deltaTime;
             }
+            // for (int i = 0; i < frameCount; i++)
+            // {
+            //     yield return null; // Wait for one frame
+            // }
 
             jumpAnimation = false;
             _manager.SwitchState(nextState);
