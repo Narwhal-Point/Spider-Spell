@@ -32,7 +32,7 @@ namespace Player.Movement.State_Machine
             SpeedControl();
             if (!player.IsFiring)
             {
-                StopSwing();
+                // StopSwing();
                 manager.SwitchState(player.FallingState);
             }
         
@@ -109,6 +109,7 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
+            StopSwing();
             player.midAirSound.Stop();
         }
     }
