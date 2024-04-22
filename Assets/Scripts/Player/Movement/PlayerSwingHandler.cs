@@ -89,7 +89,7 @@ namespace Player.Movement
             {
                 foreach (var image in crosshairImages)
                 {
-                    image.color = Color.red;
+                    image.color = Color.white;
                 }
                 predicitionPoint.position = raycastHit.point;
             }
@@ -97,7 +97,7 @@ namespace Player.Movement
             {
                 foreach (var image in crosshairImages)
                 {
-                    image.color = Color.white;
+                    image.color = Color.red;
                 }
             }
 
