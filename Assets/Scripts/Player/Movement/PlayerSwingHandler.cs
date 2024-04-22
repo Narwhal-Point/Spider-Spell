@@ -13,10 +13,8 @@ namespace Player.Movement
         public LayerMask whatIsGrappleable;
 
         [Header("Swinging")] 
-        public float maxSwingAimDistance = 25f;
-
-        // maximum length of line. Line will shorten if player is further away than this value
-        public float maxSwingDistance = 12f;
+        public float maxSwingDistance = 45f;
+        
         public Vector3 SwingPoint { get; set; }
         public SpringJoint Joint { get; set; }
         public Vector3 CurrentGrapplePosition { get; set; }
@@ -79,10 +77,10 @@ namespace Player.Movement
             }
 
             // TODO: Change to create the ray once and then just change the positions
-            Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingAimDistance, whatIsGrappleable);
+            Physics.Raycast(cam.position, cam.forward, out var raycastHit, maxSwingDistance, whatIsGrappleable);
 
             // draw direction of raycast
-            Debug.DrawRay(cam.position, cam.forward * maxSwingAimDistance, Color.yellow);
+            Debug.DrawRay(cam.position, cam.forward * maxSwingDistance, Color.yellow);
 
             // direct hit
             if (raycastHit.point != Vector3.zero)
