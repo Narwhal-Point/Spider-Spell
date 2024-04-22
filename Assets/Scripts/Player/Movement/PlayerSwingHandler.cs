@@ -63,7 +63,7 @@ namespace Player.Movement
 
         private void CheckForSwingPoints()
         {
-            if (Joint != null || camScript.CurrentCamera == PlayerCam.CameraStyle.Normal)
+            if (Joint || camScript.CurrentCamera == PlayerCam.CameraStyle.Normal)
             {
                 // set the color back to white while swinging
                 if (crosshairImages[4].color != Color.white)

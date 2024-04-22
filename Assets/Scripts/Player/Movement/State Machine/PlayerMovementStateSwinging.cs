@@ -32,8 +32,10 @@ namespace Player.Movement.State_Machine
             SpeedControl();
             if (!player.IsFiring)
             {
-                // StopSwing();
-                manager.SwitchState(player.FallingState);
+                if(player.Grounded)
+                    manager.SwitchState(player.IdleState);
+                else
+                    manager.SwitchState(player.FallingState);
             }
         
             if(_swing.Joint != null) // currently swinging
