@@ -445,7 +445,7 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if (_manager.CurrentState == IdleState && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
+            if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                 _manager.SwitchState(SwingingState);
         }
 
