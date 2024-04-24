@@ -26,14 +26,11 @@ public class spiderAnimationState : MonoBehaviour
         if (player.movementState == PlayerMovement.MovementState.Walking)
         {
             animator.speed = player.MoveSpeed / 10f;
-            Debug.Log("animator speed: " + animator.speed);
-            Debug.Log("MoveSpeed: " + player.MoveSpeed);
         }
         else
         {
             animator.speed = 1;
         }
-        // if(player.MoveSpeed)
     }
 
     private void HandleSwitching()
