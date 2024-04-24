@@ -9,12 +9,16 @@ namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour, IDataPersistence
     {
-        [Header("Movement")] public float walkSpeed = 7;
+        [Header("Movement")] public float walkSpeed = 10f;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
         [SerializeField] private float rotationSpeed = 10f;
+
+        public float DesiredMoveSpeed { get; set; } = 10;
+        public float lastDesiredMoveSpeed { get; set; } = 10;
+        public float MoveSpeed { get; set; } = 10;
 
         [Header("Crouching")] public float crouchYScale = 0.5f;
 
@@ -27,8 +31,7 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Dashing")] 
-        [SerializeField] private float dashDuration = 0.25f;
+        [Header("Dashing")] [SerializeField] private float dashDuration = 0.25f;
         [SerializeField] private float dashForce = 20f;
         [SerializeField] private float dashCooldown = 2f;
         [SerializeField] private float DashUpwardForce = 5f;
@@ -54,7 +57,7 @@ namespace Player.Movement
 
         // public AudioSource crouchSound;
         // public AudioSource uncrouchSound;
-        
+
         // sfx for spider
         public AudioSource webShootSound;
         public AudioSource landingSound;
@@ -62,7 +65,7 @@ namespace Player.Movement
         public AudioSource midAirSound;
         public AudioSource jumpingSound;
         public bool jumpAnimation;
-        
+
 
         public TMP_Text text;
 
@@ -132,19 +135,18 @@ namespace Player.Movement
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
         public PlayerMovementStateDashing DashingState { get; private set; }
-        
+
         public int jumpCount;
         private bool canIncrementJumpCount = true;
         public float jumpCountCooldown = 0.5f; // Adjust the cooldown duration as needed
         private float jumpCountCooldownTimer = 0f;
 
         #endregion
-        
+
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
             jumpCount = data.jumpCount;
-
         }
 
         public void SaveData(GameData data)
@@ -166,7 +168,8 @@ namespace Player.Movement
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
-            DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown, DashUpwardForce);
+            DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
+                DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
         }
 
@@ -189,7 +192,7 @@ namespace Player.Movement
 
             // state update
             _manager.CurrentState.UpdateState();
-            
+
             if (_manager.CurrentState == JumpingState && Grounded && canIncrementJumpCount)
             {
                 jumpCount++;
@@ -206,7 +209,7 @@ namespace Player.Movement
                     canIncrementJumpCount = true;
                 }
             }
-            
+
             if (Input.GetKey(KeyCode.Escape))
             {
                 DataPersistenceManager.instance.SaveGame();
@@ -231,7 +234,7 @@ namespace Player.Movement
 
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
-            if(IsDashing)
+            if (IsDashing)
                 return;
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
@@ -250,12 +253,12 @@ namespace Player.Movement
             IsHeadHit = Physics.Raycast(transform.position, playerObj.up, out headHit,
                 playerHeight * 0.5f + 0.2f, ground);
             Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
-            
+
             // check if an angled surface is in front of the player
             float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
-            
+
             // debug ray drawings
             // to the ground
             if (!Grounded)
@@ -275,18 +278,16 @@ namespace Player.Movement
                 Debug.DrawRay(transform.position + wallCastHeight,
                     playerObj.forward * wallCastDistance, Color.red);
             }
-            
+
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
-            
-
         }
 
         private void HandleRotation()
         {
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
-            
+
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
 
@@ -294,7 +295,7 @@ namespace Player.Movement
                 return;
 
             facingAngles = GetFacingAngle(InputDirection);
-            
+
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 Debug.Log("hi");
@@ -316,7 +317,8 @@ namespace Player.Movement
                 transform.rotation = orientation.rotation;
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 && _manager.CurrentState != SwingingState)
+            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
+                     _manager.CurrentState != SwingingState)
             {
                 // rotate towards the new surface
                 // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -332,11 +334,11 @@ namespace Player.Movement
                 Debug.Log("old forward: " + transform.forward);
                 orientation.rotation = newOrientation;
                 transform.rotation = newOrientation;
-                
+
                 // move the player to the new surface
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-                
+
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
                 Debug.Log("new forward: " + transform.forward);
@@ -350,7 +352,7 @@ namespace Player.Movement
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-            
+
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
@@ -379,6 +381,31 @@ namespace Player.Movement
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
             return (targetAngle, angle);
+        }
+
+        public void ChangeMomentum(float speedIncreaseMultiplier)
+        {
+            StopAllCoroutines();
+            StartCoroutine(SmoothlyLerpMoveSpeed(speedIncreaseMultiplier));
+        }
+
+        private IEnumerator SmoothlyLerpMoveSpeed(float speedIncreaseMultiplier)
+        {
+            // smoothly lerp movementSpeed to desired value
+            float time = 0;
+            float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
+            float startValue = MoveSpeed;
+
+            while (time < difference)
+            {
+                MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
+
+                time += Time.deltaTime * speedIncreaseMultiplier;
+
+                yield return null;
+            }
+
+            MoveSpeed = DesiredMoveSpeed;
         }
 
 
@@ -437,7 +464,7 @@ namespace Player.Movement
 
         public void OnDash()
         {
-            if(_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
+            if (_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
                 _manager.SwitchState(DashingState);
         }
 
