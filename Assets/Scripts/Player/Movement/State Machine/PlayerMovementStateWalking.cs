@@ -54,10 +54,12 @@ namespace Player.Movement.State_Machine
                 }
                 else if (inputDirection.z < 0)
                 {
+                    Vector3 cameraBackward = Vector3.Scale(-player.cam.transform.forward, new Vector3(1, 0, -1)).normalized;
+                    inputDirection = Quaternion.LookRotation(cameraBackward) * inputDirection;
                     // If moving backward, do not adjust input direction
-                    inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y);
+                    //inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y);
                 }
-
+                Debug.Log(inputDirection);
                 // Calculate move direction using input direction
                 player.MoveDirection = CalculateMoveDirection(inputDirection, player.groundHit);
             }
@@ -79,14 +81,7 @@ namespace Player.Movement.State_Machine
             Quaternion combinedRotation = surfaceRotation * facingRotation;
 
             // Calculate move direction
-            Vector3 moveDirection = combinedRotation * Vector3.forward;
-
-            // If moving backward (inputDirection.z < 0), reverse the moveDirection
-            Debug.Log(direction);
-            if (direction.z < 0)
-            {
-                moveDirection = player.playerObj.TransformDirection(Vector3.back);
-            }
+            Vector3 moveDirection = combinedRotation * Vector3.forward;        
 
             return moveDirection;
         }
