@@ -36,8 +36,8 @@ namespace Player.Movement
 
         [Header("Ground Check")] public float playerHeight = 2;
         public LayerMask ground;
-        public bool Grounded { get; private set; }
-        public bool EdgeFound { get; private set; }
+        public bool Grounded { get;  set; }
+        public bool EdgeFound { get;  set; }
 
         [Header("Slope Handling")] public float maxSlopeAngle;
 
@@ -49,7 +49,7 @@ namespace Player.Movement
 
         private PlayerSwingHandler _swing;
         public Vector3 MoveDirection { get; set; }
-        public Rigidbody Rb { get; private set; }
+        public Rigidbody Rb { get;  set; }
         public float StartYScale { get; private set; } // default height of character
 
         // public AudioSource crouchSound;
@@ -70,14 +70,14 @@ namespace Player.Movement
 
         // input booleans
         public Vector2 InputDirection { get; private set; }
-        public bool IsSprinting { get; private set; }
-        public bool IsFiring { get; private set; }
+        public bool IsSprinting { get;  set; }
+        public bool IsFiring { get;  set; }
 
-        public bool IsSliding { get; private set; }
+        public bool IsSliding { get;  set; }
 
-        public bool IsCrouching { get; private set; }
+        public bool IsCrouching { get;  set; }
 
-        public bool IsAiming { get; private set; }
+        public bool IsAiming { get;  set; }
 
         public bool IsSnapping { get; set; } = false;
 
@@ -105,9 +105,9 @@ namespace Player.Movement
         [SerializeField] private float spherecastDistance;
         [SerializeField] private float turnSmoothTime = 0.1f;
         private float _turnSmoothVelocity;
-        public bool WallInFront { get; private set; }
-        public bool WallInFrontLow { get; private set; }
-        public bool IsHeadHit { get; private set; }
+        public bool WallInFront { get;  set; }
+        public bool WallInFrontLow { get;  set; }
+        public bool IsHeadHit { get;  set; }
         public RaycastHit groundHit;
         public RaycastHit headHit;
         public RaycastHit angleHit;
@@ -120,7 +120,7 @@ namespace Player.Movement
 
         #region Player Movement States
 
-        private PlayerMovementStateManager _manager;
+        public PlayerMovementStateManager _manager { get; private set; }
         public PlayerMovementStateIdle IdleState { get; private set; }
 
         public PlayerMovementStateWalking WalkingState { get; private set; }
@@ -209,15 +209,15 @@ namespace Player.Movement
             
             if (Input.GetKey(KeyCode.Escape))
             {
-                DataPersistenceManager.instance.SaveGame();
-                SceneManager.LoadSceneAsync("MainMenu");
+                /*DataPersistenceManager.instance.SaveGame();
+                SceneManager.LoadSceneAsync("MainMenu");*/
             }
         }
 
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            HandleRotation();
+            //HandleRotation();
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -283,7 +283,7 @@ namespace Player.Movement
 
         }
 
-        private void HandleRotation()
+       /* private void HandleRotation()
         {
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
             
@@ -369,7 +369,7 @@ namespace Player.Movement
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
-        }
+        }*/
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
