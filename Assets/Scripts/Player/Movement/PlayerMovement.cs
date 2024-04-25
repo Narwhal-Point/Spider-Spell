@@ -46,8 +46,7 @@ namespace Player.Movement
         public Transform playerObj;
         public Transform cam;
         public PlayerCam camScript;
-
-        private PlayerSwingHandler _swing;
+        
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
@@ -172,7 +171,6 @@ namespace Player.Movement
 
         private void Start()
         {
-            _swing = GetComponent<PlayerSwingHandler>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
@@ -435,11 +433,11 @@ namespace Player.Movement
         //     }
         // }
 
-        public void OnDash()
-        {
-            if(_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
-                _manager.SwitchState(DashingState);
-        }
+        // public void OnDash()
+        // {
+        //     if(_manager.CurrentState != SwingingState && _manager.CurrentState != SlidingState)
+        //         _manager.SwitchState(DashingState);
+        // }
 
         public void OnFire(InputValue value)
         {
