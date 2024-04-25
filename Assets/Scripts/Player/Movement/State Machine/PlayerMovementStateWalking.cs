@@ -41,9 +41,28 @@ namespace Player.Movement.State_Machine
         {
             Vector3 inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y);
 
-            // Calculate move direction using input direction
-            player.MoveDirection = CalculateMoveDirection(inputDirection, player.groundHit);
+            // Check if there is any input (not zero vector)
+            if (inputDirection != Vector3.zero)
+            {
+                Debug.Log("Y: " + player.InputDirection.y + "/// Z: " + inputDirection.z);
+                // If moving forward, use camera direction
+                if (inputDirection.z > 0)
+                {
+                    // Get the camera's forward direction projected onto the XZ plane
+                    Vector3 cameraForward = Vector3.Scale(player.cam.transform.forward, new Vector3(1, 0, 1)).normalized;
+                    inputDirection = Quaternion.LookRotation(cameraForward) * inputDirection;
+                }
+                else if (inputDirection.z < 0)
+                {
+                    // If moving backward, do not adjust input direction
+                    inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y);
+                }
+
+                // Calculate move direction using input direction
+                player.MoveDirection = CalculateMoveDirection(inputDirection, player.groundHit);
+            }
             RotatePlayer(inputDirection);
+
             // Apply forces
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
@@ -64,9 +83,9 @@ namespace Player.Movement.State_Machine
 
             // If moving backward (inputDirection.z < 0), reverse the moveDirection
             Debug.Log(direction);
-            if (direction.y < 0)
+            if (direction.z < 0)
             {
-                moveDirection *= -1f;
+                moveDirection = player.playerObj.TransformDirection(Vector3.back);
             }
 
             return moveDirection;
