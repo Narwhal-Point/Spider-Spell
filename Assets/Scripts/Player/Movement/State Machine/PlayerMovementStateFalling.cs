@@ -23,7 +23,7 @@ namespace Player.Movement.State_Machine
             player.DesiredMoveSpeed = player.swingSpeed;
             
             if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
-                player.ChangeMomentum(4f);
+                player.ChangeMomentum(2f);
             else
                 player.MoveSpeed = player.DesiredMoveSpeed;
         }
