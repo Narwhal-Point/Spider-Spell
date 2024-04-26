@@ -49,6 +49,7 @@ namespace Player.Movement
         public Transform playerObj;
         public Transform cam;
         public PlayerCam camScript;
+        private PlayerSwingHandler _swing;
 
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
@@ -171,6 +172,7 @@ namespace Player.Movement
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
+            _swing = GetComponent<PlayerSwingHandler>();
         }
 
         private void Start()
@@ -473,7 +475,7 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState)
+            if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
                 _manager.SwitchState(SwingingState);
         }
 
