@@ -185,7 +185,7 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log(Rb.velocity);
+            Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
             text.text = movementState.ToString();
@@ -398,8 +398,8 @@ namespace Player.Movement
             float time = 0;
             float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
             float startValue = MoveSpeed;
-
-            while (time < difference && Rb.velocity != Vector3.zero)
+            
+            while (time < difference && Rb.velocity.magnitude > 0.5f)
             {
                 MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
 
