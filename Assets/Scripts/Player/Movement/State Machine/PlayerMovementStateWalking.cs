@@ -48,14 +48,18 @@ namespace Player.Movement.State_Machine
                 // If moving forward, use camera direction
                 if (inputDirection.z > 0)
                 {
-                    // Get the camera's forward direction projected onto the XZ plane
                     Vector3 cameraForward = Vector3.Scale(player.cam.transform.forward, new Vector3(1, 0, 1)).normalized;
                     inputDirection = Quaternion.LookRotation(cameraForward) * inputDirection;
+                    /*// Get the camera's forward direction projected onto the XZ plane
+                    Vector3 cameraForward = Vector3.Scale(player.cam.transform.forward, player.transform.position.normalized);
+                    inputDirection = Quaternion.LookRotation(cameraForward) * inputDirection;*/
                 }
                 else if (inputDirection.z < 0)
                 {
-                    Vector3 cameraBackward = Vector3.Scale(-player.cam.transform.forward, new Vector3(1, 0, -1)).normalized;
-                    inputDirection = Quaternion.LookRotation(cameraBackward) * inputDirection;
+                    Vector3 cameraBackward = Vector3.Scale(-player.cam.transform.forward, player.transform.position.normalized);
+                    inputDirection = Quaternion.LookRotation(-cameraBackward) * inputDirection;
+                    /* Vector3 cameraBackward = Vector3.Scale(-player.cam.transform.forward, -player.transform.position.normalized);
+                     inputDirection = Quaternion.LookRotation(cameraBackward) * inputDirection;*/
                     // If moving backward, do not adjust input direction
                     //inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y);
                 }
