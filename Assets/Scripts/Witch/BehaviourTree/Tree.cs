@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace BehaviourTree
+namespace Witch.BehaviourTree
 {
     public abstract class Tree : MonoBehaviour
     {
