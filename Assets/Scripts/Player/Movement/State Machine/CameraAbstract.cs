@@ -123,8 +123,8 @@ public abstract class CameraAbstract : MonoBehaviour
     */
     protected virtual void Update()
     {
-        RotateCameraHorizontal(Input.GetAxis("Mouse X") * XSensitivity, false);
-        RotateCameraVertical(-Input.GetAxis("Mouse Y") * YSensitivity, false);
+       /* RotateCameraHorizontal(Input.GetAxis("Mouse X") * XSensitivity, false);
+        RotateCameraVertical(-Input.GetAxis("Mouse Y") * YSensitivity, false);*/
 
         if (!cam.enabled) return; // I hope this only returns for this function and not the whole new update implementation of a inheriting class.
         if (enableClipZoom) clipZoom();

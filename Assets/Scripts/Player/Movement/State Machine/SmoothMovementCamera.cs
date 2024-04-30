@@ -1,8 +1,3 @@
-/* 
- * This file is part of Unity-Procedural-IK-Wall-Walking-Spider on github.com/PhilS94
- * Copyright (C) 2020 Philipp Schofield - All Rights Reserved
- */
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +13,6 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class SmoothCamera : CameraAbstract
 {
-
     [Header("Camera Roll Damp")]
     [Range(0, 1)]
     public float rollDamp;
