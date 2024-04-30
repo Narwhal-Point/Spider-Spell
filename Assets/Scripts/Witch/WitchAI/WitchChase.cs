@@ -16,12 +16,19 @@ namespace Witch.WitchAI
             _transform = transform;
             _chaseRange = chaseRange;
             _agent = agent;
+            Debug.Log(_agent);
         }
 
         
         public override NodeState Evaluate()
         {
-            Transform target = (Transform)GetData("attack");
+            Transform target = (Transform)GetData("target");
+            
+            if(!target)
+            {
+                State = NodeState.Failure;
+                return State;
+            }
             
             // move towards target
             if (Vector3.Distance(_transform.position, target.position) > 0.01f)
@@ -31,7 +38,11 @@ namespace Witch.WitchAI
 
             // is target outside of chase range? Stop chasing
             if (Vector3.Distance(_transform.position, target.position) > _chaseRange)
-                ClearData("attack");
+            {
+                ClearData("target");
+                State = NodeState.Failure;
+                return State;
+            }
 
             State = NodeState.Running;
             return State;
