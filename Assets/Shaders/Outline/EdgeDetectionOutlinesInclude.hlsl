@@ -33,10 +33,10 @@ static float sobelYMatrix[9] = {
 };
 
 // euler
-float ease_out_quad_float(float x) {
-    float t = x; float b = 0; float c = 1; float d = 1;
-    return -c *(t/=d)*(t-2) + b;
-}
+// float ease_out_quad(float x) {
+//     float t = x; float b = 0; float c = 1; float d = 1;
+//     return -c *(t/=d)*(t-2) + b;
+// }
 
 // Find a way to sample the normals too. The URP Node URP_SAMPLE_BUFFER can do this. But how implement in this project???????
 
@@ -52,10 +52,8 @@ void DepthSobel_float(float2 UV, float Thickness, out float Out)
     {
         // ga van screen UV naar pixels (of andersom)
         // UV of sobelSamplePoints ombouwen naar zelfde coordinaatsysteem
-        
+
         float depth = SHADERGRAPH_SAMPLE_SCENE_DEPTH(UV + sobelSamplePoints[i] * Thickness);
-        
-        // float depth = SHADERGRAPH_SAMPLE_SCENE_DEPTH(UV + sobelSamplePoints[i] * Thickness);
         sobel += depth * float2(sobelXMatrix[i], sobelYMatrix[i]);
         
     }
@@ -103,12 +101,6 @@ void NormalSobel_float(float2 UV, float Thickness, out float Out)
     }
     
     Out = max(length(sobelX), max(length(sobelY), length(sobelZ)));
-}
-
-// test function
-void GettingTheNormalBuffer_float(float2 UV, out float3 Out)
-{
-    Out = SHADERGRAPH_SAMPLE_SCENE_NORMAL(UV);
 }
 
 #endif
