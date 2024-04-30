@@ -5,15 +5,16 @@ namespace Witch.WitchAI
 {
     public class CheckTargetInAttackRange : Node
     {
-        private const int TargetLayerMask = 8; // wrong value
+        private readonly int _targetLayerMask;
 
         private readonly Transform _transform;
-        private float _attackRange;
+        private readonly float _attackRange;
 
-        public CheckTargetInAttackRange(Transform transform, float attackRange)
+        public CheckTargetInAttackRange(Transform transform, float attackRange, int targetLayerMask)
         {
             _transform = transform;
             _attackRange = attackRange;
+            _targetLayerMask = targetLayerMask;
 
         }
 
@@ -24,7 +25,7 @@ namespace Witch.WitchAI
             if (t == null)
             {
                 Collider[] colliders = Physics.OverlapSphere(
-                    _transform.position, _attackRange, TargetLayerMask);
+                    _transform.position, _attackRange, _targetLayerMask);
                 
                 
                 if (colliders.Length > 0)

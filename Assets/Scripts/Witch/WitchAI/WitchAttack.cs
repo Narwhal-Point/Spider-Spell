@@ -9,30 +9,23 @@ namespace Witch.WitchAI
     {
         private Transform _lastTarget;
 
-        private float _attackTime = 1f;
-
-        private int _weaponHoldingDegree = 0;
-
         public WitchAttack()
         {
         }
 
         public override NodeState Evaluate()
         {
-            Transform target = (Transform)GetData("attack");
+            Transform target = (Transform)GetData("target");
             // GetComponent is not performant, so only run it when a new target has been found
             if (target != _lastTarget)
             {
                 _lastTarget = target;
             }
-
-            ClearData("attack");
+            
+            
             ClearData("target");
-            ClearData("retreat");
-            ClearData("playerLost");
 
-
-            State = NodeState.Running;
+            State = NodeState.Failure;
             return State;
         }
     }
