@@ -6674,13 +6674,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434472929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.03690518, y: -0, z: -0, w: 0.9993188}
-  m_LocalPosition: {x: 94, y: -458.14, z: -331.64}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 94, y: -458.91, z: -332.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 4.23, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &434472931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6798,11 +6798,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showDebug: 0
   observedObject: {fileID: 247806180}
-  translationSpeed: 4
-  rotationSpeed: 4
+  translationSpeed: 2
+  rotationSpeed: 2
   XSensitivity: 2
   YSensitivity: 2
-  positionInterpolationType: 0
+  positionInterpolationType: 1
   camUpperAngleMargin: 10
   camLowerAngleMargin: 80
   enableClipZoom: 0
@@ -7822,7 +7822,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &963194226
 AudioListener:
   m_ObjectHideFlags: 0
