@@ -12,19 +12,24 @@ namespace Witch.WitchAI
         private int _routeIndex;
         
         private bool _isVibin;
-        private const float VibeTime = 1f;
+        private readonly float _vibeTime;
         private float _restCounter;
         private readonly float _speed;
         private readonly NavMeshAgent _agent;
+
+        private bool _reachedPoint = false;
         
         
 
-        public WitchWander(Transform transform, Transform[] vibePoints, NavMeshAgent agent)
+        public WitchWander(Transform transform, Transform[] vibePoints, NavMeshAgent agent, float vibeTime)
         {
             _transform = transform;
             _vibePoints = vibePoints;
-            _routeIndex = GetNewRouteIndex(); // Initialize with a random index
             _agent = agent;
+            _vibeTime = vibeTime;
+            _routeIndex = Random.Range(0, _vibePoints.Length); // Initialize with a random index
+            Transform wp = _vibePoints[_routeIndex];
+            _agent.destination = wp.position;
 
         }
         
@@ -34,16 +39,16 @@ namespace Witch.WitchAI
             if (_isVibin)
             {
                 _restCounter += Time.deltaTime;
-                if (_restCounter >= VibeTime)
+                if (_restCounter >= _vibeTime)
                     _isVibin = false;
             }
             else
             {
                 Transform wp = _vibePoints[_routeIndex];
                 // arrived at patrol point
-                if (Vector3.Distance(_transform.position, wp.position) < 0.01f)
+                if (_agent.remainingDistance < 0.01f && !_reachedPoint)
                 {
-                    _transform.position = wp.position;
+                    _reachedPoint = true;
                     _restCounter = 0f;
                     _isVibin = true;
 
@@ -51,10 +56,9 @@ namespace Witch.WitchAI
                 }
                 else
                 {
-                    _agent.destination = wp.position;
                     // move to patrol point
-                    // _transform.position = Vector3.MoveTowards(_transform.position, wp.position, _speed * Time.deltaTime);
-                    // _transform.LookAt(wp.position);
+                    _reachedPoint = false;
+                    _agent.destination = wp.position;
                 }
             }
 
