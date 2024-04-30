@@ -8,10 +8,13 @@ namespace Witch.WitchAI
         private const int TargetLayerMask = 8; // wrong value
 
         private readonly Transform _transform;
+        private float _attackRange;
 
-        public CheckTargetInAttackRange(Transform transform)
+        public CheckTargetInAttackRange(Transform transform, float attackRange)
         {
             _transform = transform;
+            _attackRange = attackRange;
+
         }
 
         public override NodeState Evaluate()
@@ -21,7 +24,7 @@ namespace Witch.WitchAI
             if (t == null)
             {
                 Collider[] colliders = Physics.OverlapSphere(
-                    _transform.position, WitchBT.ChaseRange, TargetLayerMask);
+                    _transform.position, _attackRange, TargetLayerMask);
                 
                 
                 if (colliders.Length > 0)
