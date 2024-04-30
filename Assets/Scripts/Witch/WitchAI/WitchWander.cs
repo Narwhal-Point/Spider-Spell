@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
+using NavMeshAgent = UnityEngine.AI.NavMeshAgent;
 using Witch.BehaviourTree;
 
 namespace Witch.WitchAI
@@ -15,7 +15,7 @@ namespace Witch.WitchAI
         private const float VibeTime = 1f;
         private float _restCounter;
         private readonly float _speed;
-        private NavMeshAgent _agent;
+        private readonly NavMeshAgent _agent;
         
         
 
@@ -68,7 +68,7 @@ namespace Witch.WitchAI
             int newIndex;
             do
             {
-                newIndex = UnityEngine.Random.Range(0, _vibePoints.Length);
+                newIndex = Random.Range(0, _vibePoints.Length);
             } while (newIndex == _routeIndex);
 
             return newIndex;

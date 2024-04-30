@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Witch.BehaviourTree;
-using Sequence = Witch.BehaviourTree.Sequence;
+using NavMeshAgent = UnityEngine.AI.NavMeshAgent;
 
 namespace Witch.WitchAI
 {
     public class WitchBT : BTree
     {
-       private UnityEngine.AI.NavMeshAgent _agent;
+       private NavMeshAgent _agent;
         
         // distance from which the enemy will start chasing the player
         public float chaseRange = 6f;
@@ -22,7 +22,7 @@ namespace Witch.WitchAI
 
         private void Start()
         {
-            _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            _agent = GetComponent<NavMeshAgent>();
         }
         
         protected override Node SetupTree()

@@ -1,6 +1,6 @@
 ﻿using Witch.BehaviourTree;
 using UnityEngine;
-using UnityEngine.AI;
+using NavMeshAgent = UnityEngine.AI.NavMeshAgent;
 
 
 namespace Witch.WitchAI
