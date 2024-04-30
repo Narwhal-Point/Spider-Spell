@@ -12,9 +12,6 @@ namespace Witch.WitchAI
     {
        private UnityEngine.AI.NavMeshAgent _agent;
         
-        // speed of AI
-        public float speed = 4f;
-        
         // distance from which the enemy will start chasing the player
         public float chaseRange = 6f;
 
@@ -43,10 +40,10 @@ namespace Witch.WitchAI
                 new Sequence(new List<Node>
                 {
                 new CheckTargetInChaseRange(transform, chaseRange),
-                new WitchChase(transform, chaseRange, speed, _agent),
+                new WitchChase(transform, chaseRange, _agent),
                 }),
                 // wandering
-                new WitchWander(transform, waypoints, speed, _agent),
+                new WitchWander(transform, waypoints, _agent),
             });
 
             return root;

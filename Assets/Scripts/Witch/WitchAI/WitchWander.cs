@@ -19,11 +19,10 @@ namespace Witch.WitchAI
         
         
 
-        public WitchWander(Transform transform, Transform[] vibePoints, float speed, NavMeshAgent agent)
+        public WitchWander(Transform transform, Transform[] vibePoints, NavMeshAgent agent)
         {
             _transform = transform;
             _vibePoints = vibePoints;
-            _speed = speed;
             _routeIndex = GetNewRouteIndex(); // Initialize with a random index
             _agent = agent;
 
