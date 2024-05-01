@@ -138,7 +138,47 @@ namespace Player.Movement
         private float jumpCountCooldownTimer = 0f;
 
         #endregion
+
+        // should probably be moved to a seperate script.
+        // Should probably also move all the raycasts to another script.
+        #region puddleEffect
         
+        public delegate void PlayerInPuddle();
+
+        public static PlayerInPuddle OnPlayerInPuddle;
+
+        [Header("Death puddle")] 
+        // after delay player dies and needs to be respawned
+        [SerializeField] private float deathPuddleDelay = 2f;
+        [Tooltip("value Rigidbody velocity is divided by.")]
+        [SerializeField] private float puddleSpeedReduction = 2f;
+
+        private float deathPuddleTimer;
+        
+        private void PuddleEffects()
+        {
+            if (groundHit.collider.CompareTag("DeathPuddle"))
+            {
+                deathPuddleTimer += Time.deltaTime;
+                if (deathPuddleTimer >= deathPuddleDelay)
+                {
+                    deathPuddleTimer = 0;
+                    // TODO: implement death
+                    OnPlayerInPuddle?.Invoke();
+                    Debug.Log("Death");
+                }
+
+                // slowdown
+                Vector3 velocity = Rb.velocity;
+                velocity.x /= puddleSpeedReduction;
+                velocity.z /= puddleSpeedReduction;
+                Rb.velocity = velocity;
+            }
+        }
+
+        #endregion
+
+        #region Loading and Saving
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
@@ -152,7 +192,7 @@ namespace Player.Movement
             data.jumpCount = jumpCount;
         }
 
-
+        #endregion
         private void Awake()
         {
             _manager = new PlayerMovementStateManager();
@@ -210,6 +250,8 @@ namespace Player.Movement
                 DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
             }
+
+            PuddleEffects();
         }
 
         private void FixedUpdate()
@@ -500,14 +542,6 @@ namespace Player.Movement
                 // Play the particle system
                 particleSystem.Play();
             }
-        }
-
-        private void PuddleSlowDown()
-        {
-            Vector3 velocity = Rb.velocity;
-            velocity.x /= 2;
-            velocity.z /= 2;
-            Rb.velocity = velocity;
         }
     }
 }
