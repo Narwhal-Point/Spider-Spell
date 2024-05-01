@@ -501,5 +501,13 @@ namespace Player.Movement
                 particleSystem.Play();
             }
         }
+
+        private void PuddleSlowDown()
+        {
+            Vector3 velocity = Rb.velocity;
+            velocity.x /= 2;
+            velocity.z /= 2;
+            Rb.velocity = velocity;
+        }
     }
 }
