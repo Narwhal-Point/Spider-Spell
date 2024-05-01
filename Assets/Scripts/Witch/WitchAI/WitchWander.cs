@@ -30,7 +30,6 @@ namespace Witch.WitchAI
             _routeIndex = Random.Range(0, _vibePoints.Length); // Initialize with a random index
             Transform wp = _vibePoints[_routeIndex];
             _agent.destination = wp.position;
-
         }
         
         public override NodeState Evaluate()

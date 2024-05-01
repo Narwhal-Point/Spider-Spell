@@ -8,14 +8,14 @@ namespace Witch.WitchAI
     public class WitchChase : Node
     {
         private readonly Transform _transform;
-        private float _chaseRange;
         private NavMeshAgent _agent;
+        private WitchFov _fov;
 
-        public WitchChase(Transform transform, float chaseRange, NavMeshAgent agent)
+        public WitchChase(Transform transform, NavMeshAgent agent, WitchFov fov)
         {
             _transform = transform;
-            _chaseRange = chaseRange;
             _agent = agent;
+            _fov = fov;
             Debug.Log(_agent);
         }
 
@@ -37,7 +37,7 @@ namespace Witch.WitchAI
             }
 
             // is target outside of chase range? Stop chasing
-            if (Vector3.Distance(_transform.position, target.position) > _chaseRange)
+            if (!_fov.CanSeePlayer)
             {
                 ClearData("target");
                 State = NodeState.Failure;

@@ -11,12 +11,13 @@ namespace Witch.WitchAI
     public class WitchBT : BTree
     {
         private NavMeshAgent _agent;
+        private WitchFov _fov;
 
-        [Tooltip("Select the layers the witch should try to chase and attack")]
-        public LayerMask targetLayer;
+        // [Tooltip("Select the layers the witch should try to chase and attack")]
+        // public LayerMask targetLayer;
 
-        [Tooltip("Range from which the witch will start chasing the player")]
-        public float chaseRange = 6f;
+        // [Tooltip("Range from which the witch will start chasing the player")]
+        // public float chaseRange = 6f;
 
         [Tooltip("distance from which the witch will attack the player")]
         public float attackRange = 1f;
@@ -29,7 +30,8 @@ namespace Witch.WitchAI
         private new void Start()
         {
             _agent = GetComponent<NavMeshAgent>();
-            Debug.Log(targetLayer.value);
+            _fov = GetComponent<WitchFov>();
+            // Debug.Log(targetLayer.value);
             base.Start();
         }
 
@@ -41,14 +43,14 @@ namespace Witch.WitchAI
                 // sequence for attack
                 new Sequence(new List<Node>
                 {
-                    new CheckTargetInAttackRange(transform, attackRange, targetLayer),
+                    new CheckTargetInAttackRange(transform, attackRange, _fov.targetMask),
                     new WitchAttack(),
                 }),
                 // sequence for chasing
                 new Sequence(new List<Node>
                 {
-                    new CheckTargetInChaseRange(transform, chaseRange, targetLayer),
-                    new WitchChase(transform, chaseRange, _agent),
+                    new CheckTargetInChaseRange(transform, _fov),
+                    new WitchChase(transform, _agent, _fov),
                 }),
                 // wandering
                 new WitchWander(transform, waypoints, _agent, restTime),

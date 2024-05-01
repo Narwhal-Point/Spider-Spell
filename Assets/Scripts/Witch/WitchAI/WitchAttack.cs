@@ -21,7 +21,7 @@ namespace Witch.WitchAI
             {
                 _lastTarget = target;
             }
-            
+            Debug.Log("defeated player");
             
             ClearData("target");
 
