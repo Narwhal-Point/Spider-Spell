@@ -42,6 +42,30 @@ namespace Player.Movement.State_Machine
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            int distance = 2;            
+            RaycastHit hit;
+            bool raycastHit = Physics.Raycast(player.transform.position, -player.playerObj.up, out hit, distance);
+/*
+            // Draw the raycast for visualization
+            Debug.DrawRay(player.transform.position, player.MoveDirection * distance, Color.green);
+            if (raycastHit && hit.collider.CompareTag("Wall"))
+            {
+                Debug.Log("on wall");
+                // If hitting a wall, move along the wall's surface
+                Vector3 wallNormal = hit.normal;
+                Vector3 inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
+                Vector3 moveDirection = Vector3.Cross(wallNormal, inputDirection).normalized;
+                player.Rb.AddForce(inputDirection * (_moveSpeed * 10f), ForceMode.Force);
+                return;
+            }
+            else
+            {
+                Debug.Log("on ground");
+                player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+                // Otherwise, move as usual
+                player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
+                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            }*/
         }
 
         private void SpeedControl()
