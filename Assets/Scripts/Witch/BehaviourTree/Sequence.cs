@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Witch.BehaviourTree
 {
@@ -12,6 +13,14 @@ namespace Witch.BehaviourTree
 
         public override NodeState Evaluate()
         {
+            // return failure if sequencer is empty
+            if (Children.Count < 1)
+            {
+                Debug.LogError("Sequencer is empty!");
+                State = NodeState.Failure;
+                return State;
+            }
+
             // If there's no current node, get the first one
             if (_currentNode == null)
             {
