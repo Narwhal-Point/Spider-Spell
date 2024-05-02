@@ -61,7 +61,7 @@ namespace Witch.WitchAI
                 }
             }
 
-            State = NodeState.Running;
+            State = NodeState.Success;
             return State;
         }
 
