@@ -17,6 +17,15 @@ namespace Player.Movement.State_Machine
             // disable ground drag because otherwise we clamp the y value
             // this took hours to figure out...
             player.Rb.drag = 0f;
+            
+            player.lastDesiredMoveSpeed = player.DesiredMoveSpeed;
+            // using swingSpeed for now.
+            player.DesiredMoveSpeed = player.swingSpeed;
+            
+            if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
+                player.ChangeMomentum(2f);
+            else
+                player.MoveSpeed = player.DesiredMoveSpeed;
         }
 
         public override void UpdateState()
