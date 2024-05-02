@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using Player.Movement;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Player
@@ -12,8 +14,16 @@ namespace Player
         private float _deathPuddleTimer;
         private Rigidbody _rb;
 
+        [SerializeField] private Volume volume;
+        private Vignette _vignette;
+
         private void Start()
         {
+            if (volume.profile.TryGet<Vignette>(out var v))
+            {
+                _vignette = v;
+            }
+            
             _rb = GetComponent<Rigidbody>();
             PlayerMovement.onPlayerInPuddle += PuddleDeathTime;
             PlayerMovement.onPlayerLeftPuddle += ResetDeathTime;
@@ -45,7 +55,6 @@ namespace Player
         
         private void PuddleDeathTime()
         {
-            // Debug.Log("started dying");
 
             StartCoroutine(nameof(DeathTimeCoroutine));
         }
@@ -54,8 +63,10 @@ namespace Player
         {
             while (_deathPuddleTimer < puddleDeathDelay)
             {
+                // if the death time is slowed down or sped up this should be modified.
+                _vignette.intensity.value += 0.002f;
+                
                 _deathPuddleTimer += Time.deltaTime;
-                Debug.Log("Puddle Timer: " + _deathPuddleTimer);
                 
                 yield return null;
             }
@@ -75,7 +86,6 @@ namespace Player
 
         private void ResetToCheckpoint()
         {
-            Debug.Log("Death");
             // TODO: Create Game Over screen and hook it in here
             SceneManager.LoadSceneAsync("SampleScene");
         }
