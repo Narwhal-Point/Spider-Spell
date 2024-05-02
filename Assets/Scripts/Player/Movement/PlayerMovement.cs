@@ -9,6 +9,8 @@ namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour, IDataPersistence
     {
+        #region EditorValuesAndReferences
+        
         [Header("Movement")] public float walkSpeed = 10f;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
@@ -100,6 +102,8 @@ namespace Player.Movement
             Falling,
             Swinging
         }
+        
+        #endregion
 
         #region wallclimbing and rotation
 
@@ -143,34 +147,32 @@ namespace Player.Movement
         private float jumpCountCooldownTimer = 0f;
 
         #endregion
-
+        
+        #region puddleEffect
         // should probably be moved to a seperate script.
         // Should probably also move all the raycasts to another script.
-        #region puddleEffect
-        
         public delegate void PlayerInPuddle();
 
-        public static PlayerInPuddle OnPlayerInPuddle;
+        public static PlayerInPuddle onPlayerInPuddle;
+        public static PlayerInPuddle onPlayerLeftPuddle;
 
         [Header("Death puddle")] 
         // after delay player dies and needs to be respawned
-        [SerializeField] private float deathPuddleDelay = 2f;
+
         [Tooltip("value Rigidbody velocity is divided by.")]
         [SerializeField] private float puddleSpeedReduction = 2f;
 
-        private float deathPuddleTimer;
-        
+        private Collider _collider;
+        private float OriginalDesiredMoveSpeed;
+        private bool _enteredPuddle;
         private void PuddleEffects()
         {
             if (groundHit.collider.CompareTag("DeathPuddle"))
             {
-                deathPuddleTimer += Time.deltaTime;
-                if (deathPuddleTimer >= deathPuddleDelay)
+                if (!_enteredPuddle)
                 {
-                    deathPuddleTimer = 0;
-                    // TODO: implement death
-                    OnPlayerInPuddle?.Invoke();
-                    Debug.Log("Death");
+                    _enteredPuddle = true;
+                    onPlayerInPuddle?.Invoke();
                 }
 
                 // slowdown
@@ -178,6 +180,11 @@ namespace Player.Movement
                 velocity.x /= puddleSpeedReduction;
                 velocity.z /= puddleSpeedReduction;
                 Rb.velocity = velocity;
+            }
+            else if (!groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle)
+            {
+                _enteredPuddle = false;
+                onPlayerLeftPuddle?.Invoke();
             }
         }
 
@@ -217,6 +224,7 @@ namespace Player.Movement
 
         private void Start()
         {
+            _collider = GetComponent<Collider>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
@@ -225,7 +233,7 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
+            // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
             text.text = movementState.ToString();
@@ -255,9 +263,11 @@ namespace Player.Movement
 
             if (Input.GetKey(KeyCode.Escape))
             {
-                DataPersistenceManager.instance.SaveGame();
+                // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
             }
+            
+            PuddleEffects();
         }
 
         private void FixedUpdate()
