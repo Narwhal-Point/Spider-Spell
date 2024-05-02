@@ -15,17 +15,14 @@ namespace Witch.WitchAI
 
         public override NodeState Evaluate()
         {
-            Transform target = (Transform)GetData("target");
-            // GetComponent is not performant, so only run it when a new target has been found
-            if (target != _lastTarget)
-            {
-                _lastTarget = target;
-            }
-            Debug.Log("defeated player");
-            
-            ClearData("target");
+            Transform target = (Transform)GetData("attack");
 
-            State = NodeState.Failure;
+            Debug.Log("defeated player");
+
+            ClearData("target");
+            ClearData("attack");
+
+            State = NodeState.Success;
             return State;
         }
     }

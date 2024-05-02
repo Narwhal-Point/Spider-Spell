@@ -21,7 +21,7 @@ namespace Witch.WitchAI
         public override NodeState Evaluate()
         {
             
-            object t = GetData("Target");
+            object t = GetData("attack");
             if (t == null)
             {
                 Collider[] colliders = Physics.OverlapSphere(
@@ -31,7 +31,7 @@ namespace Witch.WitchAI
                 if (colliders.Length > 0)
                 {
                     // chase mode, so the ai saves key and the transform of the target for melee mode
-                    Parent.Parent.SetData("Target", colliders[0].transform);
+                    Parent.Parent.SetData("attack", colliders[0].transform);
                     
                     State = NodeState.Success;
                     return State;
