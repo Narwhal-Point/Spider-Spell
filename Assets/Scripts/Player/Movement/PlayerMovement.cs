@@ -226,7 +226,18 @@ namespace Player.Movement
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
         }
-
+        private void CalculatePlayerVMovement()
+        {
+            Vector3 camvmovement = cam.transform.position + cam.transform.right * 0.01f;
+            if (Physics.Raycast(camvmovement, cam.transform.forward, out var groundHit, 0, ground))
+            {
+                Debug.DrawLine(camvmovement, groundHit.point, Color.red);
+            }
+/*            else
+            {
+                Debug.DrawLine(camvmovement,100*cam.transform.forward+camvmovement, Color.green);
+            }*/
+        }
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if(IsDashing)
@@ -371,15 +382,16 @@ namespace Player.Movement
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
-            float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
-            float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;
-            float angng = cam.eulerAngles.y;
+            /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
+            float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
+            float forward = cam.eulerAngles.y;
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + angng;
-            Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+           // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
+            CalculatePlayerVMovement();
             return (targetAngle, angle);
         }
 
