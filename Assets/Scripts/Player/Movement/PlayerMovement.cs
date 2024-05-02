@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
@@ -79,6 +80,12 @@ namespace Player.Movement
         public bool IsAiming { get; private set; }
 
         public bool IsSnapping { get; set; } = false;
+        
+        public bool MenuOpenCloseInput { get; private set; }
+        
+        private InputAction _menuOpenCloseAction;
+        
+        private PlayerInput _playerInput;
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -167,6 +174,8 @@ namespace Player.Movement
             SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown, DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
+            _playerInput = GetComponent<PlayerInput>();
+            _menuOpenCloseAction = _playerInput.actions["MenuOpenClose"];
         }
 
         private void Start()
@@ -179,6 +188,7 @@ namespace Player.Movement
 
         private void Update()
         {
+            MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // print the current movement state on the screen
             text.text = movementState.ToString();
 
@@ -205,11 +215,11 @@ namespace Player.Movement
                 }
             }
             
-            if (Input.GetKey(KeyCode.Escape))
-            {
-                DataPersistenceManager.instance.SaveGame();
-                SceneManager.LoadSceneAsync("MainMenu");
-            }
+            // if (Input.GetKey(KeyCode.Escape))
+            // {
+            //     DataPersistenceManager.instance.SaveGame();
+            //     SceneManager.LoadSceneAsync("MainMenu");
+            // }
         }
 
         private void FixedUpdate()
@@ -342,7 +352,6 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Debug.Log("hi3");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
