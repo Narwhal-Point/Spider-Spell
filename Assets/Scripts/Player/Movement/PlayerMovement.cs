@@ -228,15 +228,32 @@ namespace Player.Movement
         }
         private void CalculatePlayerVMovement()
         {
-            Vector3 camvmovement = cam.transform.position + cam.transform.right * 0.01f;
-            if (Physics.Raycast(camvmovement, cam.transform.forward, out var groundHit, 0, ground))
+            Vector3 rightOrigin = cam.position + cam.right * 50f;
+            Vector3 upOrigin = cam.position + cam.up * 50f;
+            
+            Plane fPlane = new Plane(transform.up, transform.position);
+            Plane rPlane = new Plane(transform.up, transform.position);
+
+            Ray rRay = new Ray(rightOrigin, cam.forward * 100);
+            Ray uRay = new Ray(upOrigin, cam.forward * 100);
+
+            Vector3 cam2Player = transform.position - cam.position;
+            float upOrDown = Vector3.Dot(cam2Player, transform.up);
+            
+            if (fPlane.Raycast(uRay, out float uEnter))
             {
-                Debug.DrawLine(camvmovement, groundHit.point, Color.red);
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                Vector3 forward = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + forward.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
             }
-/*            else
-            {
-                Debug.DrawLine(camvmovement,100*cam.transform.forward+camvmovement, Color.green);
-            }*/
+            
+            if (rPlane.Raycast(rRay, out float rEnter))            {
+                Vector3 fPoint = rRay.GetPoint(rEnter);
+                Debug.DrawLine(rightOrigin, fPoint, Color.red);
+                Vector3 right = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + right.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
+            }
         }
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
@@ -353,7 +370,6 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Debug.Log("hi3");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
