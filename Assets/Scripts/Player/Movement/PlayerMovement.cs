@@ -223,9 +223,12 @@ namespace Player.Movement
             Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             Quaternion combinedRotation = surfaceRotation * facingRotation;
-            Vector3 moveDirection = combinedRotation * Vector3.forward;
+            Vector3 moveDirection = movementForward * InputDirection.y + movementRight * InputDirection.x;
             return moveDirection;
         }
+
+        private Vector3 movementForward;
+        private Vector3 movementRight;
         private void CalculatePlayerVMovement()
         {
             Vector3 rightOrigin = cam.position + cam.right * 50f;
@@ -244,15 +247,15 @@ namespace Player.Movement
             {
                 Vector3 fPoint = uRay.GetPoint(uEnter);
                 Debug.DrawLine(upOrigin, fPoint, Color.red);
-                Vector3 forward = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + forward.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
             }
             
             if (rPlane.Raycast(rRay, out float rEnter))            {
                 Vector3 fPoint = rRay.GetPoint(rEnter);
                 Debug.DrawLine(rightOrigin, fPoint, Color.red);
-                Vector3 right = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + right.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
+                movementRight = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
             }
         }
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
@@ -400,9 +403,8 @@ namespace Player.Movement
         {
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
             float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
-            float forward = cam.eulerAngles.y;
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg ;
            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
