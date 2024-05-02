@@ -371,10 +371,12 @@ namespace Player.Movement
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
-            float angleBetweenDownAndCamera = Mathf.DeltaAngle(Quaternion.LookRotation(Vector3.down).eulerAngles.y, cam.eulerAngles.y);
-            float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 2f) % 360f;
+            float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
+            float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;
+            float angng = cam.eulerAngles.y;
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + middleAngle;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + angng;
+            Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
