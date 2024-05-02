@@ -10,7 +10,7 @@ namespace Player.Movement
     public class PlayerMovement : MonoBehaviour, IDataPersistence
     {
         #region EditorValuesAndReferences
-        
+
         [Header("Movement")] public float walkSpeed = 10f;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
@@ -102,7 +102,7 @@ namespace Player.Movement
             Falling,
             Swinging
         }
-        
+
         #endregion
 
         #region wallclimbing and rotation
@@ -147,24 +147,24 @@ namespace Player.Movement
         private float jumpCountCooldownTimer = 0f;
 
         #endregion
-        
+
         #region puddleEffect
-        // should probably be moved to a seperate script.
-        // Should probably also move all the raycasts to another script.
+
         public delegate void PlayerInPuddle();
 
         public static PlayerInPuddle onPlayerInPuddle;
         public static PlayerInPuddle onPlayerLeftPuddle;
 
-        [Header("Death puddle")] 
+        [Header("Death puddle")]
         // after delay player dies and needs to be respawned
-
         [Tooltip("value Rigidbody velocity is divided by.")]
-        [SerializeField] private float puddleSpeedReduction = 2f;
+        [SerializeField]
+        private float puddleSpeedReduction = 2f;
 
         private Collider _collider;
         private float OriginalDesiredMoveSpeed;
         private bool _enteredPuddle;
+
         private void PuddleEffects()
         {
             if (groundHit.collider.CompareTag("DeathPuddle"))
@@ -181,7 +181,8 @@ namespace Player.Movement
                 velocity.z /= puddleSpeedReduction;
                 Rb.velocity = velocity;
             }
-            else if (!groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle)
+            else if (!groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle &&
+                     _manager.CurrentState != JumpingState || _manager.CurrentState != FallingState)
             {
                 _enteredPuddle = false;
                 onPlayerLeftPuddle?.Invoke();
@@ -191,6 +192,7 @@ namespace Player.Movement
         #endregion
 
         #region Loading and Saving
+
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
@@ -204,6 +206,7 @@ namespace Player.Movement
         }
 
         #endregion
+
         private void Awake()
         {
             _manager = new PlayerMovementStateManager();
@@ -266,7 +269,7 @@ namespace Player.Movement
                 // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
             }
-            
+
             PuddleEffects();
         }
 
@@ -448,7 +451,7 @@ namespace Player.Movement
             float time = 0;
             float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
             float startValue = MoveSpeed;
-            
+
             while (time < difference && Rb.velocity.magnitude > 0.5f)
             {
                 MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);

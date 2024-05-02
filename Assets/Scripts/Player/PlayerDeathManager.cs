@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement;
 using UnityEngine;
@@ -10,13 +11,20 @@ namespace Player
         [SerializeField] private float puddleDeathDelay = 2f;
         private float _deathPuddleTimer;
         private Rigidbody _rb;
+
         private void Start()
         {
             _rb = GetComponent<Rigidbody>();
             PlayerMovement.onPlayerInPuddle += PuddleDeathTime;
             PlayerMovement.onPlayerLeftPuddle += ResetDeathTime;
         }
-        
+
+        private void OnDestroy()
+        {
+            PlayerMovement.onPlayerInPuddle -= PuddleDeathTime;
+            PlayerMovement.onPlayerLeftPuddle -= ResetDeathTime;
+        }
+
         #region Loading and Saving
         // public void LoadData(GameData data)
         // {
@@ -47,7 +55,8 @@ namespace Player
             while (_deathPuddleTimer < puddleDeathDelay)
             {
                 _deathPuddleTimer += Time.deltaTime;
-                // Debug.Log("Puddle Timer: " + _deathPuddleTimer);
+                Debug.Log("Puddle Timer: " + _deathPuddleTimer);
+                
                 yield return null;
             }
             
