@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 0eaa69e4435be894e91328fc660217b7
+<<<<<<<< HEAD:Assets/Shaders/Cel Shader.meta
+guid: 21d641d8d62433c478c7c10ae4329fa7
+========
+guid: 7aa51ee5d909adc4685d8a3c5416002c
+>>>>>>>> main:Assets/Shaders/Outline.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
