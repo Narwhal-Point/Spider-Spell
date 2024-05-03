@@ -12,6 +12,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _settingsMenuCanvasGO;
     [SerializeField] private GameObject _keyboardCanvasGO;
     [SerializeField] private GameObject _gamepadCanvasGO;
+    [SerializeField] private GameObject _promptCanvasGO;
     
     [Header("Player Scripts to Deactivate on Pause")]
     public PlayerInput _playerInput;
@@ -21,6 +22,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _settingsMenuFirst;
     [SerializeField] private GameObject _keyboardFirst;
     [SerializeField] private GameObject _gamepadFirst;
+    [SerializeField] private GameObject _promptFirst;
     
     private bool isPaused;
     private GameObject lastSelected;
@@ -34,6 +36,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
+        _promptCanvasGO.SetActive(false); 
     }
 
     private void Update()
@@ -82,6 +85,7 @@ public class MenuManager : MonoBehaviour
     private void OpenMainMenu()
     {
         _mainMenuCanvasGO.SetActive(true);
+        _promptCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
@@ -92,6 +96,7 @@ public class MenuManager : MonoBehaviour
     private void OpenSettingsMenuHandle()
     {
         _settingsMenuCanvasGO.SetActive(true);
+        _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
@@ -102,6 +107,7 @@ public class MenuManager : MonoBehaviour
     private void OpenKeyboardCanvas()
     {
         _keyboardCanvasGO.SetActive(true);
+        _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
@@ -112,6 +118,7 @@ public class MenuManager : MonoBehaviour
     private void OpenGamepadCanvas()
     {
         _gamepadCanvasGO.SetActive(true);
+        _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
@@ -119,8 +126,20 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(_gamepadFirst);
     }
 
+    private void OpenPrompt()
+    {
+        _promptCanvasGO.SetActive(true);
+        _gamepadCanvasGO.SetActive(false);
+        _mainMenuCanvasGO.SetActive(false);
+        _settingsMenuCanvasGO.SetActive(false);
+        _keyboardCanvasGO.SetActive(false);
+        
+        EventSystem.current.SetSelectedGameObject(_promptFirst);
+    }
+
     private void CloseAllMenus()
     {
+        _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
@@ -159,9 +178,15 @@ public class MenuManager : MonoBehaviour
 
     public void OnReturnToMainMenuPress()
     {
+        OpenPrompt();
+    }
+    
+    public void OnConfirmReturnToMainMenu()
+    {
         DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("MainMenu");
     }
+    
     #endregion
     
     #region Settings Menu Button Actions
