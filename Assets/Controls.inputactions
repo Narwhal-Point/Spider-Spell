@@ -89,7 +89,7 @@
                 {
                     "name": "MenuOpenClose",
                     "type": "Button",
-                    "id": "ff8b4898-0952-4463-8232-a8eb10635f30",
+                    "id": "afae8e0b-4b23-42a4-ad56-a8173d786753",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -451,7 +451,7 @@
                 },
                 {
                     "name": "",
-                    "id": "0d42d5cd-9774-486c-a62d-3f270cad1466",
+                    "id": "f8dce8e3-2821-4736-b544-fde2e1b56297",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
@@ -462,7 +462,7 @@
                 },
                 {
                     "name": "",
-                    "id": "17944253-d5ff-4027-9011-1a4c4231127d",
+                    "id": "2d178c3a-8f79-41aa-9e95-8805165cc09b",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
@@ -984,6 +984,45 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "MenuOpenClose",
+            "id": "801b9821-4521-49b4-9236-e9875a51b67f",
+            "actions": [
+                {
+                    "name": "MenuOpenClose",
+                    "type": "Button",
+                    "id": "228136c5-b572-47d1-a0e0-3996734a36f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "bcecccf6-0cac-4678-b994-605550fd627f",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "MenuOpenClose",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cfdce76d-017d-4f4e-8cf5-88e78331f0c3",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MenuOpenClose",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -3,6 +3,7 @@ using Player.Movement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -55,7 +56,8 @@ public class MenuManager : MonoBehaviour
     public void Pause()
     {
         OpenMainMenu();
-        // _playerInput.enabled = false;
+        _playerInput.enabled = false;
+        _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         isPaused = true;
@@ -68,7 +70,7 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1f;
 
         CloseAllMenus();
-        // _playerInput.enabled = true;
+        _playerInput.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -153,6 +155,12 @@ public class MenuManager : MonoBehaviour
     public void OnResumePress()
     {
         UnPause();
+    }
+
+    public void OnReturnToMainMenuPress()
+    {
+        DataPersistenceManager.instance.SaveGame();
+        SceneManager.LoadSceneAsync("MainMenu");
     }
     #endregion
     
