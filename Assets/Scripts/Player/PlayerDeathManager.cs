@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace Player
 {
-    public class PlayerDeathManager : MonoBehaviour//, IDataPersistence
+    public class PlayerDeathManager : MonoBehaviour
     {
         [SerializeField] private float puddleDeathDelay = 2f;
         private float _deathPuddleTimer;
@@ -34,21 +34,6 @@ namespace Player
             PlayerMovement.onPlayerInPuddle -= PuddleDeathTime;
             PlayerMovement.onPlayerLeftPuddle -= ResetDeathTime;
         }
-
-        #region Loading and Saving
-        // public void LoadData(GameData data)
-        // {
-        //     _rb.position = data.position;
-        //     // jumpCount = data.jumpCount;
-        // }
-        //
-        // public void SaveData(GameData data)
-        // {
-        //     data.position = _rb.position;
-        //     // data.jumpCount = jumpCount;
-        // }
-    
-        #endregion
 
 
         #region puddle Handlig
@@ -81,6 +66,7 @@ namespace Player
             StopCoroutine(nameof(DeathTimeCoroutine));
             // Debug.Log("Puddle Timer: " + _deathPuddleTimer);
             _deathPuddleTimer = 0;
+            _vignette.intensity.value = 0f;
         }
         #endregion
 

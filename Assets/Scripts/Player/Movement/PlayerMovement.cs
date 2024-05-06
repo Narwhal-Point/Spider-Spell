@@ -160,14 +160,13 @@ namespace Player.Movement
         [Tooltip("value Rigidbody velocity is divided by.")]
         [SerializeField]
         private float puddleSpeedReduction = 2f;
-
-        private Collider _collider;
+        
         private float OriginalDesiredMoveSpeed;
         private bool _enteredPuddle;
 
         private void PuddleEffects()
         {
-            if (groundHit.collider.CompareTag("DeathPuddle"))
+            if (groundHit.collider && groundHit.collider.CompareTag("DeathPuddle"))
             {
                 if (!_enteredPuddle)
                 {
@@ -181,8 +180,8 @@ namespace Player.Movement
                 velocity.z /= puddleSpeedReduction;
                 Rb.velocity = velocity;
             }
-            else if (!groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle &&
-                     _manager.CurrentState != JumpingState || _manager.CurrentState != FallingState)
+            else if (groundHit.collider && !groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle == true &&
+                     (_manager.CurrentState != JumpingState || _manager.CurrentState != FallingState))
             {
                 _enteredPuddle = false;
                 onPlayerLeftPuddle?.Invoke();
@@ -227,7 +226,6 @@ namespace Player.Movement
 
         private void Start()
         {
-            _collider = GetComponent<Collider>();
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
@@ -402,7 +400,6 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Debug.Log("hi3");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
