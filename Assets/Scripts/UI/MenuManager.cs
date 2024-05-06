@@ -23,6 +23,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _keyboardFirst;
     [SerializeField] private GameObject _gamepadFirst;
     [SerializeField] private GameObject _promptFirst;
+    public InputActionAsset actions;
     
     private bool isPaused;
     private GameObject lastSelected;
@@ -31,6 +32,9 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
+        var rebinds = PlayerPrefs.GetString("rebinds");
+        if (!string.IsNullOrEmpty(rebinds))
+            actions.LoadBindingOverridesFromJson(rebinds);
         UnPause();
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
