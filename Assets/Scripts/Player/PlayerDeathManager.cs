@@ -5,12 +5,16 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Player
 {
     public class PlayerDeathManager : MonoBehaviour
     {
+        [Header("Puddles")]
         [SerializeField] private float puddleDeathDelay = 2f;
+        [Tooltip("Speed the vignette effect dissapears after leaving the puddle")]
+        [SerializeField] private float vignetteDissapearSpeed = 1f;
         private float _deathPuddleTimer;
         private Rigidbody _rb;
 
@@ -48,8 +52,12 @@ namespace Player
         {
             while (_deathPuddleTimer < puddleDeathDelay)
             {
-                // if the death time is slowed down or sped up this should be modified.
-                _vignette.intensity.value += 0.002f;
+                // make the vignette always reach 1 in '_deathPuddleTimer' time.
+                // Calculate the rate of change per frame
+                float rateOfChange = 1 / puddleDeathDelay;
+                // Multiply by Time.deltaTime to get the change for this frame
+                _vignette.intensity.value += rateOfChange * Time.deltaTime;
+                
                 
                 _deathPuddleTimer += Time.deltaTime;
                 
@@ -59,6 +67,16 @@ namespace Player
             _deathPuddleTimer = 0;
             ResetToCheckpoint();
         }
+
+        private IEnumerator DisableVignette()
+        {
+            while (_vignette.intensity.value > 0)
+            {
+                _vignette.intensity.value -= vignetteDissapearSpeed * Time.deltaTime;
+                
+                yield return null;
+            }
+        }
         
 
         private void ResetDeathTime()
@@ -66,7 +84,8 @@ namespace Player
             StopCoroutine(nameof(DeathTimeCoroutine));
             // Debug.Log("Puddle Timer: " + _deathPuddleTimer);
             _deathPuddleTimer = 0;
-            _vignette.intensity.value = 0f;
+            StartCoroutine(DisableVignette());
+            // _vignette.intensity.value = 0f;
         }
         #endregion
 

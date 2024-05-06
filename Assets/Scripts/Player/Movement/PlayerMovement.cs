@@ -173,12 +173,7 @@ namespace Player.Movement
                     _enteredPuddle = true;
                     onPlayerInPuddle?.Invoke();
                 }
-
-                // slowdown
-                Vector3 velocity = Rb.velocity;
-                velocity.x /= puddleSpeedReduction;
-                velocity.z /= puddleSpeedReduction;
-                Rb.velocity = velocity;
+                Slowdown(puddleSpeedReduction);
             }
             else if (groundHit.collider && !groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle == true &&
                      (_manager.CurrentState != JumpingState || _manager.CurrentState != FallingState))
@@ -186,6 +181,15 @@ namespace Player.Movement
                 _enteredPuddle = false;
                 onPlayerLeftPuddle?.Invoke();
             }
+        }
+
+        private void Slowdown(float speedReduction)
+        {
+            // slowdown
+            Vector3 velocity = Rb.velocity;
+            velocity.x /= speedReduction;
+            velocity.z /= speedReduction;
+            Rb.velocity = velocity;
         }
 
         #endregion
