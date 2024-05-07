@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -583,7 +583,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 148876079}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0018695461, y: -1.1641513e-10, z: 2.1764383e-13, w: 0.9999983}
+  m_LocalRotation: {x: 0.0018695462, y: 1.387774e-17, z: -2.4785278e-20, w: 0.9999983}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1032,7 +1032,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3ca0885cec4e9b9ebd12db31f279fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
+  walkSpeed: 5
   sprintSpeed: 10
   swingSpeed: 20
   crouchSpeed: 3.5
@@ -1073,6 +1073,8 @@ MonoBehaviour:
   turnSmoothTime: 0.1
   jumpCount: 0
   jumpCountCooldown: 0.5
+  movementForward: {x: 0, y: 0, z: 0}
+  movementRight: {x: 0, y: 0, z: 0}
 --- !u!114 &247806187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7762,7 +7764,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.09020966, y: -0.0000000360981, z: -0.0000000032697287, w: 0.9959228}
+  m_LocalRotation: {x: -0.09020966, y: 0.0000000360981, z: 0.0000000032697287, w: 0.9959228}
   m_LocalPosition: {x: 94, y: -458.96, z: -337.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8328,7 +8330,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1140948557}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.09020967, y: -0.000000019158882, z: -0.0000000017353922, w: 0.9959228}
+  m_LocalRotation: {x: -0.09020967, y: 0.000000019158882, z: 0.0000000017353922, w: 0.9959228}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

@@ -68,7 +68,7 @@ namespace Player.Movement.State_Machine
 
         private void SlidingMovement()
         {
-            // sliding normally
+          /*  // sliding normally
            Vector3 inputDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             if (!OnSlope() || player.Rb.velocity.y > -0.1f)
@@ -83,7 +83,7 @@ namespace Player.Movement.State_Machine
             }
 
             if(SlideTimer <= 0)
-                StopSlide();
+                StopSlide();*/
         }
     
         private bool OnSlope()

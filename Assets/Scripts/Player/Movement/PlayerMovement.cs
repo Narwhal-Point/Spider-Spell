@@ -217,7 +217,7 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            HandleRotation();
+            //HandleRotation();
             TurnPlayer();
             CalculatePlayerVMovement();
         }
@@ -364,7 +364,7 @@ namespace Player.Movement
             if (_manager.CurrentState == JumpingState)
                 return;
 
-            facingAngles = GetFacingAngle(InputDirection);          
+            //facingAngles = GetFacingAngle(InputDirection);          
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {

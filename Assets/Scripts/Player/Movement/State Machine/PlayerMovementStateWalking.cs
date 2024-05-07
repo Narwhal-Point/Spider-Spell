@@ -38,19 +38,22 @@ namespace Player.Movement.State_Machine
         }
         private void MovePlayer()
         {
-            /* Vector3 forward = player.movementForward.normalized;
-             Vector3 right = player.movementRight.normalized;
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
 
-             Vector3 forwardRelativeInput = player.InputDirection.y * forward;
-             Vector3 rightRelativeInput = player.InputDirection.x * right;
+            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
+            Vector3 rightRelativeInput = player.InputDirection.x * right;
 
-             Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
+            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
+            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, player.transform.up).normalized;
+            Vector3 movementWithSpeed = planeRelativeMovement * _moveSpeed * Time.deltaTime;
+            player.transform.position += movementWithSpeed;
             //Stutter issue with transform.translate
-             player.transform.Translate(planeRelativeMovement * Time.deltaTime, Space.World);*/
-            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+            //player.transform.Translate(planeRelativeMovement * Time.deltaTime, Space.World);
+            /*player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);*/
         }
 
         private void SpeedControl()
