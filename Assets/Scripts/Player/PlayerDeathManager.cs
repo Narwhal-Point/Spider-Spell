@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using Player.Movement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Player
 {
@@ -16,7 +14,6 @@ namespace Player
         [Tooltip("Speed the vignette effect dissapears after leaving the puddle")]
         [SerializeField] private float vignetteDissapearSpeed = 1f;
         private float _deathPuddleTimer;
-        private Rigidbody _rb;
 
         [SerializeField] private Volume volume;
         private Vignette _vignette;
@@ -28,7 +25,6 @@ namespace Player
                 _vignette = v;
             }
             
-            _rb = GetComponent<Rigidbody>();
             PlayerMovement.onPlayerInPuddle += PuddleDeathTime;
             PlayerMovement.onPlayerLeftPuddle += ResetDeathTime;
         }
@@ -44,7 +40,7 @@ namespace Player
         
         private void PuddleDeathTime()
         {
-
+            StopCoroutine(nameof(DisableVignette));
             StartCoroutine(nameof(DeathTimeCoroutine));
         }
         
@@ -82,10 +78,8 @@ namespace Player
         private void ResetDeathTime()
         {
             StopCoroutine(nameof(DeathTimeCoroutine));
-            // Debug.Log("Puddle Timer: " + _deathPuddleTimer);
             _deathPuddleTimer = 0;
             StartCoroutine(DisableVignette());
-            // _vignette.intensity.value = 0f;
         }
         #endregion
 
