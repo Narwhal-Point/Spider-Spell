@@ -45,7 +45,7 @@ namespace Player.Movement.State_Machine
             Vector3 rightRelativeInput = player.InputDirection.x * right;
 
             Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
-            player.transform.Translate(planeRelativeMovement, Space.World);
+            player.transform.Translate(planeRelativeMovement * _moveSpeed * Time.deltaTime, Space.World);
            /* player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
