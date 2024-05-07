@@ -220,15 +220,15 @@ namespace Player.Movement
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
-            Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion facingRotation = Quaternion.Euler(movementForward.x, 0f, movementForward.y);
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = movementForward * InputDirection.y + movementRight * InputDirection.x;
             return moveDirection;
         }
 
-        private Vector3 movementForward;
-        private Vector3 movementRight;
+        public Vector3 movementForward;
+        public Vector3 movementRight;
         private void CalculatePlayerVMovement()
         {
             Vector3 rightOrigin = cam.position + cam.right * 50f;
@@ -394,7 +394,7 @@ namespace Player.Movement
             }
             else if (InputDirection != Vector2.zero)
             {
-                orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
+                orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
                 transform.rotation = orientation.rotation;
             }
         }
@@ -404,7 +404,7 @@ namespace Player.Movement
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
             float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg ;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
