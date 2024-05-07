@@ -223,8 +223,13 @@ namespace Player.Movement
 
         private void TurnPlayer()
         {
+            Vector3 forward = movementForward.normalized;
+            Vector3 right = movementRight.normalized;
+
+            Vector3 forwardRelativeInput = InputDirection.y * forward;
+            Vector3 rightRelativeInput = InputDirection.x * right;
             // Calculate the combined movement direction relative to the camera
-            Vector3 combinedMovement = movementForward + movementRight;
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
 
             // Project the combined movement onto the horizontal plane
             combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
@@ -357,7 +362,7 @@ namespace Player.Movement
             if (_manager.CurrentState == JumpingState)
                 return;
 
-            facingAngles = GetFacingAngle(InputDirection);
+            //facingAngles = GetFacingAngle(InputDirection);          
             
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
