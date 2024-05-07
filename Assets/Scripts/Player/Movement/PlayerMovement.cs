@@ -248,7 +248,7 @@ namespace Player.Movement
                 Vector3 fPoint = uRay.GetPoint(uEnter);
                 Debug.DrawLine(upOrigin, fPoint, Color.red);
                 movementForward = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
+                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown>0) ? -2 : 2), Color.red);
             }
             
             if (rPlane.Raycast(rRay, out float rEnter))            {
@@ -404,7 +404,7 @@ namespace Player.Movement
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
             float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + cam.eulerAngles.y;
            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
