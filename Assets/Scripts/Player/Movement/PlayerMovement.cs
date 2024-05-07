@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
@@ -215,7 +216,23 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            HandleRotation();
+            //HandleRotation();
+            TurnPlayer();
+            CalculatePlayerVMovement();
+        }
+
+        private void TurnPlayer()
+        {
+            //Make sure goalForward is orthogonal to transform up
+            movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;
+
+            if (movementForward == Vector3.zero || Vector3.Angle(movementForward, transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+            movementForward = Vector3.ProjectOnPlane(movementForward, transform.up);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movementForward, transform.up), 5f);
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -404,12 +421,12 @@ namespace Player.Movement
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
             float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + movementForward.y;
            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
-            CalculatePlayerVMovement();
+            //CalculatePlayerVMovement();
             return (targetAngle, angle);
         }
 
