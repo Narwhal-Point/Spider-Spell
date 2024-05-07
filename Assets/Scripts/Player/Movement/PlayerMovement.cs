@@ -61,7 +61,7 @@ namespace Player.Movement
         public AudioSource walkingSound;
         public AudioSource midAirSound;
         public AudioSource jumpingSound;
-        public bool jumpAnimation;
+        // public bool jumpAnimation;
         
 
         public TMP_Text text;
@@ -391,33 +391,29 @@ namespace Player.Movement
 
         private bool isJumping = false;
 
-        public void OnJump()
+        public void OnJump(InputValue value)
         {
+            isJumping = value.isPressed;
             if (!isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
-                isJumping = true;
-                jumpAnimation = true;
-                StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
+                // isJumping = true;
+                _manager.SwitchState(JumpingState);
+                // StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
             }
         }
 
-        private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, float frameCount)
-        {
-            float elapsedTime = 0f;
-            while (elapsedTime < frameCount)
-            {
-                yield return null;
-                elapsedTime += Time.deltaTime;
-            }
-            // for (int i = 0; i < frameCount; i++)
-            // {
-            //     yield return null; // Wait for one frame
-            // }
-
-            jumpAnimation = false;
-            _manager.SwitchState(nextState);
-            isJumping = false; // Reset jump flag
-        }
+        // private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, float frameCount)
+        // {
+        //     float elapsedTime = 0f;
+        //     while (elapsedTime < frameCount)
+        //     {
+        //         yield return null;
+        //         elapsedTime += Time.deltaTime;
+        //     }
+        //     
+        //     _manager.SwitchState(nextState);
+        //     isJumping = false;
+        // }
 
 
         // public void OnSprint(InputValue value)
