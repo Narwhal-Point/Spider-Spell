@@ -28,7 +28,7 @@ namespace Player.Movement
 
         public float slideYScale = 0.5f;
 
-        [Header("Dashing")] 
+        [Header("Dashing")]
         [SerializeField] private float dashDuration = 0.25f;
         [SerializeField] private float dashForce = 20f;
         [SerializeField] private float dashCooldown = 2f;
@@ -47,14 +47,14 @@ namespace Player.Movement
         public Transform playerObj;
         public Transform cam;
         public PlayerCam camScript;
-        
+
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
 
         // public AudioSource crouchSound;
         // public AudioSource uncrouchSound;
-        
+
         // sfx for spider
         public AudioSource webShootSound;
         public AudioSource landingSound;
@@ -62,7 +62,7 @@ namespace Player.Movement
         public AudioSource midAirSound;
         public AudioSource jumpingSound;
         public bool jumpAnimation;
-        
+
 
         public TMP_Text text;
 
@@ -99,7 +99,8 @@ namespace Player.Movement
 
         #region wallclimbing and rotation
 
-        [Header("wall climbing")] [SerializeField]
+        [Header("wall climbing")]
+        [SerializeField]
         private float spherecastRadius;
 
         [SerializeField] private float spherecastDistance;
@@ -132,14 +133,14 @@ namespace Player.Movement
         public PlayerMovementStateSliding SlidingState { get; private set; }
         public PlayerMovementStateSwinging SwingingState { get; private set; }
         public PlayerMovementStateDashing DashingState { get; private set; }
-        
+
         public int jumpCount;
         private bool canIncrementJumpCount = true;
         public float jumpCountCooldown = 0.5f; // Adjust the cooldown duration as needed
         private float jumpCountCooldownTimer = 0f;
 
         #endregion
-        
+
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
@@ -188,7 +189,7 @@ namespace Player.Movement
 
             // state update
             _manager.CurrentState.UpdateState();
-            
+
             if (_manager.CurrentState == JumpingState && Grounded && canIncrementJumpCount)
             {
                 jumpCount++;
@@ -205,7 +206,7 @@ namespace Player.Movement
                     canIncrementJumpCount = true;
                 }
             }
-            
+
             if (Input.GetKey(KeyCode.Escape))
             {
                 DataPersistenceManager.instance.SaveGame();
@@ -244,7 +245,7 @@ namespace Player.Movement
             combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
 
             // Rotate towards the combined movement direction
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 5f);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
 
             /*  //Camera follow rotation is fixed 
               movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;
@@ -273,7 +274,7 @@ namespace Player.Movement
         {
             Vector3 rightOrigin = cam.position + cam.right * 50f;
             Vector3 upOrigin = cam.position + cam.up * 50f;
-            
+
             Plane fPlane = new Plane(transform.up, transform.position);
             Plane rPlane = new Plane(transform.up, transform.position);
 
@@ -282,25 +283,26 @@ namespace Player.Movement
 
             Vector3 cam2Player = transform.position - cam.position;
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
-            
+
             if (fPlane.Raycast(uRay, out float uEnter))
             {
                 Vector3 fPoint = uRay.GetPoint(uEnter);
                 Debug.DrawLine(upOrigin, fPoint, Color.red);
                 movementForward = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown>0) ? -2 : 2), Color.red);
+                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
             }
-            
-            if (rPlane.Raycast(rRay, out float rEnter))            {
+
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
                 Vector3 fPoint = rRay.GetPoint(rEnter);
                 Debug.DrawLine(rightOrigin, fPoint, Color.red);
                 movementRight = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown>0) ? -2 : 2), Color.green);
+                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
         }
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
-            if(IsDashing)
+            if (IsDashing)
                 return;
             // check if player is on the ground
             Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
@@ -319,12 +321,12 @@ namespace Player.Movement
             IsHeadHit = Physics.Raycast(transform.position, playerObj.up, out headHit,
                 playerHeight * 0.5f + 0.2f, ground);
             Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
-            
+
             // check if an angled surface is in front of the player
             float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
-            
+
             // debug ray drawings
             // to the ground
             if (!Grounded)
@@ -344,26 +346,26 @@ namespace Player.Movement
                 Debug.DrawRay(transform.position + wallCastHeight,
                     playerObj.forward * wallCastDistance, Color.red);
             }
-            
+
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
-            
+
 
         }
 
         private void HandleRotation()
         {
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
-            
+
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
 
             if (_manager.CurrentState == JumpingState)
                 return;
 
-            //facingAngles = GetFacingAngle(InputDirection);          
-            
+            facingAngles = GetFacingAngle(InputDirection);          
+
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 Debug.Log("hi");
@@ -401,24 +403,24 @@ namespace Player.Movement
                 Debug.Log("old forward: " + transform.forward);
                 orientation.rotation = newOrientation;
                 transform.rotation = newOrientation;
-                
+
                 // move the player to the new surface
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-                
+
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
                 Debug.Log("new forward: " + transform.forward);
             }
-            /*// TODO: Change camera player rotation
-            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            // TODO: Change camera player rotation
+          /*  else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
-            
+
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
@@ -432,11 +434,11 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-           /* else if (InputDirection != Vector2.zero)
-            {
-                orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
-                transform.rotation = orientation.rotation;
-            }*/
+            /* else if (InputDirection != Vector2.zero)
+             {
+                 orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
+                 transform.rotation = orientation.rotation;
+             }*/
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
@@ -445,7 +447,7 @@ namespace Player.Movement
             float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
             // Target angle based on camera
             float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + movementForward.y;
-           // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
+            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
