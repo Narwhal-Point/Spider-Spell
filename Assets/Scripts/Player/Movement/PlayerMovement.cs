@@ -9,6 +9,8 @@ namespace Player.Movement
 {
     public class PlayerMovement : MonoBehaviour, IDataPersistence
     {
+        #region EditorValuesAndReferences
+
         [Header("Movement")] public float walkSpeed = 10f;
         public float sprintSpeed = 10f;
         public float swingSpeed = 20;
@@ -101,6 +103,8 @@ namespace Player.Movement
             Swinging
         }
 
+        #endregion
+
         #region wallclimbing and rotation
 
         [Header("wall climbing")] [SerializeField]
@@ -144,6 +148,54 @@ namespace Player.Movement
 
         #endregion
 
+        #region puddleEffect
+
+        public delegate void PlayerInPuddle();
+
+        public static PlayerInPuddle onPlayerInPuddle;
+        public static PlayerInPuddle onPlayerLeftPuddle;
+
+        [Header("Death puddle")]
+        // after delay player dies and needs to be respawned
+        [Tooltip("value Rigidbody velocity is divided by.")]
+        [SerializeField]
+        private float puddleSpeedReduction = 2f;
+        
+        private float OriginalDesiredMoveSpeed;
+        private bool _enteredPuddle;
+
+        private void PuddleEffects()
+        {
+            if (groundHit.collider && groundHit.collider.CompareTag("DeathPuddle"))
+            {
+                if (!_enteredPuddle)
+                {
+                    _enteredPuddle = true;
+                    onPlayerInPuddle?.Invoke();
+                }
+                Slowdown(puddleSpeedReduction);
+            }
+            else if (groundHit.collider && !groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle == true &&
+                     (_manager.CurrentState != JumpingState || _manager.CurrentState != FallingState))
+            {
+                _enteredPuddle = false;
+                onPlayerLeftPuddle?.Invoke();
+            }
+        }
+
+        private void Slowdown(float speedReduction)
+        {
+            // slowdown
+            Vector3 velocity = Rb.velocity;
+            velocity.x /= speedReduction;
+            velocity.z /= speedReduction;
+            Rb.velocity = velocity;
+        }
+
+        #endregion
+
+        #region Loading and Saving
+
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
@@ -156,6 +208,7 @@ namespace Player.Movement
             data.jumpCount = jumpCount;
         }
 
+        #endregion
 
         private void Awake()
         {
@@ -185,7 +238,7 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
+            // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
             text.text = movementState.ToString();
@@ -215,9 +268,11 @@ namespace Player.Movement
 
             if (Input.GetKey(KeyCode.Escape))
             {
-                DataPersistenceManager.instance.SaveGame();
+                // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
             }
+
+            PuddleEffects();
         }
 
         private void FixedUpdate()
@@ -349,7 +404,6 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Debug.Log("hi3");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
@@ -398,7 +452,7 @@ namespace Player.Movement
             float time = 0;
             float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
             float startValue = MoveSpeed;
-            
+
             while (time < difference && Rb.velocity.magnitude > 0.5f)
             {
                 MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
