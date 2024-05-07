@@ -216,23 +216,41 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            //HandleRotation();
+            HandleRotation();
             TurnPlayer();
             CalculatePlayerVMovement();
         }
 
         private void TurnPlayer()
         {
-            //Make sure goalForward is orthogonal to transform up
-            movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = movementForward + movementRight;
 
-            if (movementForward == Vector3.zero || Vector3.Angle(movementForward, transform.forward) < Mathf.Epsilon)
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, transform.forward) < Mathf.Epsilon)
             {
                 return;
             }
-            movementForward = Vector3.ProjectOnPlane(movementForward, transform.up);
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movementForward, transform.up), 5f);
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
+
+            // Rotate towards the combined movement direction
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 5f);
+
+            /*  //Camera follow rotation is fixed 
+              movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;
+
+              if (movementForward == Vector3.zero || Vector3.Angle(movementForward, transform.forward) < Mathf.Epsilon)
+              {
+                  return;
+              }
+              movementForward = Vector3.ProjectOnPlane(movementForward, transform.up);
+
+              transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movementForward, transform.up), 5f);*/
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -387,7 +405,7 @@ namespace Player.Movement
                 Rb.velocity = Vector3.zero;
                 Debug.Log("new forward: " + transform.forward);
             }
-            // TODO: Change camera player rotation
+            /*// TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -399,7 +417,7 @@ namespace Player.Movement
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
-            }
+            }*/
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -409,11 +427,11 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            else if (InputDirection != Vector2.zero)
+           /* else if (InputDirection != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
                 transform.rotation = orientation.rotation;
-            }
+            }*/
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
