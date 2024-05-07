@@ -244,7 +244,7 @@ namespace Player.Movement
             combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
 
             // Rotate towards the combined movement direction
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 5f);
 
             /*  //Camera follow rotation is fixed 
               movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;

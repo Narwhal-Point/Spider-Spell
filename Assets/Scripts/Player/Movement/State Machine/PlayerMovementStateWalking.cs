@@ -25,7 +25,7 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-           
+            SpeedControl();
             if (!player.Grounded)
                 manager.SwitchState(player.FallingState);
             else if (player.InputDirection == Vector2.zero)
@@ -34,7 +34,6 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            SpeedControl();
             MovePlayer();
         }
         private void MovePlayer()
