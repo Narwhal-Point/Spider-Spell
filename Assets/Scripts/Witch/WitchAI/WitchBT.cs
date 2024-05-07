@@ -50,7 +50,7 @@ namespace Witch.WitchAI
                 new Sequence(new List<Node>
                 {
                     new CheckTargetInChaseRange(transform, _fov),
-                    new WitchChase(transform, _agent, _fov),
+                    new WitchChase(transform, _agent, _fov, attackRange),
                 }),
                 // wandering
                 new WitchWander(transform, waypoints, _agent, restTime),
