@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -217,48 +218,10 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            HandleRotation();
-            TurnPlayer();
+            //HandleRotation();
             CalculatePlayerVMovement();
         }
-
-        private void TurnPlayer()
-        {
-            Vector3 forward = movementForward.normalized;
-            Vector3 right = movementRight.normalized;
-
-            Vector3 forwardRelativeInput = InputDirection.y * forward;
-            Vector3 rightRelativeInput = InputDirection.x * right;
-            // Calculate the combined movement direction relative to the camera
-            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
-
-            // Project the combined movement onto the horizontal plane
-            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
-
-            // Check if movement is negligible or zero
-            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, transform.forward) < Mathf.Epsilon)
-            {
-                return;
-            }
-
-            // Project the combined movement onto the horizontal plane again (not normalized this time)
-            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
-
-            // Rotate towards the combined movement direction
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
-
-            /*  //Camera follow rotation is fixed 
-              movementForward = Vector3.ProjectOnPlane(movementForward, transform.up).normalized;
-
-              if (movementForward == Vector3.zero || Vector3.Angle(movementForward, transform.forward) < Mathf.Epsilon)
-              {
-                  return;
-              }
-              movementForward = Vector3.ProjectOnPlane(movementForward, transform.up);
-
-              transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movementForward, transform.up), 5f);*/
-        }
-
+       
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
             Quaternion facingRotation = Quaternion.Euler(movementForward.x, 0f, movementForward.y);
@@ -355,8 +318,8 @@ namespace Player.Movement
         }
 
         private void HandleRotation()
-        {
-            float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
+        {            
+            /*float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
@@ -413,7 +376,7 @@ namespace Player.Movement
                 Debug.Log("new forward: " + transform.forward);
             }
             // TODO: Change camera player rotation
-          /*  else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+          *//*  else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -424,7 +387,7 @@ namespace Player.Movement
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
-            }*/
+            }*//*
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -434,13 +397,72 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            /* else if (InputDirection != Vector2.zero)
+            *//* else if (InputDirection != Vector2.zero)
              {
                  orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
                  transform.rotation = orientation.rotation;
              }*/
         }
+       /* public override void UpdateState()
+        {
+            float horizontal = Input.GetAxisRaw("Horizontal");
+            float vertical = Input.GetAxisRaw("Vertical");
 
+            Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+            if (direction.magnitude >= 0.1f)
+            {
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.localEulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                playerController.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
+
+            // Array of raycast directions covering different angles around the character
+            Vector3[] raycastDirections = {
+        transform.forward,
+        -transform.forward,
+        transform.right,
+        -transform.right,
+        transform.forward + transform.right,
+        transform.forward - transform.right,
+        -transform.forward + transform.right,
+        -transform.forward - transform.right
+    };
+
+            // Perform raycasts in all directions to detect climbable surfaces
+            RaycastHit hit;
+            foreach (Vector3 dir in raycastDirections)
+            {
+                if (Physics.Raycast(transform.position, dir, out hit, raycastDistance))
+                {
+                    Vector3 surfaceNormal = hit.normal;
+
+                    if (Mathf.Abs(surfaceNormal.y) < 0.1f)
+                    {
+                        ClimbSurface(surfaceNormal);
+                        return; // Exit the loop if climbing is initiated
+                    }
+                }
+            }
+        }
+        private void ClimbSurface(Vector3 surfaceNormal)
+        {
+            climbingSurface = true;
+            transform.up = surfaceNormal;
+
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
+
+            Vector3 inputDir = new Vector3(horizontal, vertical, 0f).normalized;
+
+            Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
+
+            playerController.Move(movementDir * climbSpeed * Time.deltaTime);
+        }*/
         private (float, float) GetFacingAngle(Vector2 direction)
         {
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);

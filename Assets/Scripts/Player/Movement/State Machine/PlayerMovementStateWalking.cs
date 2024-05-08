@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 namespace Player.Movement.State_Machine
 {
@@ -34,8 +36,45 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            MovePlayer();
+            Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
+            if (direction.magnitude >= 0.1f)
+            {
+                MovePlayer();
+                TurnPlayer();
+            }
+            TransitionPlayer();
         }
+        private void TurnPlayer()
+        {
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
+
+            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
+            Vector3 rightRelativeInput = player.InputDirection.x * right;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
+
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, player.transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up);
+
+            // Rotate towards the combined movement direction
+            player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, Quaternion.LookRotation(combinedMovement, player.transform.up), 15f);           
+        }
+
+        private void TransitionPlayer()
+        {
+            throw new NotImplementedException();
+        }
+
         private void MovePlayer()
         {
             Vector3 forward = player.movementForward.normalized;
