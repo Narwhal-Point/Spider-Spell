@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "76bec49e-1683-4d05-a168-0d18b0258648",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -310,17 +319,6 @@
                 },
                 {
                     "name": "",
-                    "id": "0da02b09-720b-493f-a973-bb09094bb2c4",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "03a05d13-e629-45e0-b5b8-2b7c5bc39a93",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
@@ -332,12 +330,12 @@
                 },
                 {
                     "name": "",
-                    "id": "e873ae61-171f-4965-b1b2-1c0d218d308d",
-                    "path": "<Keyboard>/leftShift",
+                    "id": "0da02b09-720b-493f-a973-bb09094bb2c4",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Dash",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -354,12 +352,12 @@
                 },
                 {
                     "name": "",
-                    "id": "497af973-5727-48e0-9a15-fd83dcbe0fef",
-                    "path": "<Keyboard>/leftCtrl",
+                    "id": "e873ae61-171f-4965-b1b2-1c0d218d308d",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Slide",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -376,12 +374,12 @@
                 },
                 {
                     "name": "",
-                    "id": "e475b489-7be1-4d14-9015-0451b6a8a52e",
-                    "path": "<Keyboard>/c",
+                    "id": "497af973-5727-48e0-9a15-fd83dcbe0fef",
+                    "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Crouch",
+                    "action": "Slide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -398,12 +396,12 @@
                 },
                 {
                     "name": "",
-                    "id": "78c8521b-f563-45b0-bfb0-b1b3e6db08dc",
-                    "path": "<Mouse>/rightButton",
+                    "id": "e475b489-7be1-4d14-9015-0451b6a8a52e",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Aim",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -420,8 +418,19 @@
                 },
                 {
                     "name": "",
+                    "id": "78c8521b-f563-45b0-bfb0-b1b3e6db08dc",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "02a6f0cd-da68-483b-b2eb-7420841db5a2",
-                    "path": "",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -437,6 +446,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a09e067a-3749-4795-b909-fe9fa92da3dc",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ea5ca73-666f-4b5a-b979-789bc31dd947",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
