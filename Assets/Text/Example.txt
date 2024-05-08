@@ -1,2 +1,2 @@
 This is an example for how the dialogue needs to be written.
-every newline in the file means the player has to press the 'interact key' to continue.
+every newline in the file means the player has to press BUTTONPROMPT to continue. [Interact]

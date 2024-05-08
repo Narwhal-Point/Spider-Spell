@@ -2,18 +2,22 @@ using System;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI
 {
-    public class TextHandler : MonoBehaviour
+    public class TextHandlerTrigger : MonoBehaviour
     {
         public TextAsset textFile;
         public Image textBackground;
-        public GameObject tutorialTextObject;
+        public GameObject textDisplayObject;
         [Tooltip("Use this if you don't want to use a text file")]
         public string backupText;
-    
+
+        private GameObject _displayInteractKeyHandler;
+        private SetTextToTextBox _interactTextUI;
+        
         private string[] _text;
         private string _displayText;
         private string _action;
@@ -24,12 +28,15 @@ namespace UI
 
         private void Awake()
         {
-            _tutorialText = tutorialTextObject.GetComponent<TMP_Text>();
-            _textUI = tutorialTextObject.GetComponent<SetTextToTextBox>();
+            _displayInteractKeyHandler = GameObject.Find("Text Interact Key Handler");
+            _tutorialText = textDisplayObject.GetComponent<TMP_Text>();
+            _textUI = textDisplayObject.GetComponent<SetTextToTextBox>();
         }
 
         private void Start()
         {
+            _interactTextUI = _displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
+            _interactTextUI.SetText("BUTTONPROMPT", "Interact");
             if (textFile)
             {
                 _text = (textFile.text.Split('\n'));
@@ -57,6 +64,7 @@ namespace UI
             else
                 _textUI.SetText(_displayText);
         
+            _displayInteractKeyHandler.SetActive(true);
             _tutorialText.enabled = true;
             textBackground.enabled = true;
             _playerInArea = true;
@@ -87,6 +95,8 @@ namespace UI
                 CheckForInput();
             }
         
+            _interactTextUI.SetText("BUTTONPROMPT", "Interact");
+            
             if(!string.IsNullOrEmpty(_action))
                 _textUI.SetText(_displayText, _action);
             else
@@ -114,6 +124,7 @@ namespace UI
 
         private void DisableText()
         {
+            _displayInteractKeyHandler.SetActive(false);
             _tutorialText.enabled = false;
             textBackground.enabled = false;
             _playerInArea = false;
