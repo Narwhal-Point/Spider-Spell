@@ -9,32 +9,45 @@ namespace UI
 {
     public class TextHandlerTrigger : MonoBehaviour
     {
+        [Tooltip("The file containing all your text for the current area trigger")]
         public TextAsset textFile;
+        
+        [Tooltip("The background of your text area, should contain your text components")]
         public Image textBackground;
+        
+        [Tooltip("The object displaying your text, should be a child of textBackground")]
         public GameObject textDisplayObject;
+        // class that handles setting the text
+        private SetTextToTextBox _textUI; 
+        
         [Tooltip("Use this if you don't want to use a text file")]
         public string backupText;
 
+        // interact button in the right corner
         private GameObject _displayInteractKeyHandler;
         private SetTextToTextBox _interactTextUI;
         
+        // the array that will contain all the text
         private string[] _text;
-        private string _displayText;
-        private string _action;
-        private bool _playerInArea;
+        // array index
         private int _currentLine;
-        private TMP_Text _tutorialText;
-        private SetTextToTextBox _textUI;
+        // the line that is currently displayed
+        private string _displayText;
+        // what button prompt needs to be shown. [Jump] shows the button prompts for jump,
+        // depending on the active input device
+        private string _action;
+        // check if the player is inside the trigger
+        private bool _playerInArea;
 
         private void Awake()
         {
             _displayInteractKeyHandler = GameObject.Find("Text Interact Key Handler");
-            _tutorialText = textDisplayObject.GetComponent<TMP_Text>();
             _textUI = textDisplayObject.GetComponent<SetTextToTextBox>();
         }
 
         private void Start()
         {
+            // set the button for the corner
             _interactTextUI = _displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
             _interactTextUI.SetText("BUTTONPROMPT", "Interact");
             if (textFile)
@@ -47,7 +60,7 @@ namespace UI
                 _text[0] = backupText;
             }
         
-            _tutorialText.enabled = false;
+            textDisplayObject.SetActive(false);
             textBackground.enabled = false;
         }
 
@@ -57,6 +70,7 @@ namespace UI
             _displayText = _text[_currentLine];
             CheckForInput();
 
+            // set the text
             if (!string.IsNullOrEmpty(_action))
             {
                 _textUI.SetText(_displayText, _action);
@@ -64,8 +78,9 @@ namespace UI
             else
                 _textUI.SetText(_displayText);
         
+            // enable the text boxes
             _displayInteractKeyHandler.SetActive(true);
-            _tutorialText.enabled = true;
+            textDisplayObject.SetActive(true);
             textBackground.enabled = true;
             _playerInArea = true;
         }
@@ -77,9 +92,11 @@ namespace UI
 
         private void Update()
         {
+            // no player in the trigger range
             if(!_playerInArea)
                 return;
         
+            
             if (InputManager.instance.InteractInput)
             {
                 _currentLine++;
@@ -95,6 +112,7 @@ namespace UI
                 CheckForInput();
             }
         
+            // keep updating text ui for if input device changes
             _interactTextUI.SetText("BUTTONPROMPT", "Interact");
             
             if(!string.IsNullOrEmpty(_action))
@@ -106,13 +124,13 @@ namespace UI
 
         private void CheckForInput()
         {
+            // checks for a input action between '[' and ']'
             if (Regex.IsMatch(_displayText, @"\[.*\]"))
             {
                 Match match = Regex.Match(_displayText, @"\[(.*?)\]");
                 if (match.Success)
                 {
                     _action = match.Groups[1].Value;
-                    Debug.Log(_action);
                 }
                 _displayText = Regex.Replace(_displayText, @"\[.*\]", String.Empty);
             }
@@ -125,7 +143,7 @@ namespace UI
         private void DisableText()
         {
             _displayInteractKeyHandler.SetActive(false);
-            _tutorialText.enabled = false;
+            textDisplayObject.SetActive(false);
             textBackground.enabled = false;
             _playerInArea = false;
             _currentLine = 0;

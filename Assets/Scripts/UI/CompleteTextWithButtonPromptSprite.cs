@@ -27,6 +27,7 @@ namespace UI
             // regex for removing the current device from the string
             stringButtonName = Regex.Replace(stringButtonName, @"\[.*\]", String.Empty);
 
+            // if we want to support more devices, add them here.
             stringButtonName = stringButtonName.Replace("<Gamepad>/", "Gamepad_");
             stringButtonName = stringButtonName.Replace("<Keyboard>/", "Keyboard_");
             stringButtonName = stringButtonName.Replace("<Mouse>/", "Mouse_");
