@@ -17,48 +17,24 @@ public class spiderAnimationState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleWalkingSpeed();
-        HandleSwitching();
-    }
-
-    private void HandleWalkingSpeed()
-    {
-        if (player.movementState == PlayerMovement.MovementState.Walking)
+        if (player.movementState.ToString() == "Idle")
         {
-            animator.speed = player.MoveSpeed / 10f;
-        }
-        else
-        {
-            animator.speed = 1;
-        }
-    }
-
-    private void HandleSwitching()
-    {
-        switch (player.movementState.ToString())
-        {
-            case "Idle":
-                animator.SetBool("isWalking", false);
-                animator.SetBool("isFalling", false);
-                animator.SetBool("isJumping", false);
-                break;
-            case "Walking":
-                animator.SetBool("isWalking", true);
-                animator.SetBool("isFalling", false);
-                animator.SetBool("isJumping", false);
-                break;
-            case "Falling":
-                animator.SetBool("isFalling", true);
-                animator.SetBool("isWalking", false);
-                animator.SetBool("isJumping", false);
-                break;
-        }
-
-        if (player.jumpAnimation)
-        {
-            animator.SetBool("isJumping", true);
-            animator.SetBool("isFalling", false);
             animator.SetBool("isWalking", false);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping", false);
         }
+        if (player.movementState.ToString() == "Walking")
+        {
+            animator.SetBool("isWalking", true);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping", false);
+        }
+        if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
+        {
+            animator.SetBool("isFalling", true);
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isJumping", false);
+        }
+
     }
 }
