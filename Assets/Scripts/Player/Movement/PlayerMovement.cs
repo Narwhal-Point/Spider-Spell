@@ -217,7 +217,7 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            //HandleRotation();
+            HandleRotation();
             TurnPlayer();
             CalculatePlayerVMovement();
         }
