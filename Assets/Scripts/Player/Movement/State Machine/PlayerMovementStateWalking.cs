@@ -47,13 +47,13 @@ namespace Player.Movement.State_Machine
             Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
             planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, player.transform.up).normalized;
             Vector3 movementWithSpeed = planeRelativeMovement * _moveSpeed * Time.deltaTime;
-            player.transform.position += movementWithSpeed;
+            //player.transform.position += movementWithSpeed;
             //Stutter issue with transform.translate
             //player.transform.Translate(planeRelativeMovement * Time.deltaTime, Space.World);
-            /*player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+            player.MoveDirection = movementWithSpeed;
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);*/
+            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
         }
 
         private void SpeedControl()
