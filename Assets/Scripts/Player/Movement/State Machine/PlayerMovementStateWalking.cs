@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 namespace Player.Movement.State_Machine
 {
@@ -7,6 +9,7 @@ namespace Player.Movement.State_Machine
     {
         private RaycastHit _slopeHit;
         private float _moveSpeed;
+        private Vector3 surfaceNormal;
 
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
              player)
@@ -34,38 +37,65 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            MovePlayer();
+            Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
+            //HandleVectorRotation();
+            if (direction.magnitude >= 0.1f)
+            {
+                MovePlayer();
+                TurnPlayer();
+            }
         }
+        /* private void HandleVectorRotation()
+         {
+             Quaternion surfaceAlignment =Quaternion.FromToRotation(Vector3.up, player.groundHit.normal);
+             Quaternion combinedRotation = surfaceAlignment;
+             player.orientation.rotation = combinedRotation;
+
+             // slerp the rotation to the turning smooth
+             player.transform.rotation = Quaternion.Slerp(player.playerObj.rotation, player.orientation.rotation, Time.deltaTime * 5f);
+         }*/
+        private void TurnPlayer()
+        {
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
+
+            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
+            Vector3 rightRelativeInput = player.InputDirection.x * right;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
+
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, player.transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up);
+
+            // Rotate towards the combined movement direction
+            player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, Quaternion.LookRotation(combinedMovement, player.transform.up), 15f);
+        }
+
+
         private void MovePlayer()
         {
-            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
+
+            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
+            Vector3 rightRelativeInput = player.InputDirection.x * right;
+
+            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
+            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, surfaceNormal).normalized;
+            Vector3 movementWithSpeed = planeRelativeMovement * _moveSpeed * Time.deltaTime;
+            player.MoveDirection = movementWithSpeed;
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
-            int distance = 2;            
-            RaycastHit hit;
-            bool raycastHit = Physics.Raycast(player.transform.position, -player.playerObj.up, out hit, distance);
-/*
-            // Draw the raycast for visualization
-            Debug.DrawRay(player.transform.position, player.MoveDirection * distance, Color.green);
-            if (raycastHit && hit.collider.CompareTag("Wall"))
-            {
-                Debug.Log("on wall");
-                // If hitting a wall, move along the wall's surface
-                Vector3 wallNormal = hit.normal;
-                Vector3 inputDirection = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
-                Vector3 moveDirection = Vector3.Cross(wallNormal, inputDirection).normalized;
-                player.Rb.AddForce(inputDirection * (_moveSpeed * 10f), ForceMode.Force);
-                return;
-            }
-            else
-            {
-                Debug.Log("on ground");
-                player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
-                // Otherwise, move as usual
-                player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-                player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
-            }*/
         }
 
         private void SpeedControl()
