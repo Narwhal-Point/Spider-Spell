@@ -4,6 +4,7 @@ using Player.Movement.State_Machine;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -286,7 +287,7 @@ namespace Player.Movement
             Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
 
             // check if an angled surface is in front of the player
-            float edgeCastDistance = 1.5f;
+            float edgeCastDistance = 3f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
@@ -316,6 +317,7 @@ namespace Player.Movement
         }
         private void RotatePlayer(RaycastHit hit)
         {
+            transform.up = hit.normal;
             Quaternion surfaceAlignment = Quaternion.FromToRotation(Vector3.up, hit.normal);
             Quaternion combinedRotation = surfaceAlignment;
             orientation.rotation = combinedRotation;
@@ -323,6 +325,7 @@ namespace Player.Movement
         }
         private void RotatePlayerOpenEdges(RaycastHit hit)
         {
+            transform.up = hit.normal;
             Quaternion oldOrientation = transform.rotation;
             Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, hit.normal);
             Quaternion newOrientation = rotation * oldOrientation;
