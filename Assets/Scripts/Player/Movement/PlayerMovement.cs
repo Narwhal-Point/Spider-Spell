@@ -327,7 +327,8 @@ namespace Player.Movement
         {
             transform.up = hit.normal;
             Quaternion oldOrientation = transform.rotation;
-            Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, hit.normal);
+            Quaternion rotation = Quaternion.FromToRotation(oldOrientation * Vector3.forward, transform.forward) * oldOrientation;
+            //Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, hit.normal);
             Quaternion newOrientation = rotation * oldOrientation;
 
             Debug.Log("old forward: " + transform.forward);

@@ -89,7 +89,7 @@ namespace Player.Movement.State_Machine
             Vector3 forwardRelativeInput = player.InputDirection.y * forward;
             Vector3 rightRelativeInput = player.InputDirection.x * right;
 
-            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;           
+            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
             planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, surfaceNormal).normalized;
             Vector3 movementWithSpeed = planeRelativeMovement * _moveSpeed * Time.deltaTime;
             player.MoveDirection = movementWithSpeed;
