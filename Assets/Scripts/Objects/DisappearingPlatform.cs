@@ -1,51 +1,3 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class DisappearingPlatform : MonoBehaviour
-//{
-//    private Vector3 originalPosition;
-//    private Quaternion originalRotation;
-//    private Vector3 originalScale;
-//    private float disappearTime = 5f;
-//    private float disappearTimer = 0f;
-//    private bool disappearing;
-//    // Start is called before the first frame update
-//    void Start()
-//    {
-//        originalPosition = transform.position;
-//        originalRotation = transform.rotation;
-//        originalScale = transform.localScale;
-//    }
-
-//    // Update is called once per frame
-//    void Update()
-//    {
-//        if (disappearing)
-//        {
-//            disappearTimer += Time.deltaTime;
-//            if (disappearTimer > disappearTime)
-//            {
-//                transform.position = new Vector3(0, -100, 0);
-//                Invoke("Reset2Original", 5f);
-//            }
-//        }
-//    }
-
-//    private void OnCollisionEnter(Collision collision)
-//    {
-//        disappearing = true;
-//    }
-
-//    void Reset2Original()
-//    {
-//        transform.position = originalPosition;
-//        transform.rotation = originalRotation;
-//        transform.localScale = originalScale;
-//        disappearing = false;
-//}
-//}
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -115,7 +67,7 @@ public class DisappearingPlatform : MonoBehaviour
 
     void Reset2Original()
     {
-        poofVFX.Play();
+        //poofVFX.Play();
         poofSFX.Play();
         meshRenderer.enabled = true;
         boxCollider.enabled = true;
