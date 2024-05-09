@@ -1,4 +1,4 @@
-Press BUTTONPROMPT to Interact [Interact]
-Press BUTTONPROMPT to jump [Jump]
-Press BUTTONPROMPT to aim [Aim]
-Press BUTTONPROMPT to shoot your web [Fire]
+Press [Interact] to Interact 
+Press [Jump] to jump 
+Press [Aim] to aim 
+Press [Fire] to shoot your web 

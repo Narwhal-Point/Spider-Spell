@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,7 +19,7 @@ public class InputManager : MonoBehaviour
     // private InputAction rotateAction;
 
 
-    public bool menuOpenCloseInput { get; private set; }
+    public bool MenuOpenCloseInput { get; private set; }
     private void Awake()
     {
         if (instance == null)

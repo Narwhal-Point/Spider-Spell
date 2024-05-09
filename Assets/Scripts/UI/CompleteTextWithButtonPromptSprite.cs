@@ -1,21 +1,20 @@
 using System;
 using System.Text.RegularExpressions;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace UI
 {
     public static class CompleteTextWithButtonPromptSprite
     {
-        public static string ReadAndReplaceBinding(string textToDisplay, InputBinding actionNeeded, TMP_SpriteAsset spriteAsset)
+        public static string ReadAndReplaceBinding(string textToDisplay, InputBinding actionNeeded,
+            TMP_SpriteAsset spriteAsset)
         {
             string stringButtonName = actionNeeded.ToString();
             stringButtonName = RenameInput(stringButtonName);
 
-            textToDisplay = textToDisplay.Replace("BUTTONPROMPT",
+            // find the action between '[' and ']' and replace this with the corresponding icon.
+            textToDisplay = Regex.Replace(textToDisplay, @"\[.*\]",
                 $"<sprite=\"{spriteAsset.name}\" name=\"{stringButtonName}\">");
             return textToDisplay;
         }
