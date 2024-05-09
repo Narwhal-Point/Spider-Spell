@@ -56,6 +56,7 @@ namespace Player.Movement
 
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
+        private Collider _collider;
         public float StartYScale { get; private set; } // default height of character
 
         // public AudioSource crouchSound;
@@ -227,6 +228,7 @@ namespace Player.Movement
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
             _swing = GetComponent<PlayerSwingHandler>();
+            _collider = GetComponent<Collider>();
         }
 
         private void Start()
@@ -291,13 +293,42 @@ namespace Player.Movement
             return moveDirection;
         }
 
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
+            Gizmos.matrix = rotationMatrix;
+
+            //Check if there has been a hit yet
+            if (Grounded)
+            {
+                //Draw a Ray forward from GameObject toward the hit
+                Gizmos.DrawRay(transform.position, -transform.up * groundHit.distance);
+                //Draw a cube that extends to where the hit exists
+                // Gizmos.DrawWireCube(transform.position + -transform.up * groundHit.distance, new Vector3(0.5f, 0.1f, 0.7f) * 2);
+                Gizmos.DrawWireCube(-transform.up * groundHit.distance, new Vector3(0.5f, 0.1f, 0.7f) * 2);
+            }
+            //If there hasn't been a hit yet, draw the ray at the maximum distance
+            else
+            {
+                //Draw a Ray forward from GameObject toward the maximum distance
+                Gizmos.DrawRay(transform.position, -transform.up * (playerHeight * 0.5f + 0.2f));
+                //Draw a cube at the maximum distance
+                Gizmos.DrawWireCube(-transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
+                // Gizmos.DrawWireCube(transform.position + -transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
+            }
+        }
+
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
                 return;
             // check if player is on the ground
-            Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
-                playerHeight * 0.5f + 0.2f, ground);
+            // Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
+            //     playerHeight * 0.5f + 0.2f, ground);
+            Vector3 halfExtents = _collider.bounds.extents;
+            Grounded = Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.7f), -transform.up, out groundHit,
+                transform.rotation, playerHeight * 0.5f + 0.2f, ground);
 
             // wall check
             Vector3 wallCastHeight = playerObj.up * 0.4f;
