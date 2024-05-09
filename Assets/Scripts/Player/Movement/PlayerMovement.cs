@@ -16,6 +16,7 @@ namespace Player.Movement
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
+        public float airSpeed = 6f;
         [SerializeField] private float rotationSpeed = 10f;
 
         public float DesiredMoveSpeed { get; set; } = 10;

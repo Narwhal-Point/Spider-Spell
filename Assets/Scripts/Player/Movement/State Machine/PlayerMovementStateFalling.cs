@@ -65,20 +65,20 @@ namespace Player.Movement.State_Machine
         {
             if (player.InputDirection.y > 0.6)
             {
-                player.Rb.AddForce(player.orientation.forward * (300f * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
             }
 
             if (player.InputDirection.y < -0.6)
-                player.Rb.AddForce(-player.orientation.forward * (200f * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
             
             if (player.InputDirection.x > 0.6)
             {
-                player.Rb.AddForce(player.orientation.right * (200f * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
             }
 
             if (player.InputDirection.x < -0.6)
             {
-                player.Rb.AddForce(-player.orientation.right * (300f * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
             }
         }
     }
