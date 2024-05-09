@@ -53,6 +53,7 @@ namespace Player.Movement
         public Rigidbody Rb { get; private set; }
         public float StartYScale { get; private set; } // default height of character
 
+        float raycastDistance = 1;
         // public AudioSource crouchSound;
         // public AudioSource uncrouchSound;
 
@@ -315,10 +316,46 @@ namespace Player.Movement
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
 
 
-        }
+        }       
 
         private void HandleRotation()
-        {            
+        {
+            float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
+
+            // get the dot product of the ground normal and the angleHit normal to check the angle between them.
+            float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
+
+            if (_manager.CurrentState == JumpingState)
+                return;           
+/*
+            //facingAngles = GetFacingAngle(InputDirection);          
+
+            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            {
+                
+            }
+            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            {
+               
+            }
+            // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
+            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 && _manager.CurrentState != SwingingState)
+            {
+               
+            }
+            // TODO: Change camera player rotation
+            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            {
+               
+            }
+            else if (IsHeadHit && _manager.CurrentState != SwingingState)
+            {
+                
+            }
+            else if (InputDirection != Vector2.zero)
+            {
+               
+            }*/
             /*float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
@@ -403,66 +440,66 @@ namespace Player.Movement
                  transform.rotation = orientation.rotation;
              }*/
         }
-       /* public override void UpdateState()
-        {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
+        /* public override void UpdateState()
+         {
+             float horizontal = Input.GetAxisRaw("Horizontal");
+             float vertical = Input.GetAxisRaw("Vertical");
 
-            Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+             Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-            if (direction.magnitude >= 0.1f)
-            {
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.localEulerAngles.y;
-                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+             if (direction.magnitude >= 0.1f)
+             {
+                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.localEulerAngles.y;
+                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-                playerController.Move(moveDir.normalized * speed * Time.deltaTime);
-            }
+                 playerController.Move(moveDir.normalized * speed * Time.deltaTime);
+             }
 
-            // Array of raycast directions covering different angles around the character
-            Vector3[] raycastDirections = {
-        transform.forward,
-        -transform.forward,
-        transform.right,
-        -transform.right,
-        transform.forward + transform.right,
-        transform.forward - transform.right,
-        -transform.forward + transform.right,
-        -transform.forward - transform.right
-    };
+             // Array of raycast directions covering different angles around the character
+             Vector3[] raycastDirections = {
+         transform.forward,
+         -transform.forward,
+         transform.right,
+         -transform.right,
+         transform.forward + transform.right,
+         transform.forward - transform.right,
+         -transform.forward + transform.right,
+         -transform.forward - transform.right
+     };
 
-            // Perform raycasts in all directions to detect climbable surfaces
-            RaycastHit hit;
-            foreach (Vector3 dir in raycastDirections)
-            {
-                if (Physics.Raycast(transform.position, dir, out hit, raycastDistance))
-                {
-                    Vector3 surfaceNormal = hit.normal;
+             // Perform raycasts in all directions to detect climbable surfaces
+             RaycastHit hit;
+             foreach (Vector3 dir in raycastDirections)
+             {
+                 if (Physics.Raycast(transform.position, dir, out hit, raycastDistance))
+                 {
+                     Vector3 surfaceNormal = hit.normal;
 
-                    if (Mathf.Abs(surfaceNormal.y) < 0.1f)
-                    {
-                        ClimbSurface(surfaceNormal);
-                        return; // Exit the loop if climbing is initiated
-                    }
-                }
-            }
-        }
-        private void ClimbSurface(Vector3 surfaceNormal)
-        {
-            climbingSurface = true;
-            transform.up = surfaceNormal;
+                     if (Mathf.Abs(surfaceNormal.y) < 0.1f)
+                     {
+                         ClimbSurface(surfaceNormal);
+                         return; // Exit the loop if climbing is initiated
+                     }
+                 }
+             }
+         }
+         private void ClimbSurface(Vector3 surfaceNormal)
+         {
+             climbingSurface = true;
+             transform.up = surfaceNormal;
 
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+             float horizontal = Input.GetAxis("Horizontal");
+             float vertical = Input.GetAxis("Vertical");
 
-            Vector3 inputDir = new Vector3(horizontal, vertical, 0f).normalized;
+             Vector3 inputDir = new Vector3(horizontal, vertical, 0f).normalized;
 
-            Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
+             Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
 
-            playerController.Move(movementDir * climbSpeed * Time.deltaTime);
-        }*/
+             playerController.Move(movementDir * climbSpeed * Time.deltaTime);
+         }*/
         private (float, float) GetFacingAngle(Vector2 direction)
         {
             /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);

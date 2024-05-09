@@ -72,7 +72,44 @@ namespace Player.Movement.State_Machine
 
         private void TransitionPlayer()
         {
-            throw new NotImplementedException();
+            // Array of raycast directions covering different angles around the character
+            Vector3[] raycastDirections = {
+                player.transform.forward,
+                -player.transform.forward,
+                player.transform.right,
+                -player.transform.right,
+                player.transform.forward + player.transform.right,
+                player.transform.forward - player.transform.right,
+                -player.transform.forward + player.transform.right,
+                -player.transform.forward - player.transform.right
+            };
+
+            // Perform raycasts in all directions to detect climbable surfaces
+            RaycastHit hit;
+            foreach (Vector3 dir in raycastDirections)
+            {
+                if (Physics.Raycast(player.transform.position, dir, out hit, 1f))
+                {
+                    Vector3 surfaceNormal = hit.normal;
+
+                    if (Mathf.Abs(surfaceNormal.y) < 0.1f)
+                    {
+                        ClimbSurface(surfaceNormal);
+                        return; // Exit the loop if climbing is initiated
+                    }
+                }
+            }
+        }
+        private void ClimbSurface(Vector3 surfaceNormal)
+        {
+            //climbingSurface = true;
+            player.transform.up = surfaceNormal;
+
+            Vector3 inputDir = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
+
+            Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
+            player.MoveDirection = movementDir;
+            //playerController.Move(movementDir * climbSpeed * Time.deltaTime);
         }
 
         private void MovePlayer()
