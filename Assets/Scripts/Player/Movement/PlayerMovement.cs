@@ -475,13 +475,14 @@ namespace Player.Movement
 
         private bool isJumping = false;
 
-        public void OnJump()
+        public void OnJump(InputValue value)
         {
+            isJumping = value.isPressed;
             if (!isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
-                isJumping = true;
-                jumpAnimation = true;
-                StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
+                // isJumping = true;
+                _manager.SwitchState(JumpingState);
+                // StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
             }
         }
 
