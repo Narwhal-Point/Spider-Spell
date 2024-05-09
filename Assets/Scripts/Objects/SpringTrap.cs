@@ -12,12 +12,15 @@ public class SpringTrap : MonoBehaviour
     private float rotateValue;
     [SerializeField] float waitDurationTop = 1f;
     [SerializeField] float waitDurationBottom = 4f;
+    [SerializeField] float springStrength = 4f;
     private float waitTimer = 0f;
-    private bool movingUp = true;
+    private bool movingUp = false;
     private bool waitingTop = false;
     private bool waitingBottom = true;
+    private bool shot = false;
     [SerializeField] AudioSource boingSFX;
-    [SerializeField] Rigidbody testBody;
+    [SerializeField] MeshCollider meshCollider;
+    [SerializeField] Transform normalObject;
 
     // Start is called before the first frame update
     void Start()
@@ -34,8 +37,13 @@ public class SpringTrap : MonoBehaviour
             if (waitTimer >= waitDurationBottom)
             {
                 waitingBottom = false;
+                movingUp = true;
+                shot = false;
                 waitTimer = 0f;
                 boingSFX.Play();
+                int ignoreGround = LayerMask.NameToLayer("Default");
+                gameObject.layer = ignoreGround;
+                
             }
         }
         else if (waitingTop)
@@ -56,8 +64,10 @@ public class SpringTrap : MonoBehaviour
 
                 if (transform.eulerAngles.z - startEulerAngles.z > maxRotationAngle)
                 {
+                    shot = true;
                     movingUp = false;
                     waitingTop = true;
+                    meshCollider.enabled = true;
                 }
             }
             else
@@ -67,26 +77,29 @@ public class SpringTrap : MonoBehaviour
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, step);
                 if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f) // Check if rotation is almost complete
                 {
-                    movingUp = true;
                     waitingBottom = true;
+                    int ground = LayerMask.NameToLayer("Ground");
+                    gameObject.layer = ground;
                 }
             }
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
-        if (movingUp)
+        if (movingUp && !shot)
         {
             foreach (ContactPoint contact in collision.contacts)
             {
-                if (collision.gameObject.CompareTag("Player")) // Replace "YourTag" with the tag of the object you want to collide with
+                if (collision.gameObject.CompareTag("Player"))
                 {
                     Rigidbody otherRigidbody = collision.gameObject.GetComponent<Rigidbody>();
                     if (otherRigidbody != null)
                     {
-                        // Add force to the collided object
-                        testBody.AddForce(contact.normal * 100f, ForceMode.Force);
+                        Debug.Log("Shit");
+                        meshCollider.enabled = false;
+                        otherRigidbody.AddForce(normalObject.transform.up * springStrength, ForceMode.Impulse);
+                        shot = true;
                     }
                 }
             }
