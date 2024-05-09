@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +6,9 @@ namespace Collectables
 {
     public class CollectableManager : MonoBehaviour
     {
-        private Dictionary<string, Image> _collectables = new Dictionary<string, Image>();
+        private readonly Dictionary<string, Image> _collectables = new Dictionary<string, Image>();
         public static CollectableManager instance;
-        private Dictionary<string, GameObject> _inventory = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> _inventory = new Dictionary<string, GameObject>();
         
         private void Awake()
         {
@@ -65,11 +63,9 @@ namespace Collectables
 
         private void ShowCollectedCollectable(string key)
         {
-            Image sprite;
-            _collectables.TryGetValue(key, out sprite);
-            
-            sprite.enabled = true;
-
+            bool success = _collectables.TryGetValue(key, out var sprite);
+            if(success)
+                sprite.enabled = true;
         }
     }
 }
