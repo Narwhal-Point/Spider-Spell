@@ -1,28 +1,35 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
-    public class TextHandlerTrigger : MonoBehaviour
+    public class TextBoxHandler : MonoBehaviour
     {
+        [Header("Add your text here")]
         [Tooltip("The file containing all your text for the current area trigger")]
         public TextAsset textFile;
-
-        [Tooltip("The background of your text area, should contain your text components")]
-        public Image textBackground;
-
-        [Tooltip("The object displaying your text, should be a child of textBackground")]
-        public GameObject textDisplayObject;
-
-        // class that handles setting the text
-        private SetTextToTextBox _textUI;
-
+        
         [Tooltip("Use this if you don't want to use a text file")]
         public string backupText;
 
-        // interact button in the right corner
-        private GameObject _displayInteractKeyHandler;
+        [Header("Textbox")]
+        [Tooltip("The background of your text area, should contain your text components")]
+        public GameObject textBackground;
+
+        [Tooltip("The object displaying your text, should be a child of textBackground")]
+        public GameObject textObject;
+
+        // class that handles setting the text
+        private SetTextToTextBox _textUI;
+        
+
+        [Header("interact key")]
+        // Interact button in the right corner.
+        [Tooltip("Interact button in the right corner of the text box")]
+        public GameObject displayInteractKeyHandler;
         private SetTextToTextBox _interactTextUI;
+        
+        [Tooltip("Toggle this to toggle the interact key in the bottom right corner of the text box")]
+        [SerializeField] private bool enableInteractKey = true;
 
         // the array that will contain all the text
         private string[] _text;
@@ -42,15 +49,35 @@ namespace UI
 
         private void Awake()
         {
-            _displayInteractKeyHandler = GameObject.Find("Text Interact Key Handler");
-            _textUI = textDisplayObject.GetComponent<SetTextToTextBox>();
+            if (!textBackground)
+            {
+                textBackground = GameObject.Find("Text Box Background Base");
+            }
+
+            if (!textObject)
+            {
+                textObject = GameObject.Find("UI Text Base");
+            }
+
+            if (!displayInteractKeyHandler)
+            {
+                displayInteractKeyHandler = GameObject.Find("Text Interact Key Handler Base");
+            }
+
+            _textUI = textObject.GetComponent<SetTextToTextBox>();
         }
 
         private void Start()
         {
             // set the button for the corner
-            _interactTextUI = _displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
-            _interactTextUI.SetText("[Interact]");
+                _interactTextUI = displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
+                _interactTextUI.SetText("[Interact]");
+            
+            if(!enableInteractKey)
+            {
+                displayInteractKeyHandler.SetActive(false);
+            }
+
             if (textFile)
             {
                 _text = (textFile.text.Split('\n'));
@@ -61,8 +88,8 @@ namespace UI
                 _text[0] = backupText;
             }
 
-            textDisplayObject.SetActive(false);
-            textBackground.enabled = false;
+            textObject.SetActive(false);
+            textBackground.SetActive(false);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -75,9 +102,10 @@ namespace UI
 
 
             // enable the text boxes
-            _displayInteractKeyHandler.SetActive(true);
-            textDisplayObject.SetActive(true);
-            textBackground.enabled = true;
+            if(enableInteractKey)
+                displayInteractKeyHandler.SetActive(true);
+            textObject.SetActive(true);
+            textBackground.SetActive(true);
             _playerInArea = true;
         }
 
@@ -107,15 +135,17 @@ namespace UI
             }
 
             // keep updating text ui for if input device changes
-            _interactTextUI.SetText("[Interact]");
+            if(enableInteractKey)
+                _interactTextUI.SetText("[Interact]");
             _textUI.SetText(_displayText);
         }
 
         private void DisableText()
         {
-            _displayInteractKeyHandler.SetActive(false);
-            textDisplayObject.SetActive(false);
-            textBackground.enabled = false;
+            displayInteractKeyHandler.SetActive(false);
+            if(enableInteractKey)
+                textObject.SetActive(false);
+            textBackground.SetActive(false);
             _playerInArea = false;
             _currentLine = 0;
         }
