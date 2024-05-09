@@ -9,6 +9,7 @@ namespace Player.Movement.State_Machine
     {
          private RaycastHit _slopeHit;
          private float _moveSpeed;
+        private Vector3 surfaceNormal;
 
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
              player)
@@ -37,13 +38,22 @@ namespace Player.Movement.State_Machine
         public override void FixedUpdateState()
         {
             Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
+            //HandleVectorRotation();
             if (direction.magnitude >= 0.1f)
             {
                 MovePlayer();
                 TurnPlayer();
             }
-            TransitionPlayer();
         }
+       /* private void HandleVectorRotation()
+        {
+            Quaternion surfaceAlignment =Quaternion.FromToRotation(Vector3.up, player.groundHit.normal);
+            Quaternion combinedRotation = surfaceAlignment;
+            player.orientation.rotation = combinedRotation;
+
+            // slerp the rotation to the turning smooth
+            player.transform.rotation = Quaternion.Slerp(player.playerObj.rotation, player.orientation.rotation, Time.deltaTime * 5f);
+        }*/
         private void TurnPlayer()
         {
             Vector3 forward = player.movementForward.normalized;
@@ -70,47 +80,6 @@ namespace Player.Movement.State_Machine
             player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, Quaternion.LookRotation(combinedMovement, player.transform.up), 15f);           
         }
 
-        private void TransitionPlayer()
-        {
-            // Array of raycast directions covering different angles around the character
-            Vector3[] raycastDirections = {
-                player.transform.forward,
-                -player.transform.forward,
-                player.transform.right,
-                -player.transform.right,
-                player.transform.forward + player.transform.right,
-                player.transform.forward - player.transform.right,
-                -player.transform.forward + player.transform.right,
-                -player.transform.forward - player.transform.right
-            };
-
-            // Perform raycasts in all directions to detect climbable surfaces
-            RaycastHit hit;
-            foreach (Vector3 dir in raycastDirections)
-            {
-                if (Physics.Raycast(player.transform.position, dir, out hit, 1f))
-                {
-                    Vector3 surfaceNormal = hit.normal;
-
-                    if (Mathf.Abs(surfaceNormal.y) < 0.1f)
-                    {
-                        ClimbSurface(surfaceNormal);
-                        return; // Exit the loop if climbing is initiated
-                    }
-                }
-            }
-        }
-        private void ClimbSurface(Vector3 surfaceNormal)
-        {
-            //climbingSurface = true;
-            player.transform.up = surfaceNormal;
-
-            Vector3 inputDir = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
-
-            Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
-            player.MoveDirection = movementDir;
-            //playerController.Move(movementDir * climbSpeed * Time.deltaTime);
-        }
 
         private void MovePlayer()
         {
@@ -120,8 +89,8 @@ namespace Player.Movement.State_Machine
             Vector3 forwardRelativeInput = player.InputDirection.y * forward;
             Vector3 rightRelativeInput = player.InputDirection.x * right;
 
-            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
-            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, player.transform.up).normalized;
+            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;           
+            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, surfaceNormal).normalized;
             Vector3 movementWithSpeed = planeRelativeMovement * _moveSpeed * Time.deltaTime;
             //player.transform.position += movementWithSpeed;
             //Stutter issue with transform.translate

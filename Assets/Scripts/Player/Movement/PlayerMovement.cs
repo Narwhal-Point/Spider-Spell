@@ -145,15 +145,15 @@ namespace Player.Movement
 
         public void LoadData(GameData data)
         {
-            Rb.position = data.position;
-            jumpCount = data.jumpCount;
+            /*Rb.position = data.position;
+            jumpCount = data.jumpCount;*/
 
         }
 
         public void SaveData(GameData data)
         {
-            data.position = Rb.position;
-            data.jumpCount = jumpCount;
+           /* data.position = Rb.position;
+            data.jumpCount = jumpCount;*/
         }
 
 
@@ -211,15 +211,15 @@ namespace Player.Movement
 
             if (Input.GetKey(KeyCode.Escape))
             {
-                DataPersistenceManager.instance.SaveGame();
-                SceneManager.LoadSceneAsync("MainMenu");
+               /* DataPersistenceManager.instance.SaveGame();
+                SceneManager.LoadSceneAsync("MainMenu");*/
             }
         }
 
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            //HandleRotation();
+            HandleRotation();
             CalculatePlayerVMovement();
         }
        
@@ -227,7 +227,7 @@ namespace Player.Movement
         {
             Quaternion facingRotation = Quaternion.Euler(movementForward.x, 0f, movementForward.y);
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            Quaternion combinedRotation = surfaceRotation * facingRotation;
+            //Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = movementForward * InputDirection.y + movementRight * InputDirection.x;
             return moveDirection;
         }
@@ -238,7 +238,6 @@ namespace Player.Movement
         {
             Vector3 rightOrigin = cam.position + cam.right * 50f;
             Vector3 upOrigin = cam.position + cam.up * 50f;
-
             Plane fPlane = new Plane(transform.up, transform.position);
             Plane rPlane = new Plane(transform.up, transform.position);
 
@@ -314,207 +313,64 @@ namespace Player.Movement
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
+        }
+        private void RotatePlayer(RaycastHit hit)
+        {
+            Quaternion surfaceAlignment = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceAlignment;
+            orientation.rotation = combinedRotation;
+            transform.rotation = orientation.rotation;
+        }
+        private void RotatePlayerOpenEdges(RaycastHit hit)
+        {
+            Quaternion oldOrientation = transform.rotation;
+            Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, hit.normal);
+            Quaternion newOrientation = rotation * oldOrientation;
 
+            Debug.Log("old forward: " + transform.forward);
+            orientation.rotation = newOrientation;
+            transform.rotation = newOrientation;
 
-        }       
+            // move the player to the new surface
+            Vector3 newPlayerPos = hit.point;
+            Vector3 offset = (playerHeight - 1) * 0.5f * hit.normal;
 
+            transform.position = newPlayerPos + offset;
+            Rb.velocity = Vector3.zero;
+        }
         private void HandleRotation()
         {
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
-
-            // get the dot product of the ground normal and the angleHit normal to check the angle between them.
-            float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
-
-            if (_manager.CurrentState == JumpingState)
-                return;           
-/*
-            //facingAngles = GetFacingAngle(InputDirection);          
-
-            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
-            {
-                
-            }
-            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
-            {
-               
-            }
-            // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 && _manager.CurrentState != SwingingState)
-            {
-               
-            }
-            // TODO: Change camera player rotation
-            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
-            {
-               
-            }
-            else if (IsHeadHit && _manager.CurrentState != SwingingState)
-            {
-                
-            }
-            else if (InputDirection != Vector2.zero)
-            {
-               
-            }*/
-            /*float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
-
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
 
             if (_manager.CurrentState == JumpingState)
                 return;
 
-            //facingAngles = GetFacingAngle(InputDirection);          
-
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                RotatePlayer(wallHit);                
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi2");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, lowWallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                RotatePlayer(wallHit);
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 && _manager.CurrentState != SwingingState)
             {
-                // rotate towards the new surface
-                // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                // Quaternion surfaceAlignment =
-                //     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
-                // Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                // orientation.rotation = combinedRotation;
-                // transform.rotation = orientation.rotation;
-                Quaternion oldOrientation = transform.rotation;
-                Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
-                Quaternion newOrientation = rotation * oldOrientation;
-
-                Debug.Log("old forward: " + transform.forward);
-                orientation.rotation = newOrientation;
-                transform.rotation = newOrientation;
-
-                // move the player to the new surface
-                Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-
-                transform.position = newPlayerPos + offset;
-                Rb.velocity = Vector3.zero;
-                Debug.Log("new forward: " + transform.forward);
+                RotatePlayerOpenEdges(angleHit);
             }
             // TODO: Change camera player rotation
-          *//*  else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-
-                // slerp the rotation to the turning smooth
-                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                    Time.deltaTime * rotationSpeed);
-            }*//*
+                //RotatePlayer(groundHit);
+            }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, headHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
-            }
-            *//* else if (InputDirection != Vector2.zero)
-             {
-                 orientation.rotation = Quaternion.Euler(0f, -movementForward.x, 0f);
-                 transform.rotation = orientation.rotation;
-             }*/
+                RotatePlayer(headHit);
+            }        
         }
-        /* public override void UpdateState()
-         {
-             float horizontal = Input.GetAxisRaw("Horizontal");
-             float vertical = Input.GetAxisRaw("Vertical");
-
-             Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
-
-             if (direction.magnitude >= 0.1f)
-             {
-                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.localEulerAngles.y;
-                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-                 playerController.Move(moveDir.normalized * speed * Time.deltaTime);
-             }
-
-             // Array of raycast directions covering different angles around the character
-             Vector3[] raycastDirections = {
-         transform.forward,
-         -transform.forward,
-         transform.right,
-         -transform.right,
-         transform.forward + transform.right,
-         transform.forward - transform.right,
-         -transform.forward + transform.right,
-         -transform.forward - transform.right
-     };
-
-             // Perform raycasts in all directions to detect climbable surfaces
-             RaycastHit hit;
-             foreach (Vector3 dir in raycastDirections)
-             {
-                 if (Physics.Raycast(transform.position, dir, out hit, raycastDistance))
-                 {
-                     Vector3 surfaceNormal = hit.normal;
-
-                     if (Mathf.Abs(surfaceNormal.y) < 0.1f)
-                     {
-                         ClimbSurface(surfaceNormal);
-                         return; // Exit the loop if climbing is initiated
-                     }
-                 }
-             }
-         }
-         private void ClimbSurface(Vector3 surfaceNormal)
-         {
-             climbingSurface = true;
-             transform.up = surfaceNormal;
-
-             float horizontal = Input.GetAxis("Horizontal");
-             float vertical = Input.GetAxis("Vertical");
-
-             Vector3 inputDir = new Vector3(horizontal, vertical, 0f).normalized;
-
-             Vector3 movementDir = Vector3.ProjectOnPlane(inputDir, surfaceNormal);
-
-             playerController.Move(movementDir * climbSpeed * Time.deltaTime);
-         }*/
-        private (float, float) GetFacingAngle(Vector2 direction)
-        {
-            /*float angleBetweenDownAndCamera = Mathf.DeltaAngle(Vector3.down.y, cam.eulerAngles.y);
-            float middleAngle = (cam.eulerAngles.y + angleBetweenDownAndCamera / 0.5f) % 360f;*/
-            // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + movementForward.y;
-            // Debug.Log("Middle angle: " + middleAngle + "//// targetAngle:  " + targetAngle);
-            // Angle to face before reaching target to make it smoother
-            float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
-                turnSmoothTime);
-            //CalculatePlayerVMovement();
-            return (targetAngle, angle);
-        }
-
-
+        
         // input callbacks
         public void OnMove(InputValue value)
         {
