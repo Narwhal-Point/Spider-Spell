@@ -271,11 +271,11 @@ namespace Player.Movement
                 }
             }
 
-            if (Input.GetKey(KeyCode.Escape))
+           /* if (Input.GetKey(KeyCode.Escape))
             {
                 // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
-            }
+            }*/
 
             PuddleEffects();
         }
