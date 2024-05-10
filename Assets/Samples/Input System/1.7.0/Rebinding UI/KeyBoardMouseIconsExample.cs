@@ -10,26 +10,26 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         public KeyboardIcons keyboardIcons;
         public MouseIcons mouseIcons;
 
-        void Start()
-        {
-            // Get all input devices
-            var devices = InputSystem.devices;
-        
-            // Iterate over each device
-            foreach (var device in devices)
-            {
-                Debug.Log("Device Name: " + device.name);
-                Debug.Log("Device Layout: " + device.layout);
-        
-                // Print out control paths
-                foreach (var control in device.allControls)
-                {
-                    Debug.Log("Control Path: " + control.path);
-                }
-        
-                Debug.Log("---------------------------------------");
-            }
-        }
+        // void Start()
+        // {
+        //     // Get all input devices
+        //     var devices = InputSystem.devices;
+        //
+        //     // Iterate over each device
+        //     foreach (var device in devices)
+        //     {
+        //         Debug.Log("Device Name: " + device.name);
+        //         Debug.Log("Device Layout: " + device.layout);
+        //
+        //         // Print out control paths
+        //         foreach (var control in device.allControls)
+        //         {
+        //             Debug.Log("Control Path: " + control.path);
+        //         }
+        //
+        //         Debug.Log("---------------------------------------");
+        //     }
+        // }
 
         protected void OnEnable()
         {
@@ -45,6 +45,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString,
             string deviceLayoutName, string controlPath)
         {
+            Debug.Log(controlPath);
             if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
                 return;
 

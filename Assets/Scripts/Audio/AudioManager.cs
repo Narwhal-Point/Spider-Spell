@@ -32,11 +32,14 @@ public class AudioManager : MonoBehaviour
     {
         SFXSource.clip = clip;
         SFXSource.loop = true;
+        SFXSource.pitch = 1.65f;
         SFXSource.Play();
     }
     
     public void StopSFX()
     {
+        SFXSource.loop = false;
+        SFXSource.pitch = 1;
         SFXSource.Stop();
     }
 }
