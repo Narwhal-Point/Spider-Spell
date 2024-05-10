@@ -26,7 +26,6 @@ namespace Player.Movement.State_Machine
             // player.jumpingSound.Play();
             player.audioManager.PlaySFX(player.audioManager.jumping);
             Jump();
-            
         }
 
         public override void UpdateState()
@@ -35,7 +34,7 @@ namespace Player.Movement.State_Machine
 
             if (_jumpTimer <= 0)
             {
-                if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
+                if (player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
                     manager.SwitchState(player.SwingingState);
                 ResetJump();
                 if (!player.Grounded && player.Rb.velocity.y < 0)
@@ -47,21 +46,18 @@ namespace Player.Movement.State_Machine
 
             if (player.Grounded && ReadyToJump)
             {
+                Movement();
+
                 if (player.InputDirection != Vector2.zero)
                 {
                     // if (player.IsSprinting)
                     //     manager.SwitchState(player.SprintingState);
                     // else
-                        manager.SwitchState(player.WalkingState);
+                    manager.SwitchState(player.WalkingState);
                 }
                 else
                     manager.SwitchState(player.IdleState);
             }
-        }
-
-        public override void FixedUpdateState()
-        {
-            MovePlayer();
         }
 
         private void Jump()
@@ -81,15 +77,25 @@ namespace Player.Movement.State_Machine
             ReadyToJump = true;
         }
 
-        private void MovePlayer()
+        private void Movement()
         {
-            // get the direction to move towards
-            player.MoveDirection = player.orientation.forward * player.InputDirection.y +
-                                   player.orientation.right * player.InputDirection.x;
+            if (player.InputDirection.y > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+            }
 
+            if (player.InputDirection.y < -0.6)
+                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
 
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f * player.airMultiplier),
-                ForceMode.Force); // move
+            if (player.InputDirection.x > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+            }
+
+            if (player.InputDirection.x < -0.6)
+            {
+                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+            }
         }
     }
 }

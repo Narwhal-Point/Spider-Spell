@@ -1,24 +1,31 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Player.Movement.State_Machine
 {
     public class PlayerMovementStateWalking : PlayerMovementBaseState
     {
-         private RaycastHit _slopeHit;
-         private float _moveSpeed;
+        private RaycastHit _slopeHit;
 
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
-             player)
-         {
-         }
+            player)
+        {
+        }
+
         public override void EnterState()
         {
             // player.walkingSound.Play();
             player.audioManager.PlayLoopSFX(player.audioManager.walking);
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Walking;
-            _moveSpeed = player.walkSpeed;
+
+            player.lastDesiredMoveSpeed = player.DesiredMoveSpeed;
+            player.DesiredMoveSpeed = player.walkSpeed;
+
+            if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
+                player.ChangeMomentum(2f);
+            else
+                player.MoveSpeed = player.DesiredMoveSpeed;
+            
 
             player.Rb.drag = player.groundDrag;
             
@@ -37,12 +44,13 @@ namespace Player.Movement.State_Machine
         {
             MovePlayer();
         }
+
         private void MovePlayer()
         {
             player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);
         }
 
         private void SpeedControl()
@@ -50,9 +58,9 @@ namespace Player.Movement.State_Machine
             Vector3 flatVel = player.Rb.velocity;
 
             // limit velocity if needed
-            if (flatVel.magnitude > _moveSpeed)
+            if (flatVel.magnitude > player.MoveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * player.MoveSpeed;
                 player.Rb.velocity = limitedVel;
             }
         }

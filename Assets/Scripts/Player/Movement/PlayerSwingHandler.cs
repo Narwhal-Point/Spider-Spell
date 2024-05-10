@@ -18,6 +18,8 @@ namespace Player.Movement
         public Vector3 SwingPoint { get; set; }
         public SpringJoint Joint { get; set; }
         public Vector3 CurrentGrapplePosition { get; set; }
+        
+        public bool CanSwing { get; private set; }
 
         [Header("Prediction")] 
         public RaycastHit predictionHit;
@@ -89,10 +91,13 @@ namespace Player.Movement
                 {
                     image.color = Color.white;
                 }
+
+                CanSwing = true;
                 predicitionPoint.position = raycastHit.point;
             }
             else
             {
+                CanSwing = false;
                 foreach (var image in crosshairImages)
                 {
                     image.color = Color.red;

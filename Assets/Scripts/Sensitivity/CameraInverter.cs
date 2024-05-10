@@ -12,6 +12,8 @@ public class CameraInverter : MonoBehaviour
 
     private void Start()
     {
+        freeLookCamera = GetComponent<Cinemachine.CinemachineFreeLook>();
+        
         // Load previous settings from PlayerPrefs
         bool invertX = PlayerPrefs.GetInt(invertXPlayerPrefsKey, 0) == 1;
         bool invertY = PlayerPrefs.GetInt(invertYPlayerPrefsKey, 0) == 1;

@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/SampleScene.meta
+guid: 060ea17f7e860aa4b850256f397b6b8d
+========
+guid: 9af5a0fd89fe6024780889b7689784d1
+>>>>>>>> main:Assets/Shaders.meta
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

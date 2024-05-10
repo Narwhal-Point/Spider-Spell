@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Samples/Input System/1.7.0/Rebinding UI/RebindingUISampleScene.unity.meta
 guid: f6995f4eab80237489ce6962c13d8372
+========
+guid: d499a23d20a9d484587c2cebc03480c3
+>>>>>>>> main:Assets/Scenes/Playtest Level.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

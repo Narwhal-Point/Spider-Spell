@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 [CustomEditor(typeof(WitchFov))]
-public class WitchFieldOfViewEditor : Editor
+internal class WitchFieldOfViewEditor : Editor
 {
     private void OnSceneGUI()
     {
@@ -17,10 +17,10 @@ public class WitchFieldOfViewEditor : Editor
         Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngle01 * fov.radius);
         Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngle02 * fov.radius);
 
-        if (fov.canSeePlayer)
+        if (fov.CanSeePlayer)
         {
             Handles.color = Color.magenta;
-            Handles.DrawLine(fov.transform.position, fov.playerRef.transform.position);
+            Handles.DrawLine(fov.transform.position, fov.PlayerRef.transform.position);
         }
     }
 

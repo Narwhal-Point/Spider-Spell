@@ -6,6 +6,8 @@ TagManager:
   tags:
   - SmoothObject
   - Audio
+  - MovingObject
+  - DeathPuddle
   layers:
   - Default
   - TransparentFX

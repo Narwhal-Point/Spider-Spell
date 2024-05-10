@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Sensitivity.meta
 guid: 20e8af9410d3a6b4a8832260fbf64441
+========
+guid: b0826a1eda3258a49964bd4a13e30a03
+>>>>>>>> main:Assets/Models/Prefaps.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

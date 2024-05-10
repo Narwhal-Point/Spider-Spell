@@ -4,6 +4,7 @@ namespace Player.Movement.State_Machine
 {
     public class PlayerMovementStateFalling : PlayerMovementBaseState
     {
+        private float _moveSpeed;
         public PlayerMovementStateFalling(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
             player)
         {
@@ -17,10 +18,21 @@ namespace Player.Movement.State_Machine
             // disable ground drag because otherwise we clamp the y value
             // this took hours to figure out...
             player.Rb.drag = 0f;
+            
+            player.lastDesiredMoveSpeed = player.DesiredMoveSpeed;
+            // using swingSpeed for now.
+            player.DesiredMoveSpeed = player.swingSpeed;
+            
+            if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
+                player.ChangeMomentum(2f);
+            else
+                player.MoveSpeed = player.DesiredMoveSpeed;
         }
 
         public override void UpdateState()
         {
+            Movement();
+            
             if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
                 manager.SwitchState(player.SwingingState);
             else if (player.Grounded)
@@ -38,6 +50,7 @@ namespace Player.Movement.State_Machine
                     manager.SwitchState(player.IdleState);
             }
         }
+        
 
         public override void ExitState()
         {
@@ -45,6 +58,27 @@ namespace Player.Movement.State_Machine
             {
                 player.audioManager.PlaySFX(player.audioManager.landing);
                 player.PlayLandVFX();
+            }
+        }
+        
+        private void Movement()
+        {
+            if (player.InputDirection.y > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+            }
+
+            if (player.InputDirection.y < -0.6)
+                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+            
+            if (player.InputDirection.x > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+            }
+
+            if (player.InputDirection.x < -0.6)
+            {
+                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
             }
         }
     }
