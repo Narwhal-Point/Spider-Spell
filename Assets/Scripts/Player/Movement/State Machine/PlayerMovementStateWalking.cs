@@ -5,7 +5,7 @@ namespace Player.Movement.State_Machine
     public class PlayerMovementStateWalking : PlayerMovementBaseState
     {
         private RaycastHit _slopeHit;
-        private Vector3 surfaceNormal;
+
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
             player)
         {
@@ -41,62 +41,16 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
-            //HandleVectorRotation();
-            if (direction.magnitude >= 0.1f)
-            {
-                MovePlayer();
-                TurnPlayer();
-            }
+            MovePlayer();
         }
 
         private void MovePlayer()
         {
-            Vector3 forward = player.movementForward.normalized;
-            Vector3 right = player.movementRight.normalized;
-
-            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
-            Vector3 rightRelativeInput = player.InputDirection.x * right;
-
-            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
-            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, surfaceNormal).normalized;
-            Vector3 movementWithSpeed = planeRelativeMovement * player.MoveSpeed * Time.deltaTime;
-            player.MoveDirection = movementWithSpeed;
+            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);
-            /*player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
-
-            player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);*/
         }
-
-        private void TurnPlayer()
-        {
-            Vector3 forward = player.movementForward.normalized;
-            Vector3 right = player.movementRight.normalized;
-
-            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
-            Vector3 rightRelativeInput = player.InputDirection.x * right;
-            // Calculate the combined movement direction relative to the camera
-            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
-
-            // Project the combined movement onto the horizontal plane
-            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up).normalized;
-
-            // Check if movement is negligible or zero
-            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, player.transform.forward) < Mathf.Epsilon)
-            {
-                return;
-            }
-
-            // Project the combined movement onto the horizontal plane again (not normalized this time)
-            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, player.transform.up);
-
-            // Rotate towards the combined movement direction
-            player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, Quaternion.LookRotation(combinedMovement, player.transform.up), 15f);
-        }
-
 
         private void SpeedControl()
         {
