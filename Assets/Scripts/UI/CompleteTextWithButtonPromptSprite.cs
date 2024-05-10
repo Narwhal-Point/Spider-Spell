@@ -23,13 +23,10 @@ namespace UI
 
         private static string RenameInput(string stringButtonName)
         {
-            Debug.Log("Before: " + stringButtonName);
             // regex for removing the action map from the string
             stringButtonName = Regex.Replace(stringButtonName, @"[^""]*:", String.Empty);
-            Debug.Log("After first: " + stringButtonName);
             // regex for removing the current device from the string
             stringButtonName = Regex.Replace(stringButtonName, @"\[.*\]", String.Empty);
-            Debug.Log("After second: " + stringButtonName);
 
             // if we want to support more devices, add them here.
             stringButtonName = stringButtonName.Replace("<Gamepad>/", "Xbox_");
@@ -37,8 +34,6 @@ namespace UI
             stringButtonName = stringButtonName.Replace("<Mouse>/", "Mouse_");
             stringButtonName = stringButtonName.Replace("<DualShockGamepad>/", "playstation_");
             stringButtonName = stringButtonName.Replace("<SwitchProControllerHID>/", "Switch_");
-
-            Debug.Log("After: " + stringButtonName);
             
             return stringButtonName;
         }
