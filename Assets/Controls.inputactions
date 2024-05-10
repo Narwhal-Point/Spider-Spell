@@ -109,6 +109,28 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "fbb852a2-8020-4539-838c-e608cfabd17c",
+                    "path": "<DualShockGamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "57d13ecf-a462-4303-8041-cd373ac5cf88",
+                    "path": "<SwitchProControllerHID>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Switch",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "WASD",
                     "id": "50cc0569-8468-4245-ad57-961d4572d1d5",
                     "path": "2DVector",
@@ -165,28 +187,6 @@
                 },
                 {
                     "name": "",
-                    "id": "fbb852a2-8020-4539-838c-e608cfabd17c",
-                    "path": "<DualShockGamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "playstation",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "57d13ecf-a462-4303-8041-cd373ac5cf88",
-                    "path": "<SwitchProControllerHID>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Switch",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "1635d3fe-58b6-4ba9-a4e2-f4b964f6b5c8",
                     "path": "<XRController>/{Primary2DAxis}",
                     "interactions": "",
@@ -220,17 +220,6 @@
                 },
                 {
                     "name": "",
-                    "id": "9cda3f84-a427-4e52-a347-7f3a8b3099bf",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "298babc9-9532-4692-ad47-f4d47501811b",
                     "path": "<DualShockGamepad>/rightStick",
                     "interactions": "",
@@ -247,6 +236,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Switch",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9cda3f84-a427-4e52-a347-7f3a8b3099bf",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -286,17 +286,6 @@
                 },
                 {
                     "name": "",
-                    "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7a52d521-c1bd-4c2b-a53b-9888485ec3cc",
                     "path": "<DualShockGamepad>/rightTrigger",
                     "interactions": "",
@@ -313,6 +302,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Switch",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -363,17 +363,6 @@
                 },
                 {
                     "name": "",
-                    "id": "0da02b09-720b-493f-a973-bb09094bb2c4",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "97c076e7-e908-4ec4-8d1d-bf9f678ac7c3",
                     "path": "<DualShockGamepad>/buttonSouth",
                     "interactions": "",
@@ -390,17 +379,6 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e873ae61-171f-4965-b1b2-1c0d218d308d",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -484,17 +462,6 @@
                 },
                 {
                     "name": "",
-                    "id": "78c8521b-f563-45b0-bfb0-b1b3e6db08dc",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a3fbb8fe-c51f-48c6-b73b-a5ea95297ecb",
                     "path": "<DualShockGamepad>/leftTrigger",
                     "interactions": "",
@@ -550,17 +517,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3ea5ca73-666f-4b5a-b979-789bc31dd947",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "49a39b63-3c16-493f-bbb6-3b500e06a16b",
                     "path": "<DualShockGamepad>/buttonWest",
                     "interactions": "",
@@ -577,6 +533,61 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Switch",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0e0a2afb-6bfc-4756-b88a-1f053708a904",
+                    "path": "<SwitchProControllerHID>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Switch",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0da02b09-720b-493f-a973-bb09094bb2c4",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e873ae61-171f-4965-b1b2-1c0d218d308d",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78c8521b-f563-45b0-bfb0-b1b3e6db08dc",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ea5ca73-666f-4b5a-b979-789bc31dd947",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false

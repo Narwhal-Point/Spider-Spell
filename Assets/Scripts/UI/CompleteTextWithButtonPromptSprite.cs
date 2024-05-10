@@ -32,7 +32,7 @@ namespace UI
             Debug.Log("After second: " + stringButtonName);
 
             // if we want to support more devices, add them here.
-            stringButtonName = stringButtonName.Replace("<Gamepad>/", "Gamepad_");
+            stringButtonName = stringButtonName.Replace("<Gamepad>/", "Xbox_");
             stringButtonName = stringButtonName.Replace("<Keyboard>/", "Keyboard_");
             stringButtonName = stringButtonName.Replace("<Mouse>/", "Mouse_");
             stringButtonName = stringButtonName.Replace("<DualShockGamepad>/", "playstation_");

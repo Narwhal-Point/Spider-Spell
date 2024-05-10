@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 850f7b7f16474b944a8bf649471a5ec5
+guid: 09f4f2c9576951c44abecbb6f9d6f0f7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -110,34 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_0
+      name: spritesheet_xbox_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 100
         height: 100
-      alignment: 3
-      pivot: {x: 1, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7ad49dc2cc3e0ee45b53ea58746edf7a
-      internalID: -1778772063
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: controller_prompts_spritesheet_1
-      rect:
-        serializedVersion: 2
-        x: 109
-        y: 9
-        width: 82
-        height: 82
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,14 +124,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d69ff20e02ffade4aa8dcec4d6143b02
-      internalID: 904639710
+      spriteID: 3939fee7905f6804db18985e3d0f5b2a
+      internalID: -125573428
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_2
+      name: spritesheet_xbox_1
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34ad056e69382584b8ee64ade7e19d02
+      internalID: 1546765120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_xbox_2
       rect:
         serializedVersion: 2
         x: 200
@@ -166,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b951818d7e57aa740b2be29f3ab922c4
-      internalID: -37821077
+      spriteID: c5d7c50da2e140f43af1fb859500fd72
+      internalID: -1534289840
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_3
+      name: spritesheet_xbox_3
       rect:
         serializedVersion: 2
         x: 300
@@ -187,14 +187,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a474063443779cd468628e9afc8a2cf8
-      internalID: -1246372521
+      spriteID: 57e357c01d9bf314483917b8e914876a
+      internalID: 974269130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_4
+      name: spritesheet_xbox_4
       rect:
         serializedVersion: 2
         x: 400
@@ -208,14 +208,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 248a9214fa94e684ea08ee1c555cc9f9
-      internalID: 33018886
+      spriteID: f61eddd60a752c84ea5530a5f24ad941
+      internalID: 1600617562
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_5
+      name: spritesheet_xbox_5
       rect:
         serializedVersion: 2
         x: 500
@@ -229,14 +229,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9b08d4e157cacf74ca647a3a4a756c95
-      internalID: -139116952
+      spriteID: 09856f3d77147b847a8a6620f1250b6a
+      internalID: 1542245683
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_6
+      name: spritesheet_xbox_6
       rect:
         serializedVersion: 2
         x: 600
@@ -250,14 +250,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f14f004f675bbe74a8ea55cd3c226904
-      internalID: -969482388
+      spriteID: 96fae6c2774eef743abe2c1253cf3c67
+      internalID: 2104715376
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_7
+      name: spritesheet_xbox_7
       rect:
         serializedVersion: 2
         x: 700
@@ -271,14 +271,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f709fe277329834180da6e3efacdfd4
-      internalID: -821165955
+      spriteID: fb30bdb58620c8a4bacb8b2bd211f2e4
+      internalID: 571426825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_8
+      name: spritesheet_xbox_8
       rect:
         serializedVersion: 2
         x: 800
@@ -292,14 +292,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 651def8163062bd48b8378fccc75e7e0
-      internalID: 790433020
+      spriteID: b631bbe5e73ba4d468cf36ef7c5237b2
+      internalID: -1584142888
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_9
+      name: spritesheet_xbox_9
       rect:
         serializedVersion: 2
         x: 900
@@ -313,14 +313,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c3e3d637f848d343a93983a6e528ed2
-      internalID: 2142574724
+      spriteID: cf662affee13e1a4082c1d24b4e4b560
+      internalID: 1798269625
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_10
+      name: spritesheet_xbox_10
       rect:
         serializedVersion: 2
         x: 1000
@@ -334,14 +334,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b5da23e3707c0f44ab9f5efeb931d7f
-      internalID: 1672865742
+      spriteID: 87772001fd4638c4d863ef7885e6cbf3
+      internalID: 927294278
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_11
+      name: spritesheet_xbox_11
       rect:
         serializedVersion: 2
         x: 1100
@@ -355,14 +355,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d09734cd369ce224e8e11c16ce848700
-      internalID: -283850448
+      spriteID: 3ff213e8b5a2b14419a8ba95f8f2597e
+      internalID: -1805063898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_12
+      name: spritesheet_xbox_12
       rect:
         serializedVersion: 2
         x: 1200
@@ -376,14 +376,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b15315df70cd3145bc71e943aa68993
-      internalID: 704904574
+      spriteID: c4eab72e6dad7c246ad8db3c3c934c0e
+      internalID: 380476695
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_13
+      name: spritesheet_xbox_13
       rect:
         serializedVersion: 2
         x: 1300
@@ -397,14 +397,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e1e4d1b4187bff0448ece73521d92407
-      internalID: -296088767
+      spriteID: d7d2b802ad5609441b9e516755b4bb3c
+      internalID: 1276924747
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_14
+      name: spritesheet_xbox_14
       rect:
         serializedVersion: 2
         x: 1400
@@ -418,14 +418,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04c1d74a469dd274198822dc2da01073
-      internalID: 1919495891
+      spriteID: 29fab55b65c2e1b4488cb4126efdec6e
+      internalID: 742218510
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_15
+      name: spritesheet_xbox_15
       rect:
         serializedVersion: 2
         x: 1500
@@ -439,14 +439,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 37bee24a6e19f2c449493f51dd6b1fe2
-      internalID: 1169338760
+      spriteID: 6fe8a690dd226fd4492aa2f5d4fcf879
+      internalID: 1740959994
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_16
+      name: spritesheet_xbox_16
       rect:
         serializedVersion: 2
         x: 1600
@@ -460,14 +460,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fa2119b2aff46044586c898e8bff1158
-      internalID: 1067404664
+      spriteID: afdba3b6d20e8024d841c95584ca5bed
+      internalID: 102441166
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: controller_prompts_spritesheet_17
+      name: spritesheet_xbox_17
       rect:
         serializedVersion: 2
         x: 1700
@@ -481,8 +481,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e44df4ba09c3694ea15b3322992f083
-      internalID: -1011619978
+      spriteID: 718580ea5b016504e846154127d1d414
+      internalID: 1763281946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_xbox_18
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 689b2eacf9d4a4b48a03825c23f50df9
+      internalID: 460317443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_xbox_19
+      rect:
+        serializedVersion: 2
+        x: 1900
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8bb66aeb8360ea418c9b639f98e0f14
+      internalID: 574238510
       vertices: []
       indices: 
       edges: []
@@ -490,7 +532,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 0adcada2edad2944aa6ae364a943130d
+    spriteID: 2bacc90f6693e81428b88e32b37ad24e
     internalID: 0
     vertices: []
     indices: 
@@ -498,24 +540,26 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      controller_prompts_spritesheet_0: -1778772063
-      controller_prompts_spritesheet_1: 904639710
-      controller_prompts_spritesheet_10: -37821077
-      controller_prompts_spritesheet_11: -1246372521
-      controller_prompts_spritesheet_12: 33018886
-      controller_prompts_spritesheet_13: -139116952
-      controller_prompts_spritesheet_14: -969482388
-      controller_prompts_spritesheet_15: -821165955
-      controller_prompts_spritesheet_16: 790433020
-      controller_prompts_spritesheet_17: 2142574724
-      controller_prompts_spritesheet_2: 1672865742
-      controller_prompts_spritesheet_3: -283850448
-      controller_prompts_spritesheet_4: 704904574
-      controller_prompts_spritesheet_5: -296088767
-      controller_prompts_spritesheet_6: 1919495891
-      controller_prompts_spritesheet_7: 1169338760
-      controller_prompts_spritesheet_8: 1067404664
-      controller_prompts_spritesheet_9: -1011619978
+      spritesheet_xbox_0: -125573428
+      spritesheet_xbox_1: 1546765120
+      spritesheet_xbox_10: 927294278
+      spritesheet_xbox_11: -1805063898
+      spritesheet_xbox_12: 380476695
+      spritesheet_xbox_13: 1276924747
+      spritesheet_xbox_14: 742218510
+      spritesheet_xbox_15: 1740959994
+      spritesheet_xbox_16: 102441166
+      spritesheet_xbox_17: 1763281946
+      spritesheet_xbox_18: 460317443
+      spritesheet_xbox_19: 574238510
+      spritesheet_xbox_2: -1534289840
+      spritesheet_xbox_3: 974269130
+      spritesheet_xbox_4: 1600617562
+      spritesheet_xbox_5: 1542245683
+      spritesheet_xbox_6: 2104715376
+      spritesheet_xbox_7: 571426825
+      spritesheet_xbox_8: -1584142888
+      spritesheet_xbox_9: 1798269625
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

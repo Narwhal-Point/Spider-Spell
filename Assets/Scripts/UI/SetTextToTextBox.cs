@@ -101,10 +101,9 @@ namespace UI
         private enum DeviceType
         {
             Gamepad = 0,
-            Keyboard = 1,
-            Playstation = 2,
-            Switch = 3,
-            Xbox = 4,
+            Playstation = 1,
+            Switch = 2,
+            Keyboard = 3,
         }
     }
 }

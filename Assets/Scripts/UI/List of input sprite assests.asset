@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: List of input sprite assests
   m_EditorClassIdentifier: 
   spriteAssets:
-  - {fileID: 11400000, guid: 746acf5e0da949940a8622ad88f1d29c, type: 2}
-  - {fileID: 11400000, guid: 7d57319df01e15e4f9e051186b620a91, type: 2}
+  - {fileID: 11400000, guid: 633ac91fa35d65d4bade71d0b13afbdb, type: 2}
   - {fileID: 11400000, guid: a2ace3de03626f042bc592c83d73af2e, type: 2}
   - {fileID: 11400000, guid: 8f66d4e4135eaf9419c07f0c65fb107c, type: 2}
+  - {fileID: 11400000, guid: 7d57319df01e15e4f9e051186b620a91, type: 2}
