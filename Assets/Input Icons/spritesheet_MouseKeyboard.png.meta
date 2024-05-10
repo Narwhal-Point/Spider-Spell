@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b822ea687d6389943baddae5167fae5f
+guid: 88167d57a8c61464a9b211135c003e21
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_0
+      name: spritesheet_MouseKeyboard_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0fdc733bbedeaee46b35fb65437337ad
-      internalID: 603011233
+      spriteID: ba58922ce380d884a8ad663e9aa5c631
+      internalID: 346323394
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_1
+      name: spritesheet_MouseKeyboard_1
       rect:
         serializedVersion: 2
         x: 100
@@ -145,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 57802ae48453b6b4398344ac17b36b6b
-      internalID: 437898767
+      spriteID: 34402a4aa070ce74a9fc1b333c948d61
+      internalID: 2041833652
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_2
+      name: spritesheet_MouseKeyboard_2
       rect:
         serializedVersion: 2
         x: 200
@@ -166,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 748a99d891105504f8848f021020456b
-      internalID: 1588623120
+      spriteID: bf09301f9cbebd148a93643e9f6fc237
+      internalID: 890497831
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_3
+      name: spritesheet_MouseKeyboard_3
       rect:
         serializedVersion: 2
         x: 300
@@ -187,14 +187,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f10d9ed663350da49bb8c44e7f07adc4
-      internalID: 761281807
+      spriteID: 74acc5fc5f012e646a993fe7eb2d1cc7
+      internalID: -985028018
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_4
+      name: spritesheet_MouseKeyboard_4
       rect:
         serializedVersion: 2
         x: 400
@@ -208,14 +208,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7d7a8379b114fd5419727be1abfe3423
-      internalID: 581671831
+      spriteID: bf5495570f108c44dbc7214401cc6c11
+      internalID: 251349686
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_5
+      name: spritesheet_MouseKeyboard_5
       rect:
         serializedVersion: 2
         x: 500
@@ -229,14 +229,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b9bd75cdabfe8704bb84e85d06ad322f
-      internalID: -823711822
+      spriteID: 9588ee0a7a5395c4e872fcd86a1ac5ee
+      internalID: 348239234
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_6
+      name: spritesheet_MouseKeyboard_6
       rect:
         serializedVersion: 2
         x: 600
@@ -250,14 +250,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 152d46edccb61c549b1dcdba6db07633
-      internalID: 2108625922
+      spriteID: 7809c133ccd58f149b2d6e0402a5f20a
+      internalID: -484037558
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_7
+      name: spritesheet_MouseKeyboard_7
       rect:
         serializedVersion: 2
         x: 700
@@ -271,14 +271,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a69bd935b319b984bb781505dc57b04b
-      internalID: -1494330773
+      spriteID: 9c212529988af1c4295ca3020e6f82a6
+      internalID: 319444710
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_8
+      name: spritesheet_MouseKeyboard_8
       rect:
         serializedVersion: 2
         x: 800
@@ -292,14 +292,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6e10a95bdbc30a74c95ef1b16a8111cc
-      internalID: 1374383049
+      spriteID: bb5e942168427dd4dbb81e1208a9206f
+      internalID: 923502008
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_9
+      name: spritesheet_MouseKeyboard_9
       rect:
         serializedVersion: 2
         x: 900
@@ -313,14 +313,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fb4343ecc51c5c94dbedfe5308952b73
-      internalID: 1236491654
+      spriteID: 6514f5a304086f945ac8c6fdd1139996
+      internalID: 368331610
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_10
+      name: spritesheet_MouseKeyboard_10
       rect:
         serializedVersion: 2
         x: 1000
@@ -334,14 +334,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 213ecb14e38b50a44af6cce39e657a9d
-      internalID: 428626697
+      spriteID: 27aefaf66f19656488a89949919f2815
+      internalID: 825490349
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_11
+      name: spritesheet_MouseKeyboard_11
       rect:
         serializedVersion: 2
         x: 1100
@@ -355,14 +355,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9ff91f8265306374ba38f8cab082e4a1
-      internalID: 98440647
+      spriteID: 44f7b1e4d2b499e47bf97ec0ec744d6f
+      internalID: -766578236
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_12
+      name: spritesheet_MouseKeyboard_12
       rect:
         serializedVersion: 2
         x: 1200
@@ -376,14 +376,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6bb15b39e61cb974b9a2c25a9c343e95
-      internalID: -1591706042
+      spriteID: a823767d5676c714c8691b6180d64b14
+      internalID: -303875005
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_13
+      name: spritesheet_MouseKeyboard_13
       rect:
         serializedVersion: 2
         x: 1300
@@ -397,14 +397,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a406b0d545784904883c867c052ac764
-      internalID: -1933150642
+      spriteID: a20399fbc9f8479488e9a115f033cc22
+      internalID: 310100569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_14
+      name: spritesheet_MouseKeyboard_14
       rect:
         serializedVersion: 2
         x: 1400
@@ -418,14 +418,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 54092a4cfe9e5ba448a737b9e9b9b038
-      internalID: -1427417868
+      spriteID: 892bfb0f18ee4374696abc241bf8c9cd
+      internalID: 2033769062
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_15
+      name: spritesheet_MouseKeyboard_15
       rect:
         serializedVersion: 2
         x: 1500
@@ -439,14 +439,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e11365cec1423824787e0648f33e0d5d
-      internalID: 753238766
+      spriteID: faae6226f45e55a4aaf0173e5a4608cb
+      internalID: -298752197
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_16
+      name: spritesheet_MouseKeyboard_16
       rect:
         serializedVersion: 2
         x: 1600
@@ -460,14 +460,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4df2bb0abb7e35c49bbc7379dd38753e
-      internalID: 630415903
+      spriteID: 750b7b932bdbbe34fa70cacfe224d273
+      internalID: -1432776820
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_17
+      name: spritesheet_MouseKeyboard_17
       rect:
         serializedVersion: 2
         x: 1700
@@ -481,14 +481,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 05a42ece35045fc4aa5b923e9d4dcfa4
-      internalID: 748182448
+      spriteID: 94197df096eabd244b750a93a1e9dfad
+      internalID: -1041198046
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_18
+      name: spritesheet_MouseKeyboard_18
       rect:
         serializedVersion: 2
         x: 1800
@@ -502,14 +502,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7480948ef5ef2fd4da95b8be528e2c78
-      internalID: -70799200
+      spriteID: aafaa2372d032aa4ebeb031a335de77b
+      internalID: -1900349563
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_19
+      name: spritesheet_MouseKeyboard_19
       rect:
         serializedVersion: 2
         x: 1900
@@ -523,14 +523,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 46dec13086bbb294b883f35c9a9737a1
-      internalID: -1875682766
+      spriteID: 74b42c195e1543c4d8b00364a98bd296
+      internalID: 177496949
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_20
+      name: spritesheet_MouseKeyboard_20
       rect:
         serializedVersion: 2
         x: 2000
@@ -544,14 +544,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb0dd9ff349051c4cb297ae2d82f7c54
-      internalID: -589912130
+      spriteID: 744950dea616f37409d8b60ba6eaf353
+      internalID: -2019420893
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_21
+      name: spritesheet_MouseKeyboard_21
       rect:
         serializedVersion: 2
         x: 2100
@@ -565,14 +565,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 775ab1db385fb82468dd1f222b1284be
-      internalID: 446653348
+      spriteID: 8b0a20146c3fc7e43ad553ce95bf0672
+      internalID: 1725056696
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_22
+      name: spritesheet_MouseKeyboard_22
       rect:
         serializedVersion: 2
         x: 2200
@@ -586,14 +586,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: acb6c3384c502474c84d818f1edb1740
-      internalID: -1893400645
+      spriteID: 0ddaf69b0af9239468dfe1ea8fa1f688
+      internalID: 1375538822
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_23
+      name: spritesheet_MouseKeyboard_23
       rect:
         serializedVersion: 2
         x: 2300
@@ -607,14 +607,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59f92f38934642b4ea89a536e55d6663
-      internalID: -1194952656
+      spriteID: 768711e32a6cb88408a8d7b3c3f2a8ed
+      internalID: 1285418813
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_24
+      name: spritesheet_MouseKeyboard_24
       rect:
         serializedVersion: 2
         x: 2400
@@ -628,14 +628,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2acbd2ec17e6e20448f54bcc429b7174
-      internalID: -1578475029
+      spriteID: f25d6f3844a3d274b998fdddbd49ffe6
+      internalID: -1135656901
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_25
+      name: spritesheet_MouseKeyboard_25
       rect:
         serializedVersion: 2
         x: 2500
@@ -649,14 +649,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a444da27aa0c814994d1fd03d9f896b
-      internalID: 1610945829
+      spriteID: daf96b1d6344953449b93fd6fd333843
+      internalID: -1924463516
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_26
+      name: spritesheet_MouseKeyboard_26
       rect:
         serializedVersion: 2
         x: 2600
@@ -670,14 +670,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0706147dba5478340be142c43f2ea524
-      internalID: 529059280
+      spriteID: a9d643361248efd42b92e8e3aaed0929
+      internalID: 1690932235
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_27
+      name: spritesheet_MouseKeyboard_27
       rect:
         serializedVersion: 2
         x: 2700
@@ -691,14 +691,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2bda46454f3950641b17d2ddd1117387
-      internalID: -210326026
+      spriteID: 3c7c6e39b830b9a4c93e71ae52ad3de3
+      internalID: -1130059067
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_28
+      name: spritesheet_MouseKeyboard_28
       rect:
         serializedVersion: 2
         x: 2800
@@ -712,14 +712,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a9f0c7e08f63b5449ec553fdd3e68e8
-      internalID: -1372340787
+      spriteID: 183c5d5aa2c5f264f91e626b1025840f
+      internalID: -1283360363
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_29
+      name: spritesheet_MouseKeyboard_29
       rect:
         serializedVersion: 2
         x: 2900
@@ -733,14 +733,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2851fceb18ded64f9381dbc1054283b
-      internalID: 628481429
+      spriteID: ad9df36e445baa246b23c6f1c52c4afb
+      internalID: -1439296876
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_30
+      name: spritesheet_MouseKeyboard_30
       rect:
         serializedVersion: 2
         x: 3000
@@ -754,14 +754,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bb6f25d9bd9c601439181ff5c7153874
-      internalID: 725754727
+      spriteID: 3e16d48be6afa474fbb2af979fac91f7
+      internalID: -727353189
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_31
+      name: spritesheet_MouseKeyboard_31
       rect:
         serializedVersion: 2
         x: 3100
@@ -775,14 +775,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: db729d0a837aeeb4f8fb30e4e530cacb
-      internalID: -1356104860
+      spriteID: 9c7965773c1e6784dadf96bdbb419b19
+      internalID: 1046754316
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_32
+      name: spritesheet_MouseKeyboard_32
       rect:
         serializedVersion: 2
         x: 3200
@@ -796,14 +796,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 29b82362ba989004092677f7a471de9e
-      internalID: -834988813
+      spriteID: ffffd7c7c7b3a324ea78c55feb73f69f
+      internalID: 1313256759
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_33
+      name: spritesheet_MouseKeyboard_33
       rect:
         serializedVersion: 2
         x: 3300
@@ -817,14 +817,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a46829fbf63c0eb40896f9136472b02a
-      internalID: 1968369395
+      spriteID: ebd76c47f80dfd84dbf6833fdad45592
+      internalID: 1976494757
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_34
+      name: spritesheet_MouseKeyboard_34
       rect:
         serializedVersion: 2
         x: 3400
@@ -838,14 +838,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a570da4ef8db6f445b0f09b26af81f39
-      internalID: -1079673990
+      spriteID: 45296fb555878a74f8c5788dda525ddf
+      internalID: 1239759367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_35
+      name: spritesheet_MouseKeyboard_35
       rect:
         serializedVersion: 2
         x: 3500
@@ -859,14 +859,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac3100a708c35904e847a39ad5c2d81b
-      internalID: 563716633
+      spriteID: 103cbd0b98375ea4ca32d3777f7e5da4
+      internalID: 1880759887
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_36
+      name: spritesheet_MouseKeyboard_36
       rect:
         serializedVersion: 2
         x: 3600
@@ -880,14 +880,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b10a5217b86fac74f9d6946d47893fee
-      internalID: 1130222571
+      spriteID: 06c19a296ffe95341925257337795b24
+      internalID: 1094098864
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_37
+      name: spritesheet_MouseKeyboard_37
       rect:
         serializedVersion: 2
         x: 3700
@@ -901,14 +901,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab4893a9514372743afe41eaccc9c02a
-      internalID: 901540340
+      spriteID: bc83e234effe8b34cabe9d3425d11099
+      internalID: 1903107535
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_38
+      name: spritesheet_MouseKeyboard_38
       rect:
         serializedVersion: 2
         x: 3800
@@ -922,14 +922,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4bb7a23e5b8b3cf4b8ee0de92d59be09
-      internalID: -545871732
+      spriteID: 66b2604685dc8ed44989057fefd5c8cc
+      internalID: 295053212
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_39
+      name: spritesheet_MouseKeyboard_39
       rect:
         serializedVersion: 2
         x: 3900
@@ -943,14 +943,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b1a3d82963ed7243939e4bb46ff6e29
-      internalID: -1188261764
+      spriteID: 39c6323600d7e6643bb8b310b68c8d2d
+      internalID: -604639437
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_40
+      name: spritesheet_MouseKeyboard_40
       rect:
         serializedVersion: 2
         x: 4000
@@ -964,14 +964,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64b27576346ca0e45b290de3399e2b7a
-      internalID: 1399343935
+      spriteID: 9f7f521752a0a7f499914943f4953401
+      internalID: 1207442954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_41
+      name: spritesheet_MouseKeyboard_41
       rect:
         serializedVersion: 2
         x: 4100
@@ -985,14 +985,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d15eaed9adb35404b98093335cedc55b
-      internalID: 868794345
+      spriteID: de0dd09edd92249479078f26ae443672
+      internalID: 869225437
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_42
+      name: spritesheet_MouseKeyboard_42
       rect:
         serializedVersion: 2
         x: 4200
@@ -1006,14 +1006,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ebd29c7939648b41997ef31e2d38978
-      internalID: -1686999041
+      spriteID: df242785c85dfda4eb958ea8e7de08e0
+      internalID: -1720638499
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_43
+      name: spritesheet_MouseKeyboard_43
       rect:
         serializedVersion: 2
         x: 4300
@@ -1027,14 +1027,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1efd645b4e9c17e4ba4fb98f549c615c
-      internalID: 1472257411
+      spriteID: afe719130bfb71c49a3554a933697478
+      internalID: -782562908
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_44
+      name: spritesheet_MouseKeyboard_44
       rect:
         serializedVersion: 2
         x: 4400
@@ -1048,14 +1048,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b31896a6edfb1a48a7c0fb9d1223ec3
-      internalID: -1010510826
+      spriteID: b15b2bad3159b6f4f9b0445d2ea69a81
+      internalID: -271239035
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_45
+      name: spritesheet_MouseKeyboard_45
       rect:
         serializedVersion: 2
         x: 4500
@@ -1069,14 +1069,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b9ac48b5533b2c49aec65b97c22e6d0
-      internalID: 55647140
+      spriteID: 29f9315b9042da54abf7c6ca1323f93c
+      internalID: 58302888
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_46
+      name: spritesheet_MouseKeyboard_46
       rect:
         serializedVersion: 2
         x: 4600
@@ -1090,14 +1090,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 14315891ed66e5942b6078fb2dd6c18d
-      internalID: 1872350291
+      spriteID: 1ce1a3fbb63404c4eb1367512bb69bc9
+      internalID: 1010452130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_47
+      name: spritesheet_MouseKeyboard_47
       rect:
         serializedVersion: 2
         x: 4700
@@ -1111,14 +1111,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b14a42059e9b104e90d6309aa9dc8ec
-      internalID: -1421984339
+      spriteID: 342836ea73469f446adf0873bfdafda0
+      internalID: 214987845
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_48
+      name: spritesheet_MouseKeyboard_48
       rect:
         serializedVersion: 2
         x: 4800
@@ -1132,14 +1132,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64e930b899598184b865a67200594132
-      internalID: 1168641184
+      spriteID: 138e2acf387aba14f91d45dde62949ee
+      internalID: 1666830923
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_49
+      name: spritesheet_MouseKeyboard_49
       rect:
         serializedVersion: 2
         x: 4900
@@ -1153,14 +1153,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b10331bba62c0ae41af9ac5a9cb03bac
-      internalID: 615688985
+      spriteID: fb10eadc2f084374e8bfa8f40059f4e2
+      internalID: -1463108505
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_50
+      name: spritesheet_MouseKeyboard_50
       rect:
         serializedVersion: 2
         x: 5000
@@ -1174,14 +1174,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0205efbd8cc76cb4a9733b3ae4ff9d85
-      internalID: 1204589028
+      spriteID: 167ce394c779b2d4f8cf70482a9c643e
+      internalID: 750116872
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_51
+      name: spritesheet_MouseKeyboard_51
       rect:
         serializedVersion: 2
         x: 5100
@@ -1195,14 +1195,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ea334f0c1bb950489ee5bc0e14fe810
-      internalID: 161928575
+      spriteID: 01756b263ecf7d645ab5afcc65a5bec0
+      internalID: 1633289052
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_52
+      name: spritesheet_MouseKeyboard_52
       rect:
         serializedVersion: 2
         x: 5200
@@ -1216,14 +1216,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f060fe2dcfbb13543b6344e5a0ac4cd6
-      internalID: -1981549430
+      spriteID: b3311260ba12672499ad5af028c26def
+      internalID: -2018558533
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_53
+      name: spritesheet_MouseKeyboard_53
       rect:
         serializedVersion: 2
         x: 5300
@@ -1237,14 +1237,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c238e5cc3af9a8a4d8df7d1e59e08a39
-      internalID: 1912874771
+      spriteID: 0a8de95a424446e44872ebca9d914c72
+      internalID: 175317033
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_54
+      name: spritesheet_MouseKeyboard_54
       rect:
         serializedVersion: 2
         x: 5400
@@ -1258,14 +1258,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 743118aa51ec75c4ba3351f9448b370b
-      internalID: 1246138301
+      spriteID: 5c9a40579a8e0cf4f87f05ad023b5eb6
+      internalID: 1455188859
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_55
+      name: spritesheet_MouseKeyboard_55
       rect:
         serializedVersion: 2
         x: 5500
@@ -1279,14 +1279,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 73ea2739c76e1fd4dbb60aa0bcd2c0e8
-      internalID: 802186165
+      spriteID: 595c607ff5c3aa345a73c4c3d5079a71
+      internalID: 940146666
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_56
+      name: spritesheet_MouseKeyboard_56
       rect:
         serializedVersion: 2
         x: 5600
@@ -1300,14 +1300,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb0ed88f12aeff54a9c90530d477fe56
-      internalID: -949266566
+      spriteID: f6c1bf4d19a603d4fa79adcdfa73cf95
+      internalID: 1359479630
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_57
+      name: spritesheet_MouseKeyboard_57
       rect:
         serializedVersion: 2
         x: 5700
@@ -1321,14 +1321,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 226bd2a5276a18b40b241276a6af6720
-      internalID: -1502692910
+      spriteID: a236fcf8f15f2c2439c35264d58015ac
+      internalID: -90777889
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_58
+      name: spritesheet_MouseKeyboard_58
       rect:
         serializedVersion: 2
         x: 5800
@@ -1342,14 +1342,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f4a0de2a0637f584e8463503c1a3722a
-      internalID: -2010851991
+      spriteID: 583df8ab98d750743ae7a804532f3c6a
+      internalID: -817252934
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_59
+      name: spritesheet_MouseKeyboard_59
       rect:
         serializedVersion: 2
         x: 5900
@@ -1363,14 +1363,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b60bc26f2df06a40959a02e9b49262b
-      internalID: -1288258101
+      spriteID: ae4b7039c97179248b7440cb18acdbee
+      internalID: 125047239
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_60
+      name: spritesheet_MouseKeyboard_60
       rect:
         serializedVersion: 2
         x: 6000
@@ -1384,14 +1384,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff6540844bd2217418619c41b838df36
-      internalID: -940716583
+      spriteID: ab978bd38cc2c1946a758c3a9ec6d9c2
+      internalID: 336948781
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_61
+      name: spritesheet_MouseKeyboard_61
       rect:
         serializedVersion: 2
         x: 6100
@@ -1405,14 +1405,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bbaadb13fbac0b64dbba184ba2891d81
-      internalID: -837957773
+      spriteID: 3b12addfb877678408e46e7d68e935c1
+      internalID: 430098810
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_62
+      name: spritesheet_MouseKeyboard_62
       rect:
         serializedVersion: 2
         x: 6200
@@ -1426,14 +1426,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 60f404d00b9f6cb48b24524da81bdbd1
-      internalID: 941971532
+      spriteID: 7762e6427c587374a8673a445fb7c9dd
+      internalID: -976700245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_63
+      name: spritesheet_MouseKeyboard_63
       rect:
         serializedVersion: 2
         x: 6300
@@ -1447,14 +1447,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b4bfede0ee92a04a9d523013737acb8
-      internalID: 731694431
+      spriteID: b2c4f537c6a7c504a82af7cef5e08dff
+      internalID: 400474582
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_64
+      name: spritesheet_MouseKeyboard_64
       rect:
         serializedVersion: 2
         x: 6400
@@ -1468,14 +1468,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 50a9101eaa905cf40921d87b382cbac9
-      internalID: 1476066672
+      spriteID: 7af9ad3c2471fc5428fda6aca4698c94
+      internalID: -647836431
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_65
+      name: spritesheet_MouseKeyboard_65
       rect:
         serializedVersion: 2
         x: 6500
@@ -1489,14 +1489,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1131a118ddc723142a08103b5baf9d1a
-      internalID: -1307521777
+      spriteID: 55407f4c5cee7a34284782839bcc1a43
+      internalID: 1367151479
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_66
+      name: spritesheet_MouseKeyboard_66
       rect:
         serializedVersion: 2
         x: 6600
@@ -1510,14 +1510,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aab589ed0cf1f674183ab8242bb2b7d0
-      internalID: -440845811
+      spriteID: c6b7bb697a4ad324d807b6317460094f
+      internalID: 623268525
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_67
+      name: spritesheet_MouseKeyboard_67
       rect:
         serializedVersion: 2
         x: 6700
@@ -1531,14 +1531,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af812c445964f6441be63c8c92f34d77
-      internalID: -2028320917
+      spriteID: df3fb270fb148b740869a5a4de18dee1
+      internalID: -470609221
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_68
+      name: spritesheet_MouseKeyboard_68
       rect:
         serializedVersion: 2
         x: 6800
@@ -1552,14 +1552,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 612ef695b94a87442bd8c977a520de8a
-      internalID: 1313416589
+      spriteID: 1bee04700a41c434bb944a5cfbb8cb9c
+      internalID: 454965669
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_keyboardmouse_69
+      name: spritesheet_MouseKeyboard_69
       rect:
         serializedVersion: 2
         x: 6900
@@ -1573,8 +1573,281 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 98252ccd7c3eabd4c92f6edcc2e31ba7
-      internalID: 661808562
+      spriteID: 1e4ccfa2261a7844e8a67d9f47d04d03
+      internalID: 1555278365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_70
+      rect:
+        serializedVersion: 2
+        x: 7000
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 694b70668889ff34b97125440ac6b448
+      internalID: 1359030241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_71
+      rect:
+        serializedVersion: 2
+        x: 7100
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72384389ccb066947aa2748f55cefab9
+      internalID: 447623209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_72
+      rect:
+        serializedVersion: 2
+        x: 7200
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79897053c22c0054bbdcdfc7e8171fe6
+      internalID: -585728402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_73
+      rect:
+        serializedVersion: 2
+        x: 7300
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e33db3e48daca14dacf641dbd06f38a
+      internalID: 1691495828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_74
+      rect:
+        serializedVersion: 2
+        x: 7400
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f3152345d060f0449cd48551ea6b0b8
+      internalID: 702830241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_75
+      rect:
+        serializedVersion: 2
+        x: 7500
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f63e49b862965349a3834cf65c22cdb
+      internalID: -1090900822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_76
+      rect:
+        serializedVersion: 2
+        x: 7600
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9eb7cf543cdd944fb7663f3587a5269
+      internalID: -1924167778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_77
+      rect:
+        serializedVersion: 2
+        x: 7700
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab1fe151ec572934d8f832a0205702e7
+      internalID: 1806672015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_78
+      rect:
+        serializedVersion: 2
+        x: 7800
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0eae23cb3162d5742bc45acfb11588b9
+      internalID: 1974226234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_79
+      rect:
+        serializedVersion: 2
+        x: 7900
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96b396b10857c0d4f93530784fa0b5db
+      internalID: -96012798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_80
+      rect:
+        serializedVersion: 2
+        x: 8000
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e7f12079d1b6c1419609dfc0bb6e7c6
+      internalID: 666434796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_81
+      rect:
+        serializedVersion: 2
+        x: 8100
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5de9d775a51b2f4ca3d3cc1d6e1336c
+      internalID: 1278951979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_MouseKeyboard_82
+      rect:
+        serializedVersion: 2
+        x: 8200
+        y: 0
+        width: 100
+        height: 100
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13ab16f6ce75648408b001d51c481ef9
+      internalID: 2146755960
       vertices: []
       indices: 
       edges: []
@@ -1582,7 +1855,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ed58361c5dc15a14ba5d91be4e65ef28
+    spriteID: 812b091b72dd96b499970a2a5c5db5a9
     internalID: 0
     vertices: []
     indices: 
@@ -1590,76 +1863,89 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spritesheet_keyboardmouse_0: 603011233
-      spritesheet_keyboardmouse_1: 437898767
-      spritesheet_keyboardmouse_10: 428626697
-      spritesheet_keyboardmouse_11: 98440647
-      spritesheet_keyboardmouse_12: -1591706042
-      spritesheet_keyboardmouse_13: -1933150642
-      spritesheet_keyboardmouse_14: -1427417868
-      spritesheet_keyboardmouse_15: 753238766
-      spritesheet_keyboardmouse_16: 630415903
-      spritesheet_keyboardmouse_17: 748182448
-      spritesheet_keyboardmouse_18: -70799200
-      spritesheet_keyboardmouse_19: -1875682766
-      spritesheet_keyboardmouse_2: 1588623120
-      spritesheet_keyboardmouse_20: -589912130
-      spritesheet_keyboardmouse_21: 446653348
-      spritesheet_keyboardmouse_22: -1893400645
-      spritesheet_keyboardmouse_23: -1194952656
-      spritesheet_keyboardmouse_24: -1578475029
-      spritesheet_keyboardmouse_25: 1610945829
-      spritesheet_keyboardmouse_26: 529059280
-      spritesheet_keyboardmouse_27: -210326026
-      spritesheet_keyboardmouse_28: -1372340787
-      spritesheet_keyboardmouse_29: 628481429
-      spritesheet_keyboardmouse_3: 761281807
-      spritesheet_keyboardmouse_30: 725754727
-      spritesheet_keyboardmouse_31: -1356104860
-      spritesheet_keyboardmouse_32: -834988813
-      spritesheet_keyboardmouse_33: 1968369395
-      spritesheet_keyboardmouse_34: -1079673990
-      spritesheet_keyboardmouse_35: 563716633
-      spritesheet_keyboardmouse_36: 1130222571
-      spritesheet_keyboardmouse_37: 901540340
-      spritesheet_keyboardmouse_38: -545871732
-      spritesheet_keyboardmouse_39: -1188261764
-      spritesheet_keyboardmouse_4: 581671831
-      spritesheet_keyboardmouse_40: 1399343935
-      spritesheet_keyboardmouse_41: 868794345
-      spritesheet_keyboardmouse_42: -1686999041
-      spritesheet_keyboardmouse_43: 1472257411
-      spritesheet_keyboardmouse_44: -1010510826
-      spritesheet_keyboardmouse_45: 55647140
-      spritesheet_keyboardmouse_46: 1872350291
-      spritesheet_keyboardmouse_47: -1421984339
-      spritesheet_keyboardmouse_48: 1168641184
-      spritesheet_keyboardmouse_49: 615688985
-      spritesheet_keyboardmouse_5: -823711822
-      spritesheet_keyboardmouse_50: 1204589028
-      spritesheet_keyboardmouse_51: 161928575
-      spritesheet_keyboardmouse_52: -1981549430
-      spritesheet_keyboardmouse_53: 1912874771
-      spritesheet_keyboardmouse_54: 1246138301
-      spritesheet_keyboardmouse_55: 802186165
-      spritesheet_keyboardmouse_56: -949266566
-      spritesheet_keyboardmouse_57: -1502692910
-      spritesheet_keyboardmouse_58: -2010851991
-      spritesheet_keyboardmouse_59: -1288258101
-      spritesheet_keyboardmouse_6: 2108625922
-      spritesheet_keyboardmouse_60: -940716583
-      spritesheet_keyboardmouse_61: -837957773
-      spritesheet_keyboardmouse_62: 941971532
-      spritesheet_keyboardmouse_63: 731694431
-      spritesheet_keyboardmouse_64: 1476066672
-      spritesheet_keyboardmouse_65: -1307521777
-      spritesheet_keyboardmouse_66: -440845811
-      spritesheet_keyboardmouse_67: -2028320917
-      spritesheet_keyboardmouse_68: 1313416589
-      spritesheet_keyboardmouse_69: 661808562
-      spritesheet_keyboardmouse_7: -1494330773
-      spritesheet_keyboardmouse_8: 1374383049
-      spritesheet_keyboardmouse_9: 1236491654
+      spritesheet_MouseKeyboard_0: 346323394
+      spritesheet_MouseKeyboard_1: 2041833652
+      spritesheet_MouseKeyboard_10: 825490349
+      spritesheet_MouseKeyboard_11: -766578236
+      spritesheet_MouseKeyboard_12: -303875005
+      spritesheet_MouseKeyboard_13: 310100569
+      spritesheet_MouseKeyboard_14: 2033769062
+      spritesheet_MouseKeyboard_15: -298752197
+      spritesheet_MouseKeyboard_16: -1432776820
+      spritesheet_MouseKeyboard_17: -1041198046
+      spritesheet_MouseKeyboard_18: -1900349563
+      spritesheet_MouseKeyboard_19: 177496949
+      spritesheet_MouseKeyboard_2: 890497831
+      spritesheet_MouseKeyboard_20: -2019420893
+      spritesheet_MouseKeyboard_21: 1725056696
+      spritesheet_MouseKeyboard_22: 1375538822
+      spritesheet_MouseKeyboard_23: 1285418813
+      spritesheet_MouseKeyboard_24: -1135656901
+      spritesheet_MouseKeyboard_25: -1924463516
+      spritesheet_MouseKeyboard_26: 1690932235
+      spritesheet_MouseKeyboard_27: -1130059067
+      spritesheet_MouseKeyboard_28: -1283360363
+      spritesheet_MouseKeyboard_29: -1439296876
+      spritesheet_MouseKeyboard_3: -985028018
+      spritesheet_MouseKeyboard_30: -727353189
+      spritesheet_MouseKeyboard_31: 1046754316
+      spritesheet_MouseKeyboard_32: 1313256759
+      spritesheet_MouseKeyboard_33: 1976494757
+      spritesheet_MouseKeyboard_34: 1239759367
+      spritesheet_MouseKeyboard_35: 1880759887
+      spritesheet_MouseKeyboard_36: 1094098864
+      spritesheet_MouseKeyboard_37: 1903107535
+      spritesheet_MouseKeyboard_38: 295053212
+      spritesheet_MouseKeyboard_39: -604639437
+      spritesheet_MouseKeyboard_4: 251349686
+      spritesheet_MouseKeyboard_40: 1207442954
+      spritesheet_MouseKeyboard_41: 869225437
+      spritesheet_MouseKeyboard_42: -1720638499
+      spritesheet_MouseKeyboard_43: -782562908
+      spritesheet_MouseKeyboard_44: -271239035
+      spritesheet_MouseKeyboard_45: 58302888
+      spritesheet_MouseKeyboard_46: 1010452130
+      spritesheet_MouseKeyboard_47: 214987845
+      spritesheet_MouseKeyboard_48: 1666830923
+      spritesheet_MouseKeyboard_49: -1463108505
+      spritesheet_MouseKeyboard_5: 348239234
+      spritesheet_MouseKeyboard_50: 750116872
+      spritesheet_MouseKeyboard_51: 1633289052
+      spritesheet_MouseKeyboard_52: -2018558533
+      spritesheet_MouseKeyboard_53: 175317033
+      spritesheet_MouseKeyboard_54: 1455188859
+      spritesheet_MouseKeyboard_55: 940146666
+      spritesheet_MouseKeyboard_56: 1359479630
+      spritesheet_MouseKeyboard_57: -90777889
+      spritesheet_MouseKeyboard_58: -817252934
+      spritesheet_MouseKeyboard_59: 125047239
+      spritesheet_MouseKeyboard_6: -484037558
+      spritesheet_MouseKeyboard_60: 336948781
+      spritesheet_MouseKeyboard_61: 430098810
+      spritesheet_MouseKeyboard_62: -976700245
+      spritesheet_MouseKeyboard_63: 400474582
+      spritesheet_MouseKeyboard_64: -647836431
+      spritesheet_MouseKeyboard_65: 1367151479
+      spritesheet_MouseKeyboard_66: 623268525
+      spritesheet_MouseKeyboard_67: -470609221
+      spritesheet_MouseKeyboard_68: 454965669
+      spritesheet_MouseKeyboard_69: 1555278365
+      spritesheet_MouseKeyboard_7: 319444710
+      spritesheet_MouseKeyboard_70: 1359030241
+      spritesheet_MouseKeyboard_71: 447623209
+      spritesheet_MouseKeyboard_72: -585728402
+      spritesheet_MouseKeyboard_73: 1691495828
+      spritesheet_MouseKeyboard_74: 702830241
+      spritesheet_MouseKeyboard_75: -1090900822
+      spritesheet_MouseKeyboard_76: -1924167778
+      spritesheet_MouseKeyboard_77: 1806672015
+      spritesheet_MouseKeyboard_78: 1974226234
+      spritesheet_MouseKeyboard_79: -96012798
+      spritesheet_MouseKeyboard_8: 923502008
+      spritesheet_MouseKeyboard_80: 666434796
+      spritesheet_MouseKeyboard_81: 1278951979
+      spritesheet_MouseKeyboard_82: 2146755960
+      spritesheet_MouseKeyboard_9: 368331610
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

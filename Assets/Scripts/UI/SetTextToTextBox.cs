@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -42,6 +44,14 @@ namespace UI
             {
                 deviceType = DeviceType.Keyboard;
             }
+            else if (currentControlScheme == "playstation")
+            {
+                deviceType = DeviceType.Playstation;
+            }
+            else if (currentControlScheme == "Switch")
+            {
+                deviceType = DeviceType.Switch;
+            }
 
             if ((int)deviceType > buttonassets.spriteAssets.Count - 1)
             {
@@ -58,7 +68,11 @@ namespace UI
                     string action = match.Groups[1].Value;
                     InputBinding binding = _playerInput.actions.FindAction(action).bindings[(int)deviceType];
                     TMP_SpriteAsset spriteAsset = buttonassets.spriteAssets[(int)deviceType];
-                    string replacement = CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, binding, spriteAsset);
+
+
+                    // normal operation
+                    string replacement =
+                        CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, binding, spriteAsset);
                     message = message.Replace(match.Value, replacement);
                 }
             }
@@ -69,7 +83,10 @@ namespace UI
         private enum DeviceType
         {
             Gamepad = 0,
-            Keyboard = 1
+            Keyboard = 1,
+            Playstation = 2,
+            Switch = 3,
+            Xbox = 4,
         }
     }
 }
