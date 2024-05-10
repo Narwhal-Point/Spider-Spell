@@ -69,11 +69,29 @@ namespace UI
                     InputBinding binding = _playerInput.actions.FindAction(action).bindings[(int)deviceType];
                     TMP_SpriteAsset spriteAsset = buttonassets.spriteAssets[(int)deviceType];
 
-
-                    // normal operation
-                    string replacement =
-                        CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, binding, spriteAsset);
-                    message = message.Replace(match.Value, replacement);
+                    if (binding.isComposite)
+                    {
+                        // add all bindings that are part of this binding to the list
+                        List<InputBinding> compositeBindings = new List<InputBinding>();
+                        compositeBindings.AddRange(_playerInput.actions.FindAction(action).bindings.Where(compositeBinding =>
+                            compositeBinding.isPartOfComposite));
+                        
+                        // set all the icons
+                        string replacement = "";
+                        foreach (var compositeBinding in compositeBindings)
+                        {
+                            replacement +=
+                                CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, compositeBinding, spriteAsset);
+                        }
+                        message = message.Replace(match.Value, replacement);
+                    }
+                    else
+                    {
+                        // normal operation
+                        string replacement =
+                            CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, binding, spriteAsset);
+                        message = message.Replace(match.Value, replacement);
+                    }
                 }
             }
 
