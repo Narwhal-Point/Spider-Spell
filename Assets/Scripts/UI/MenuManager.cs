@@ -13,6 +13,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _keyboardCanvasGO;
     [SerializeField] private GameObject _gamepadCanvasGO;
     [SerializeField] private GameObject _promptCanvasGO;
+    [SerializeField] private GameObject _sensitivityCanvasGO;
+    [SerializeField] private GameObject _audioCanvasGO;
     
     [Header("Player Scripts to Deactivate on Pause")]
     public PlayerInput _playerInput;
@@ -22,7 +24,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _settingsMenuFirst;
     [SerializeField] private GameObject _keyboardFirst;
     [SerializeField] private GameObject _gamepadFirst;
+    [SerializeField] private GameObject _sensitivityFirst;
     [SerializeField] private GameObject _promptFirst;
+    [SerializeField] private GameObject _audioFirst; 
+    
     public InputActionAsset actions;
     
     private bool isPaused;
@@ -36,11 +41,7 @@ public class MenuManager : MonoBehaviour
         if (!string.IsNullOrEmpty(rebinds))
             actions.LoadBindingOverridesFromJson(rebinds);
         UnPause();
-        _mainMenuCanvasGO.SetActive(false);
-        _settingsMenuCanvasGO.SetActive(false);
-        _keyboardCanvasGO.SetActive(false);
-        _gamepadCanvasGO.SetActive(false);
-        _promptCanvasGO.SetActive(false); 
+        CloseAllMenus();
     }
 
     private void Update()
@@ -89,6 +90,8 @@ public class MenuManager : MonoBehaviour
     private void OpenMainMenu()
     {
         _mainMenuCanvasGO.SetActive(true);
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _promptCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
@@ -100,6 +103,8 @@ public class MenuManager : MonoBehaviour
     private void OpenSettingsMenuHandle()
     {
         _settingsMenuCanvasGO.SetActive(true);
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
@@ -111,6 +116,8 @@ public class MenuManager : MonoBehaviour
     private void OpenKeyboardCanvas()
     {
         _keyboardCanvasGO.SetActive(true);
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
@@ -122,6 +129,8 @@ public class MenuManager : MonoBehaviour
     private void OpenGamepadCanvas()
     {
         _gamepadCanvasGO.SetActive(true);
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
@@ -133,6 +142,8 @@ public class MenuManager : MonoBehaviour
     private void OpenPrompt()
     {
         _promptCanvasGO.SetActive(true);
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
@@ -140,9 +151,37 @@ public class MenuManager : MonoBehaviour
         
         EventSystem.current.SetSelectedGameObject(_promptFirst);
     }
+    
+    private void OpenSensitivityCanvas()
+    {
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(true);
+        _promptCanvasGO.SetActive(false);
+        _gamepadCanvasGO.SetActive(false);
+        _mainMenuCanvasGO.SetActive(false);
+        _settingsMenuCanvasGO.SetActive(false);
+        _keyboardCanvasGO.SetActive(false);
+        
+        EventSystem.current.SetSelectedGameObject(_sensitivityFirst);
+    }
+    
+    private void OpenAudioCanvas()
+    {
+        _audioCanvasGO.SetActive(true);
+        _sensitivityCanvasGO.SetActive(false);
+        _promptCanvasGO.SetActive(false);
+        _mainMenuCanvasGO.SetActive(false);
+        _settingsMenuCanvasGO.SetActive(false);
+        _keyboardCanvasGO.SetActive(false);
+        _gamepadCanvasGO.SetActive(false);
+        
+        EventSystem.current.SetSelectedGameObject(_audioFirst); // Set the first selectable item in Audio Canvas
+    }
 
     private void CloseAllMenus()
     {
+        _audioCanvasGO.SetActive(false);
+        _sensitivityCanvasGO.SetActive(false);
         _promptCanvasGO.SetActive(false);
         _mainMenuCanvasGO.SetActive(false);
         _settingsMenuCanvasGO.SetActive(false);
@@ -183,6 +222,16 @@ public class MenuManager : MonoBehaviour
     public void OnReturnToMainMenuPress()
     {
         OpenPrompt();
+    }
+    
+    public void OnSensitivityPress()
+    {
+        OpenSensitivityCanvas();
+    }
+    
+    public void OnAudioPress() // Add a new method for opening Audio Canvas
+    {
+        OpenAudioCanvas();
     }
     
     public void OnConfirmReturnToMainMenu()

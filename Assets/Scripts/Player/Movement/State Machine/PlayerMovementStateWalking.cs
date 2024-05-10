@@ -14,7 +14,8 @@ namespace Player.Movement.State_Machine
          }
         public override void EnterState()
         {
-            player.walkingSound.Play();
+            // player.walkingSound.Play();
+            player.audioManager.PlayLoopSFX(player.audioManager.walking);
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Walking;
             _moveSpeed = player.walkSpeed;
@@ -58,7 +59,7 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
-            player.walkingSound.Stop();
+            player.audioManager.StopSFX();
         }
     }
 }

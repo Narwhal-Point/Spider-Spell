@@ -56,11 +56,13 @@ namespace Player.Movement
         // public AudioSource uncrouchSound;
         
         // sfx for spider
-        public AudioSource webShootSound;
-        public AudioSource landingSound;
-        public AudioSource walkingSound;
-        public AudioSource midAirSound;
-        public AudioSource jumpingSound;
+        // public AudioSource webShootSound;
+        // public AudioSource landingSound;
+        // public AudioSource walkingSound;
+        // public AudioSource jumpingSound;
+
+        public AudioManager audioManager;
+        // public AudioSource midAirSound;
         // public bool jumpAnimation;
         
 
@@ -176,6 +178,7 @@ namespace Player.Movement
             Rb = GetComponent<Rigidbody>();
             _playerInput = GetComponent<PlayerInput>();
             _menuOpenCloseAction = _playerInput.actions["MenuOpenClose"];
+            audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         }
 
         private void Start()
