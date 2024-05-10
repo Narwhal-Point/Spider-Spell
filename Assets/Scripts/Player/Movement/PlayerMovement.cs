@@ -16,6 +16,7 @@ namespace Player.Movement
         public float swingSpeed = 20;
         public float crouchSpeed = 3.5f;
         public float groundDrag = 5f;
+        public float airSpeed = 6f;
         [SerializeField] private float rotationSpeed = 10f;
 
         public float DesiredMoveSpeed { get; set; } = 10;
@@ -505,13 +506,14 @@ namespace Player.Movement
 
         private bool isJumping = false;
 
-        public void OnJump()
+        public void OnJump(InputValue value)
         {
+            isJumping = value.isPressed;
             if (!isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
-                isJumping = true;
-                jumpAnimation = true;
-                StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
+                // isJumping = true;
+                _manager.SwitchState(JumpingState);
+                // StartCoroutine(DelayedStateSwitch(JumpingState, .5f)); // 50 frames delay
             }
         }
 
