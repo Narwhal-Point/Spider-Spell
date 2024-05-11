@@ -72,8 +72,9 @@ namespace Player.Movement.State_Machine
 
             _swing.lr.positionCount = 2;
             _swing.CurrentGrapplePosition = player.swingOrigin.position;
-            player.webShootSound.Play();
-            player.midAirSound.Play();
+            player.audioManager.PlaySFX(player.audioManager.webshooting);
+            // player.webShootSound.Play();
+            // player.midAirSound.Play();
         }
 
         void StopSwing()
@@ -117,7 +118,7 @@ namespace Player.Movement.State_Machine
         public override void ExitState()
         {
             StopSwing();
-            player.midAirSound.Stop();
+            // player.midAirSound.Stop();
         }
     }
 }

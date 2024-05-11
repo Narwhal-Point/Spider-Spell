@@ -56,7 +56,7 @@ namespace Player.Movement.State_Machine
         {
             if (player.Grounded)
             {
-                player.landingSound.Play();
+                player.audioManager.PlaySFX(player.audioManager.landing);
                 player.PlayLandVFX();
             }
         }

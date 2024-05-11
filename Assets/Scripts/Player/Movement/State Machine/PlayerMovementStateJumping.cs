@@ -22,8 +22,9 @@ namespace Player.Movement.State_Machine
             _jumpTimer = player.jumpCooldown;
             player.movementState = PlayerMovement.MovementState.Jumping;
             player.Rb.drag = 0; // no ground drag because we're in the air
-
-            player.jumpingSound.Play();
+            
+            // player.jumpingSound.Play();
+            player.audioManager.PlaySFX(player.audioManager.jumping);
             Jump();
         }
 

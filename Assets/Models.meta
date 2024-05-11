@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Samples.meta
+guid: 1a6484e60714c0949897dc8fd469043e
+========
 guid: cfeb92b9b90550e4daa9f344ab088d8c
+>>>>>>>> main:Assets/Models.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

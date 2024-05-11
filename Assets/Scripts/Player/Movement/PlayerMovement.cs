@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
@@ -63,13 +64,15 @@ namespace Player.Movement
         // public AudioSource uncrouchSound;
 
         // sfx for spider
-        public AudioSource webShootSound;
-        public AudioSource landingSound;
-        public AudioSource walkingSound;
-        public AudioSource midAirSound;
-        public AudioSource jumpingSound;
-        public bool jumpAnimation;
+        // public AudioSource webShootSound;
+        // public AudioSource landingSound;
+        // public AudioSource walkingSound;
+        // public AudioSource jumpingSound;
 
+        public AudioManager audioManager;
+        // public AudioSource midAirSound;
+        // public bool jumpAnimation;
+        
 
         public TMP_Text text;
         public TMP_Text speed_text;
@@ -88,6 +91,12 @@ namespace Player.Movement
         public bool IsAiming { get; private set; }
 
         public bool IsSnapping { get; set; } = false;
+        
+        public bool MenuOpenCloseInput { get; private set; }
+        
+        private InputAction _menuOpenCloseAction;
+        
+        private PlayerInput _playerInput;
 
         // enum to display active state on screen
         public MovementState movementState;
@@ -227,6 +236,9 @@ namespace Player.Movement
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
+            _playerInput = GetComponent<PlayerInput>();
+            _menuOpenCloseAction = _playerInput.actions["MenuOpenClose"];
+            audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
         }
@@ -241,6 +253,7 @@ namespace Player.Movement
 
         private void Update()
         {
+            MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
@@ -268,14 +281,6 @@ namespace Player.Movement
                     canIncrementJumpCount = true;
                 }
             }
-
-            if (Input.GetKey(KeyCode.Escape))
-            {
-                // DataPersistenceManager.instance.SaveGame();
-                SceneManager.LoadSceneAsync("MainMenu");
-            }
-
-            PuddleEffects();
         }
 
         private void FixedUpdate()
@@ -517,23 +522,18 @@ namespace Player.Movement
             }
         }
 
-        private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, float frameCount)
-        {
-            float elapsedTime = 0f;
-            while (elapsedTime < frameCount)
-            {
-                yield return null;
-                elapsedTime += Time.deltaTime;
-            }
-            // for (int i = 0; i < frameCount; i++)
-            // {
-            //     yield return null; // Wait for one frame
-            // }
-
-            jumpAnimation = false;
-            _manager.SwitchState(nextState);
-            isJumping = false; // Reset jump flag
-        }
+        // private IEnumerator DelayedStateSwitch(PlayerMovementBaseState nextState, float frameCount)
+        // {
+        //     float elapsedTime = 0f;
+        //     while (elapsedTime < frameCount)
+        //     {
+        //         yield return null;
+        //         elapsedTime += Time.deltaTime;
+        //     }
+        //     
+        //     _manager.SwitchState(nextState);
+        //     isJumping = false;
+        // }
 
 
         // public void OnSprint(InputValue value)

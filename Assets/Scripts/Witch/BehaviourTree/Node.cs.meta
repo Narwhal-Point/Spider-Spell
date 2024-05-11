@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Player/ResetDeviceBindings.cs.meta
+guid: a5b07f6788fb1e24c860d1e2b5fa26dc
+========
 guid: e5bc299ce323c224497c60954b040cba
+>>>>>>>> main:Assets/Scripts/Witch/BehaviourTree/Node.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
