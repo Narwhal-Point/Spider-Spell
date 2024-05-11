@@ -284,9 +284,41 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
             HandleRotation();
+            CalculatePlayerVMovement();
             //TopDownRayDirection();
         }
+        public Vector3 movementForward;
+        public Vector3 movementRight;
+        private void CalculatePlayerVMovement()
+        {
+            GameObject obj = GameObject.Find("FollowPlayer");
+            Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
+            Vector3 upOrigin = obj.transform.position + obj.transform.up * 50f;
+            Plane fPlane = new Plane(transform.up, transform.position);
+            Plane rPlane = new Plane(transform.up, transform.position);
 
+            Ray rRay = new Ray(rightOrigin, obj.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, obj.transform.forward * 100);
+
+            Vector3 cam2Player = transform.position - obj.transform.position;
+            float upOrDown = Vector3.Dot(cam2Player, transform.up);
+
+            if (fPlane.Raycast(uRay, out float uEnter))
+            {
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+            }
+
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
+                Vector3 fPoint = rRay.GetPoint(rEnter);
+                Debug.DrawLine(rightOrigin, fPoint, Color.red);
+                movementRight = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }
+        }
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
             Quaternion facingRotation = Quaternion.Euler(0f, angle, 0f);

@@ -41,7 +41,7 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            CalculatePlayerVMovement();
+            //CalculatePlayerVMovement();
             Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
             //HandleVectorRotation();
             if (direction.magnitude >= 0.1f)
@@ -50,12 +50,12 @@ namespace Player.Movement.State_Machine
                 TurnPlayer();
             }
         }
-        public Vector3 movementForward;
-        public Vector3 movementRight;
+       /* public Vector3 movementForward;
+        public Vector3 movementRight;*/
         private void TurnPlayer()
         {
-            Vector3 forward = movementForward.normalized;
-            Vector3 right = movementRight.normalized;
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
 
             Vector3 forwardRelativeInput = player.InputDirection.y * forward;
             Vector3 rightRelativeInput = player.InputDirection.x * right;
@@ -81,8 +81,8 @@ namespace Player.Movement.State_Machine
 
         private void MovePlayer()
         {           
-            Vector3 forward = movementForward.normalized;
-            Vector3 right = movementRight.normalized;
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
 
             Vector3 forwardRelativeInput = player.InputDirection.y * forward;
             Vector3 rightRelativeInput = player.InputDirection.x * right;
@@ -97,13 +97,13 @@ namespace Player.Movement.State_Machine
         }
         private Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
-            Quaternion facingRotation = Quaternion.Euler(movementForward.x, 0f, movementForward.y);
+            Quaternion facingRotation = Quaternion.Euler(player.movementForward.x, 0f, player.movementForward.y);
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             //Quaternion combinedRotation = surfaceRotation * facingRotation;
-            Vector3 moveDirection = movementForward * player.InputDirection.y + movementRight * player.InputDirection.x;
+            Vector3 moveDirection = player.movementForward * player.InputDirection.y + player.movementRight * player.InputDirection.x;
             return moveDirection;
         }       
-        private void CalculatePlayerVMovement()
+       /* private void CalculatePlayerVMovement()
         {
             GameObject obj = GameObject.Find("FollowPlayer");
             Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
@@ -132,7 +132,7 @@ namespace Player.Movement.State_Machine
                 movementRight = fPoint - player.transform.position;
                 Debug.DrawLine(player.transform.position, player.transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
-        }
+        }*/
         private void SpeedControl()
         {
             Vector3 flatVel = player.Rb.velocity;
