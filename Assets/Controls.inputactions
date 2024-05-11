@@ -495,11 +495,11 @@
                 },
                 {
                     "name": "",
-                    "id": "ffeb347d-5af2-4fd5-a46a-0f8422f1f9d9",
-                    "path": "<Keyboard>/x",
+                    "id": "c6ef7e98-e441-4b44-b8ea-503318d49b52",
+                    "path": "<DualShockGamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "playstation",
                     "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -589,6 +589,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01d99201-e6f2-45a3-b43e-83990fea3c02",
+                    "path": "<SwitchProControllerHID>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Switch",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ffeb347d-5af2-4fd5-a46a-0f8422f1f9d9",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -40,10 +41,6 @@ namespace UI
             {
                 deviceType = DeviceType.Gamepad;
             }
-            else if (currentControlScheme == "Keyboard&Mouse")
-            {
-                deviceType = DeviceType.Keyboard;
-            }
             else if (currentControlScheme == "playstation")
             {
                 deviceType = DeviceType.Playstation;
@@ -51,6 +48,15 @@ namespace UI
             else if (currentControlScheme == "Switch")
             {
                 deviceType = DeviceType.Switch;
+            }
+            else if (currentControlScheme == "Keyboard&Mouse")
+            {
+                deviceType = DeviceType.Keyboard;
+            }
+            else
+            {
+                Debug.LogError($"Unexpected control scheme: {currentControlScheme}");
+                return;
             }
 
             if ((int)deviceType > buttonassets.spriteAssets.Count - 1)
@@ -65,15 +71,26 @@ namespace UI
             {
                 if (match.Success)
                 {
-                    string action = match.Groups[1].Value;
-                    InputBinding binding = _playerInput.actions.FindAction(action).bindings[(int)deviceType];
+                    string actionName = match.Groups[1].Value;
+                    
+                    try
+                    {
+                        _playerInput.actions.FindAction(actionName, true);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"action {actionName} does not exist!");
+                        continue;
+                    }
+                    
+                    InputBinding binding = _playerInput.actions.FindAction(actionName).bindings[(int)deviceType];
                     TMP_SpriteAsset spriteAsset = buttonassets.spriteAssets[(int)deviceType];
 
                     if (binding.isComposite)
                     {
                         // add all bindings that are part of this binding to the list
                         List<InputBinding> compositeBindings = new List<InputBinding>();
-                        compositeBindings.AddRange(_playerInput.actions.FindAction(action).bindings.Where(compositeBinding =>
+                        compositeBindings.AddRange(_playerInput.actions.FindAction(actionName).bindings.Where(compositeBinding =>
                             compositeBinding.isPartOfComposite));
                         
                         // set all the icons
