@@ -53,11 +53,6 @@ namespace UI
             {
                 deviceType = DeviceType.Keyboard;
             }
-            else
-            {
-                Debug.LogError($"Unexpected control scheme: {currentControlScheme}");
-                return;
-            }
 
             if ((int)deviceType > buttonassets.spriteAssets.Count - 1)
             {
