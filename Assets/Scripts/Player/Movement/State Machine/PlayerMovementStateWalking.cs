@@ -80,7 +80,7 @@ namespace Player.Movement.State_Machine
 
 
         private void MovePlayer()
-        {
+        {           
             Vector3 forward = movementForward.normalized;
             Vector3 right = movementRight.normalized;
 
@@ -104,7 +104,8 @@ namespace Player.Movement.State_Machine
             return moveDirection;
         }       
         private void CalculatePlayerVMovement()
-        {            
+        {
+            GameObject obj = GameObject.Find("FollowPlayer");
             Vector3 rightOrigin = player.cam.position + player.cam.transform.right * 50f;
             Vector3 upOrigin = player.cam.position + player.cam.transform.up * 50f;
             Plane fPlane = new Plane(player.transform.up, player.transform.position);
