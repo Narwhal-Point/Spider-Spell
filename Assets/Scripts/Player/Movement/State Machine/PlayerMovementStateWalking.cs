@@ -106,15 +106,15 @@ namespace Player.Movement.State_Machine
         private void CalculatePlayerVMovement()
         {
             GameObject obj = GameObject.Find("FollowPlayer");
-            Vector3 rightOrigin = player.cam.position + player.cam.transform.right * 50f;
-            Vector3 upOrigin = player.cam.position + player.cam.transform.up * 50f;
+            Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
+            Vector3 upOrigin = obj.transform.position + obj.transform.up * 50f;
             Plane fPlane = new Plane(player.transform.up, player.transform.position);
             Plane rPlane = new Plane(player.transform.up, player.transform.position);
 
-            Ray rRay = new Ray(rightOrigin, player.cam.forward * 100);
-            Ray uRay = new Ray(upOrigin, player.cam.forward * 100);
+            Ray rRay = new Ray(rightOrigin, obj.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, obj.transform.forward * 100);
 
-            Vector3 cam2Player = player.transform.position - player.cam.position;
+            Vector3 cam2Player = player.transform.position - obj.transform.position;
             float upOrDown = Vector3.Dot(cam2Player, player.transform.up);
 
             if (fPlane.Raycast(uRay, out float uEnter))
