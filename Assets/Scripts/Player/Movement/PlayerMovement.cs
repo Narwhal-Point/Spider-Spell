@@ -124,6 +124,8 @@ namespace Player.Movement
         public RaycastHit wallHit;
         public RaycastHit lowWallHit;
 
+       // public GameObject topDownRayObject;
+
         public (float, float) facingAngles;
 
         #endregion
@@ -282,6 +284,7 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
             HandleRotation();
+            //TopDownRayDirection();
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -318,7 +321,35 @@ namespace Player.Movement
                 // Gizmos.DrawWireCube(transform.position + -transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
             }
         }
+      /*  private void TopDownRayDirection()
+        {
+            // Get the object's transform
+            Transform objectTransform = topDownRayObject.transform;
 
+            // Calculate the direction straight forward
+            Vector3 forwardDirection = objectTransform.forward;
+
+            // Calculate the direction 45 degrees down
+            Vector3 downDirection = Quaternion.AngleAxis(45f, objectTransform.right) * forwardDirection;
+
+            // Cast a ray in both directions
+            RaycastHit hitForward;
+            RaycastHit hitDown;
+
+            // Cast ray forward
+            if (Physics.Raycast(objectTransform.position, forwardDirection, out hitForward, Mathf.Infinity))
+            {
+                Debug.DrawRay(objectTransform.position, forwardDirection * hitForward.distance, Color.green);
+                // Do something if hit
+            }
+
+            // Cast ray down
+            if (Physics.Raycast(objectTransform.position, downDirection, out hitDown, Mathf.Infinity))
+            {
+                Debug.DrawRay(objectTransform.position, downDirection * hitDown.distance, Color.blue);
+                // Do something if hit
+            }
+        }*/
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
@@ -410,6 +441,7 @@ namespace Player.Movement
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
+
                 // rotate towards the new surface
                 // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 // Quaternion surfaceAlignment =
@@ -429,10 +461,12 @@ namespace Player.Movement
                 Vector3 newPlayerPos = angleHit.point;
                 Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
 
+                //Create temp position object to pridict direction 
+
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
                 Debug.Log("new forward: " + transform.forward);
-            }
+            }            
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
