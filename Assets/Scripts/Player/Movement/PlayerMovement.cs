@@ -268,12 +268,12 @@ namespace Player.Movement
                     canIncrementJumpCount = true;
                 }
             }
-
+/*
             if (Input.GetKey(KeyCode.Escape))
             {
                 // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
-            }
+            }*/
 
             PuddleEffects();
         }
