@@ -1,8 +1,12 @@
 fileFormatVersion: 2
-guid: edbf66338eb1e8447b8966809d03c8d1
+<<<<<<<< HEAD:Assets/Scripts/UI/List of input sprite assests.asset.meta
+guid: 51c6c52d85056c3499e9bcaca5435011
 NativeFormatImporter:
+========
+guid: 2fe07ed58709f1a44b01fd4f266eb46c
+DefaultImporter:
+>>>>>>>> main:Assets/Scenes/menuScene.unity.meta
   externalObjects: {}
-  mainObjectFileID: 11400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

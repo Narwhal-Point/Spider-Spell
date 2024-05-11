@@ -1,7 +1,12 @@
 fileFormatVersion: 2
-guid: 3c9c9bea1f3f8964a97145ac29f9449f
+<<<<<<<< HEAD:Assets/TextMesh Pro/Resources/Sprite Assets/spritesheet_MouseKeyboard.asset.meta
+guid: 27f43e7828a97194bb3dbe0a874b8aa7
+NativeFormatImporter:
+========
+guid: 663c9ea9557f2a34388df8714c2161d1
 folderAsset: yes
 DefaultImporter:
+>>>>>>>> main:Assets/Scripts/UI.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

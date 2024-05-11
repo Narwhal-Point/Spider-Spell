@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Player/ResetDeviceBindings.cs.meta
+guid: 796ac29c5fe726f43bdfefa89db19687
+========
+guid: e5bc299ce323c224497c60954b040cba
+>>>>>>>> main:Assets/Scripts/Witch/BehaviourTree/Node.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

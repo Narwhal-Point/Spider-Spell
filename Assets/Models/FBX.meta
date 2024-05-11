@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Audio.meta
+guid: 08424053751b08245b44d4eaa808ecc0
+========
 guid: 4e2bd8a1f2dd0ad4fb1f687652d963af
+>>>>>>>> main:Assets/Models/FBX.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

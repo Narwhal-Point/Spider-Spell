@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Samples/Input System/1.7.0/Rebinding UI/Icons.meta
+guid: d425aac3307675146a09ca1c18ee48f3
+========
 guid: 92c721e6b18e60247aa044b62e4cb055
+>>>>>>>> main:Assets/Models/Textures.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
