@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Collectables/Material Potion Bottle.mat.meta
 guid: da4abe322309c2e4ea1116f2ca3dc5bf
+========
+guid: 8f66d4e4135eaf9419c07f0c65fb107c
+>>>>>>>> main:Assets/TextMesh Pro/Resources/Sprite Assets/spritesheet_switch.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000

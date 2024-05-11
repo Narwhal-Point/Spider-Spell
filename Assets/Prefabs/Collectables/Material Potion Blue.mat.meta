@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Collectables/Material Potion Blue.mat.meta
 guid: faa0a7c4311ee7246ada535bdfcc739f
+========
+guid: a2ace3de03626f042bc592c83d73af2e
+>>>>>>>> main:Assets/TextMesh Pro/Resources/Sprite Assets/spritesheet_playstation.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000
