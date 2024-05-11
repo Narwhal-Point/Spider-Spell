@@ -1,0 +1,5 @@
+Press [Move] to move around and look around with [Look]. You may want to loot at the open book. You can close this window by interacting: [Interact]
+Press [Interact] to Interact 
+Press [Jump] to jump 
+Press [Aim] to aim 
+Press [Fire] to shoot your web 
