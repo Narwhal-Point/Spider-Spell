@@ -212,6 +212,13 @@ namespace Player.Movement
 
         #endregion
 
+        #region Raysfor normal rotation
+        RaycastHit alwaysFrontStraight;
+        RaycastHit alwaysFrontAngled;
+        RaycastHit alwaysDown;
+        public Vector3 movementForward;
+        public Vector3 movementRight;
+        #endregion
         private void Awake()
         {
             _manager = new PlayerMovementStateManager();
@@ -282,6 +289,17 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
             HandleRotation();
+        }
+
+        private void WallNormalCalculation()
+        {
+            RaycastHit frontAlways;
+            RaycastHit frontAngledAlways;
+           /*  alwaysFrontStraight = Physics.Raycast(transform.position , transform.forward, out frontAlways, Mathf.Infinity, ground);
+            alwaysFrontAngled = Physics.Raycast(transform.position, transform.forward, out frontAlways, Mathf.Infinity, ground);
+            alwaysDown = Physics.Raycast(transform.position, transform.forward, out frontAlways, Mathf.Infinity, ground);*/
+            /*movementForward;
+            movementRight;*/
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -388,13 +406,24 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                Vector3 surfaceNormal = wallHit.normal;
+
+                // Calculate angle between spider's up direction and surface normal
+                float angleDiff = Vector3.Angle(transform.up, surfaceNormal);
+
+                // Rotate spider to align with surface normal
+                transform.rotation = Quaternion.FromToRotation(transform.up, surfaceNormal) * transform.rotation;
+                Vector3 movementDirection = new Vector3(InputDirection.x, 0f, InputDirection.y).normalized;
+                Vector3 localMovementDirection = transform.TransformDirection(movementDirection);
+                // Move the spider forward along the surface normal
+                transform.Translate(localMovementDirection * MoveSpeed * Time.deltaTime);
+                /* Debug.Log("hi");
+                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                 Quaternion surfaceAlignment =
+                     Quaternion.FromToRotation(Vector3.up, wallHit.normal);
+                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                 orientation.rotation = combinedRotation;
+                 transform.rotation = orientation.rotation;*/
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
@@ -409,29 +438,18 @@ namespace Player.Movement
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
-            {
-                // rotate towards the new surface
-                // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                // Quaternion surfaceAlignment =
-                //     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
-                // Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                // orientation.rotation = combinedRotation;
-                // transform.rotation = orientation.rotation;
-                Quaternion oldOrientation = transform.rotation;
-                Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
-                Quaternion newOrientation = rotation * oldOrientation;
+            {                
+                Vector3 surfaceNormal = angleHit.normal;
 
-                Debug.Log("old forward: " + transform.forward);
-                orientation.rotation = newOrientation;
-                transform.rotation = newOrientation;
+                // Calculate angle between spider's up direction and surface normal
+                float angleDiff = Vector3.Angle(transform.up, surfaceNormal);
 
-                // move the player to the new surface
-                Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-
-                transform.position = newPlayerPos + offset;
-                Rb.velocity = Vector3.zero;
-                Debug.Log("new forward: " + transform.forward);
+                // Rotate spider to align with surface normal
+                transform.rotation = Quaternion.FromToRotation(transform.up, surfaceNormal) * transform.rotation;
+                Vector3 movementDirection = new Vector3(InputDirection.x, 0f, InputDirection.y).normalized;
+                Vector3 localMovementDirection = transform.TransformDirection(movementDirection);
+                // Move the spider forward along the surface normal
+                transform.Translate(localMovementDirection * MoveSpeed * Time.deltaTime);
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
