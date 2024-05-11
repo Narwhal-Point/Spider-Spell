@@ -62,7 +62,7 @@ public class DisappearingPlatform : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         disappearing = true;
-        shakeStartPosition = transform.position; // Store the initial position for shaking effect
+        shakeStartPosition = transform.position;
     }
 
     void Reset2Original()
@@ -73,8 +73,9 @@ public class DisappearingPlatform : MonoBehaviour
         boxCollider.enabled = true;
         disappearing = false;
         playedFX = false;
-
-        shakeTimer = 0f; // Reset shake timer
+        transform.position = shakeStartPosition;
+        disappearTimer = 0f;
+        shakeTimer = 0f;
     }
 }
 

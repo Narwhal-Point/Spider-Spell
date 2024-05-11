@@ -60,7 +60,7 @@ public class SpringTrap : MonoBehaviour
             if (movingUp)
             {
                 rotateValue = rotationSpeedUp * Time.deltaTime;
-                transform.Rotate(0, 0, rotateValue);
+                transform.Rotate(0, 0, rotateValue, Space.Self);
 
                 if (transform.eulerAngles.z - startEulerAngles.z > maxRotationAngle)
                 {
@@ -74,8 +74,8 @@ public class SpringTrap : MonoBehaviour
             {
                 Quaternion targetRotation = Quaternion.Euler(startEulerAngles);
                 float step = rotationSpeedDown * Time.deltaTime;
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, step);
-                if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f) // Check if rotation is almost complete
+                transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRotation, step);
+                if (Quaternion.Angle(transform.localRotation, targetRotation) < 0.1f)
                 {
                     waitingBottom = true;
                     int ground = LayerMask.NameToLayer("Ground");
