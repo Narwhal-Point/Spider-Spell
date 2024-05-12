@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip landing;
     public AudioClip webshooting;
     public AudioClip jumping;
+    public AudioClip WitchAppearTutorial;
     
     
     private void Start()

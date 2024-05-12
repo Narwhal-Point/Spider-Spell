@@ -6,19 +6,37 @@ namespace Witch
 {
     public class WitchTutorialTrigger : MonoBehaviour
     {
+        [SerializeField] private AudioManager audio;
         [SerializeField] private GameObject witch;
-        private bool active = false;
+        [SerializeField] private float witchWaitTime = 8f;
+        private float _timer;
+        private bool _active = false;
         private void Start()
         {
             witch.SetActive(false);
         }
         private void OnTriggerEnter(Collider other)
         {
-            if (!active)
+            if (!_active)
             {
-                active = true;
+                audio.PlaySFX(audio.WitchAppearTutorial);
+                _active = true;
                 witch.SetActive(true);
+                
             }
         }
+
+        private void Update()
+        {
+            if (_active)
+            {
+                _timer += Time.deltaTime;
+                if (_timer > witchWaitTime)
+                {
+                    witch.SetActive(false);
+                }
+            }
+        }
+        
     }
 }
