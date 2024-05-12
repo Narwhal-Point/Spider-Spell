@@ -31,19 +31,19 @@ public class PistonManager : MonoBehaviour
         {
             if (pistons.Length > 0)
             {
-                MovePistions(0);
+                MovePistons(0);
             }
         }
         else
         {
             if (pistons.Length > 1)
             {
-                MovePistions(1);
+                MovePistons(1);
             }
         }
     }
 
-    public void MovePistions(int startIndex)
+    public void MovePistons(int startIndex)
     {
         if (waiting)
         {

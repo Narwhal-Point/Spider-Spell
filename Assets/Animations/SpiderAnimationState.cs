@@ -19,22 +19,22 @@ public class spiderAnimationState : MonoBehaviour
     {
         if (player.movementState.ToString() == "Idle")
         {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping", false);
+            animator.SetBool("isWalking",false);
+            animator.SetBool("isFalling",false);
+            animator.SetBool("isJumping",false);
         }
         if (player.movementState.ToString() == "Walking")
         {
-            animator.SetBool("isWalking", true);
+            animator.SetBool("isWalking",true);
             animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping", false);
+            animator.SetBool("isJumping",false);
         }
         if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
         {
             animator.SetBool("isFalling", true);
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isJumping", false);
+            animator.SetBool("isWalking",false);
+            animator.SetBool("isJumping",false);
         }
-
+        
     }
 }

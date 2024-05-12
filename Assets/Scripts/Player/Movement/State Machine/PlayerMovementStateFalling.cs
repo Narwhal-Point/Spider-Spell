@@ -4,6 +4,7 @@ namespace Player.Movement.State_Machine
 {
     public class PlayerMovementStateFalling : PlayerMovementBaseState
     {
+        private float _moveSpeed;
         public PlayerMovementStateFalling(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
             player)
         {
@@ -30,6 +31,8 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
+            Movement();
+            
             if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
                 manager.SwitchState(player.SwingingState);
             else if (player.Grounded)
@@ -47,13 +50,35 @@ namespace Player.Movement.State_Machine
                     manager.SwitchState(player.IdleState);
             }
         }
+        
 
         public override void ExitState()
         {
             if (player.Grounded)
             {
-                player.landingSound.Play();
+                player.audioManager.PlaySFX(player.audioManager.landing);
                 player.PlayLandVFX();
+            }
+        }
+        
+        private void Movement()
+        {
+            if (player.InputDirection.y > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+            }
+
+            if (player.InputDirection.y < -0.6)
+                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+            
+            if (player.InputDirection.x > 0.6)
+            {
+                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+            }
+
+            if (player.InputDirection.x < -0.6)
+            {
+                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
             }
         }
     }

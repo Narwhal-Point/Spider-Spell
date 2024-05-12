@@ -1,26 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WitchFov : MonoBehaviour
 {
+    [Tooltip("Range from which the witch will start chasing the player")]
     public float radius;
+    
+    [Tooltip("FOV Angle")]
     [Range(0,360)]
     public float angle;
 
-    public GameObject playerRef;
+    [NonSerialized] public GameObject PlayerRef;
 
+    [Tooltip("Select the layers the witch should try to chase and attack")]
     public LayerMask targetMask;
+    [Tooltip("Select the layers the witch should not be able to see through")]
     public LayerMask obstructionMask;
 
-    public bool canSeePlayer;
-
-    public Vector3 targetCoords;
+    [NonSerialized] public bool CanSeePlayer;
     
 
     private void Start()
     {
-        playerRef = GameObject.FindGameObjectWithTag("Player");
+        PlayerRef = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(FOVRoutine());
     }
 
@@ -50,25 +54,21 @@ public class WitchFov : MonoBehaviour
 
                 if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
                 {
-                    targetCoords = playerRef.transform.position;
-                    canSeePlayer = true;
+                    CanSeePlayer = true;
                 }
                 else
                 {
-                    canSeePlayer = false;
-                    // directionToTarget = Vector3.zero;
+                    CanSeePlayer = false;
                 }
             }
             else
             {
-                canSeePlayer = false;
-                // directionToTarget = Vector3.zero;
+                CanSeePlayer = false;
             }
         }
-        else if (canSeePlayer)
+        else if (CanSeePlayer)
         {
-            canSeePlayer = false;
-            // directionToTarget = Vector3.zero;
+            CanSeePlayer = false;
         }
     }
 }
