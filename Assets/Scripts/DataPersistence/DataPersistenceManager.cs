@@ -82,7 +82,7 @@ public class DataPersistenceManager : MonoBehaviour
    public void NewGame()
    {
       this.gameData = new GameData();
-      gameData.position = new Vector3(472.34f, -413.82f, -98.48f);
+      gameData.position = new Vector3(430.98f, 35.478f, 118.32f);
    }
 
    public void LoadGame()

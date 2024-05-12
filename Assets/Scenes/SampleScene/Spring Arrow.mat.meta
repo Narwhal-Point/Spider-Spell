@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/SampleScene/Spring Arrow.mat.meta
+guid: f6be97ff9fbd2af48b5e7607515206ce
+========
+guid: 098c2a3667754c84da5ff1fb27561ccc
+>>>>>>>> main:Assets/Scenes/SampleScene/NavMesh-NavMesh Surface 2.asset.meta
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 23800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
