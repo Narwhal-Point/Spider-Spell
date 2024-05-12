@@ -1,0 +1,1 @@
+Press [Move] to move around and look around with [Look]. You may want to look at the open book. You can close this window by interacting: [Interact]

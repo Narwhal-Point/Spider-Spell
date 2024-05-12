@@ -1,0 +1,1 @@
+You can jump with [Jump]. As a spider you can walk on the wall and the ceiling. try to move through or jump on the cage to the cocoon.

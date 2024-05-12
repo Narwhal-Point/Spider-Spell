@@ -1,0 +1,3 @@
+This is an example for how the dialogue needs to be written.
+every newline in the file means the player has to press [interact] to continue.
+You can also have multiple actions like [interact] or [fire] in the same textbox.
