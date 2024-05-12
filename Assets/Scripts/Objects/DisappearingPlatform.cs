@@ -6,7 +6,9 @@ public class DisappearingPlatform : MonoBehaviour
 {
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] BoxCollider boxCollider;
-    [SerializeField] AudioSource poofSFX;
+
+    [SerializeField] private AudioManager audioManager;
+    // [SerializeField] AudioSource poofSFX;
     [SerializeField] private float disappearTime = 3f;
     private float disappearTimer = 0f;
     private bool disappearing;
@@ -21,6 +23,8 @@ public class DisappearingPlatform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject audioObject = GameObject.Find("AudioManager");
+        audioManager = audioObject.GetComponent<AudioManager>();
         shakeStartPosition = transform.position;
     }
 
@@ -44,7 +48,7 @@ public class DisappearingPlatform : MonoBehaviour
             if (disappearTime - disappearTimer < 0.1 && !playedFX)
             {
                 poofVFX.Play();
-                poofSFX.Play();
+                audioManager.PlaySFX(audioManager.poofSFX);
                 playedFX = true;
             }
 
@@ -68,7 +72,7 @@ public class DisappearingPlatform : MonoBehaviour
     void Reset2Original()
     {
         //poofVFX.Play();
-        poofSFX.Play();
+        audioManager.PlaySFX(audioManager.poofSFX);
         meshRenderer.enabled = true;
         boxCollider.enabled = true;
         disappearing = false;
