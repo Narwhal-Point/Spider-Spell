@@ -243,6 +243,9 @@ namespace Player.Movement
 
         private void Update()
         {
+            //GameObject obj = GameObject.Find("FollowPlayer");
+            //GameObject obj = GameObject.Find("Player Camera");
+            //obj.active = false;
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
@@ -498,7 +501,7 @@ namespace Player.Movement
                 transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
                 Debug.Log("new forward: " + transform.forward);
-            }            
+            }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
@@ -530,12 +533,13 @@ namespace Player.Movement
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
+            GameObject obj = GameObject.Find("FollowPlayer");
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + obj.transform.eulerAngles.y;
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
-            return (targetAngle, angle);
+            return (targetAngle, targetAngle);
         }
 
         public void ChangeMomentum(float speedIncreaseMultiplier)
