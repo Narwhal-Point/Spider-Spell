@@ -21,6 +21,7 @@ public class DisappearingPlatform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        shakeStartPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -62,7 +63,6 @@ public class DisappearingPlatform : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         disappearing = true;
-        shakeStartPosition = transform.position;
     }
 
     void Reset2Original()
