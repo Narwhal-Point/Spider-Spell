@@ -1,0 +1,1 @@
+You've reached the floor. You can respawn back to your last checkpoint through the menu by pressing [MenuOpenClose].
