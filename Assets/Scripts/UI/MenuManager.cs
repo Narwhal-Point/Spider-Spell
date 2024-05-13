@@ -236,7 +236,7 @@ public class MenuManager : MonoBehaviour
     
     public void OnConfirmReturnToMainMenu()
     {
-        DataPersistenceManager.instance.SaveGame();
+        // DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("MainMenu");
     }
     
