@@ -514,7 +514,7 @@ namespace Player.Movement
         public void OnJump(InputValue value)
         {
             isJumping = value.isPressed;
-            if (!isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
+            if (isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
                 // isJumping = true;
                 _manager.SwitchState(JumpingState);
