@@ -41,7 +41,7 @@ namespace Player.Movement.State_Machine
 
         public override void FixedUpdateState()
         {
-            //CalculatePlayerVMovement();
+            CalculatePlayerVMovement();
             Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
             //HandleVectorRotation();
             if (direction.magnitude >= 0.1f)
@@ -102,8 +102,8 @@ namespace Player.Movement.State_Machine
             //Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = player.movementForward * player.InputDirection.y + player.movementRight * player.InputDirection.x;
             return moveDirection;
-        }       
-       /* private void CalculatePlayerVMovement()
+        }
+        private void CalculatePlayerVMovement()
         {
             GameObject obj = GameObject.Find("FollowPlayer");
             Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
@@ -121,18 +121,18 @@ namespace Player.Movement.State_Machine
             {
                 Vector3 fPoint = uRay.GetPoint(uEnter);
                 Debug.DrawLine(upOrigin, fPoint, Color.red);
-                movementForward = fPoint - player.transform.position;
-                Debug.DrawLine(player.transform.position, player.transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+                player.movementForward = fPoint - player.transform.position;
+                Debug.DrawLine(player.transform.position, player.transform.position + player.movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
             }
 
             if (rPlane.Raycast(rRay, out float rEnter))
             {
                 Vector3 fPoint = rRay.GetPoint(rEnter);
                 Debug.DrawLine(rightOrigin, fPoint, Color.red);
-                movementRight = fPoint - player.transform.position;
-                Debug.DrawLine(player.transform.position, player.transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+                player.movementRight = fPoint - player.transform.position;
+                Debug.DrawLine(player.transform.position, player.transform.position + player.movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
-        }*/
+        }
         private void SpeedControl()
         {
             Vector3 flatVel = player.Rb.velocity;

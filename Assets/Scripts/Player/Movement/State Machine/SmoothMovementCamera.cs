@@ -32,7 +32,7 @@ public class SmoothCamera : CameraAbstract
         if (rollDamp != 0)
         {
             float angle = Vector3.SignedAngle(lastObservedObjectNormal, observedObject.up, camTarget.right);
-            RotateCameraVertical(rollDamp * -angle);
+            RotateCameraVertical(rollDamp * angle);
             lastObservedObjectNormal = observedObject.up;
         }
     }

@@ -287,7 +287,7 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
             HandleRotation();
-            CalculatePlayerVMovement();
+            //CalculatePlayerVMovement();
             //TopDownRayDirection();
         }
         public Vector3 movementForward;
@@ -535,7 +535,7 @@ namespace Player.Movement
         {
             GameObject obj = GameObject.Find("FollowPlayer");
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + obj.transform.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
