@@ -30,6 +30,7 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
+            Movement();
             _jumpTimer -= Time.deltaTime;
 
             if (_jumpTimer <= 0)
@@ -46,8 +47,6 @@ namespace Player.Movement.State_Machine
 
             if (player.Grounded && ReadyToJump)
             {
-                Movement();
-
                 if (player.InputDirection != Vector2.zero)
                 {
                     // if (player.IsSprinting)
