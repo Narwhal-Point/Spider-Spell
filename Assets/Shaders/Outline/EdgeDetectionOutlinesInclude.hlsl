@@ -53,7 +53,7 @@ void DepthSobel_float(float2 UV, float Thickness, out float Out)
         // ga van screen UV naar pixels (of andersom)
         // UV of sobelSamplePoints ombouwen naar zelfde coordinaatsysteem
 
-        float depth = SHADERGRAPH_SAMPLE_SCENE_DEPTH(UV + sobelSamplePoints[i] * Thickness);
+        float depth = 400 * SHADERGRAPH_SAMPLE_SCENE_DEPTH(UV + sobelSamplePoints[i] * Thickness);
         sobel += depth * float2(sobelXMatrix[i], sobelYMatrix[i]);
         
     }
