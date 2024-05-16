@@ -214,11 +214,10 @@ namespace Player.Movement
 
         #endregion
         #region Cameras
-        GameObject followCam;
-        GameObject freelookCamera;
+        public GameObject[] cameras;
         public GameObject usedCam;
-
-        enum Cameras
+        public Transform mainCamera;
+        enum CamerasEnum
         {
             followCamera,
             freelookCamera
@@ -246,13 +245,12 @@ namespace Player.Movement
         }
 
         private void Start()
-        {
-            followCam = GameObject.Find("FollowPlayer");
-            freelookCamera = GameObject.Find("Player Camera");
+        {           
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
             _manager.Initialize(IdleState);
+            CameraSwap(CamerasEnum.freelookCamera);
         }
 
         private void Update()
@@ -304,48 +302,61 @@ namespace Player.Movement
             CalculatePlayerVMovement();
             //TopDownRayDirection();
         }
-        private void CameraSwap(Cameras camera)
+        private void CameraSwap(CamerasEnum camera)
         {
-            if (camera == Cameras.followCamera)
+            if (camera == CamerasEnum.freelookCamera)
             {
-                usedCam = followCam;
+                cameras[0].SetActive(true); //player cam
+                cameras[1].SetActive(false); //follow cam 
             }
-            else if (camera == Cameras.followCamera)
+            else if (camera == CamerasEnum.followCamera)
             {
-                usedCam = freelookCamera;
+                cameras[0].SetActive(false);
+                cameras[1].SetActive(true);
             }
         }
         public Vector3 movementForward;
         public Vector3 movementRight;
         private void CalculatePlayerVMovement()
         {
-            GameObject obj = GameObject.Find("FollowPlayer");
-            Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
-            Vector3 upOrigin = obj.transform.position + obj.transform.up * 50f;
-            Plane fPlane = new Plane(transform.up, transform.position);
-            Plane rPlane = new Plane(transform.up, transform.position);
-
-            Ray rRay = new Ray(rightOrigin, obj.transform.forward * 100);
-            Ray uRay = new Ray(upOrigin, obj.transform.forward * 100);
-
-            Vector3 cam2Player = transform.position - obj.transform.position;
-            float upOrDown = Vector3.Dot(cam2Player, transform.up);
-
-            if (fPlane.Raycast(uRay, out float uEnter))
+            foreach (var cam in cameras)
             {
-                Vector3 fPoint = uRay.GetPoint(uEnter);
-                Debug.DrawLine(upOrigin, fPoint, Color.red);
-                movementForward = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
-            }
+                //Debug.Log(cam.active);
+                if (cam.active)
+                {
+                    //Debug.Log(cam.active + cam.name);
+                    Vector3 rightOrigin = cam.transform.position + cam.transform.right * 50f;
+                    Vector3 upOrigin = cam.transform.position + cam.transform.up * 50f;
+                    Plane fPlane = new Plane(transform.up, transform.position);
+                    Plane rPlane = new Plane(transform.up, transform.position);
 
-            if (rPlane.Raycast(rRay, out float rEnter))
-            {
-                Vector3 fPoint = rRay.GetPoint(rEnter);
-                Debug.DrawLine(rightOrigin, fPoint, Color.red);
-                movementRight = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-            }
+                    Ray rRay = new Ray(rightOrigin, cam.transform.forward * 100);
+                    Ray uRay = new Ray(upOrigin, cam.transform.forward * 100);
+
+                    Vector3 cam2Player = transform.position - cam.transform.position;
+                    float upOrDown = Vector3.Dot(cam2Player, transform.up);
+
+                    if (fPlane.Raycast(uRay, out float uEnter))
+                    {
+                        Vector3 fPoint = uRay.GetPoint(uEnter);
+                        Debug.DrawLine(upOrigin, fPoint, Color.red);
+                        movementForward = fPoint - transform.position;
+                        Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+                    }
+
+                    if (rPlane.Raycast(rRay, out float rEnter))
+                    {
+                        Vector3 fPoint = rRay.GetPoint(rEnter);
+                        Debug.DrawLine(rightOrigin, fPoint, Color.red);
+                        movementRight = fPoint - transform.position;
+
+                        movementRight = Vector3.Cross(transform.up, movementForward);
+
+
+                        Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+                    }
+               }
+            }           
         }
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
         {
@@ -489,6 +500,7 @@ namespace Player.Movement
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
+                CameraSwap(CamerasEnum.followCamera);
                 Debug.Log("hi2");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -558,13 +570,21 @@ namespace Player.Movement
 
         private (float, float) GetFacingAngle(Vector2 direction)
         {
-            GameObject obj = GameObject.Find("FollowPlayer");
+            float targetAngle = 0;
+            float angle = 0;
+            // GameObject obj = GameObject.Find("FollowPlayer");
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-            // Angle to face before reaching target to make it smoother
-            float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
-                turnSmoothTime);
-            return (targetAngle, targetAngle);
+            foreach (var cam in cameras)
+            {
+                if (cam.active)
+                {
+                    targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+                    // Angle to face before reaching target to make it smoother
+                    angle = Mathf.SmoothDampAngle(cam.transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
+                        turnSmoothTime);
+                }
+            }           
+            return (targetAngle, angle);
         }
 
         public void ChangeMomentum(float speedIncreaseMultiplier)

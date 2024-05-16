@@ -172,7 +172,7 @@ public abstract class CameraAbstract : MonoBehaviour
     {
 
         //Restrict Angle to Bounds
-        clampAngle(ref angle);
+        clampAngle(ref angle); // [-180, 180]
         Vector3 zeroOrientation = getHorizontalRotationAxis();
         float currentAngle = Vector3.SignedAngle(zeroOrientation, camTarget.position - observedObject.transform.position, camTarget.right); //Should always be positive
 
@@ -185,11 +185,17 @@ public abstract class CameraAbstract : MonoBehaviour
             angle = -currentAngle - camLowerAngleMargin;
         }
 
+        float targetAngle = Mathf.Max(currentAngle + angle, -camUpperAngleMargin);
+        targetAngle = Mathf.Min(targetAngle, -camLowerAngleMargin);
+        float deltaAngle = targetAngle - currentAngle;
+
+        // camLowerAngleMargin < currentAngle + angle < camUpperAngleMargin
+
         Vector3 rotationAxis = getVerticalRotationAxis();
 
         // Apply Rotation
-        camTarget.RotateAround(observedObject.position, rotationAxis, angle);
-        if (!onlyTarget) transform.RotateAround(observedObject.position, rotationAxis, angle);
+        camTarget.RotateAround(observedObject.position, rotationAxis, deltaAngle);
+        if (!onlyTarget) transform.RotateAround(observedObject.position, rotationAxis, deltaAngle);
     }
 
     // Clamps angle to (-180,180]
