@@ -253,6 +253,7 @@ namespace Player.Movement
 
         private void Update()
         {
+            PuddleEffects();
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
