@@ -5,6 +5,7 @@ namespace Player.Movement.State_Machine
     public class PlayerMovementStateWalking : PlayerMovementBaseState
     {
         private RaycastHit _slopeHit;
+        private GameObject usedCamera;
 
         public PlayerMovementStateWalking(PlayerMovementStateManager manager, PlayerMovement player) : base(manager,
             player)
@@ -12,7 +13,7 @@ namespace Player.Movement.State_Machine
         }
 
         public override void EnterState()
-        {
+        {            
             player.walkingSound.Play();
             player.Rb.useGravity = false;
             player.movementState = PlayerMovement.MovementState.Walking;
@@ -27,7 +28,7 @@ namespace Player.Movement.State_Machine
             
 
             player.Rb.drag = player.groundDrag;
-            
+            usedCamera = player.usedCam;
         }
 
         public override void UpdateState()
@@ -105,16 +106,16 @@ namespace Player.Movement.State_Machine
         }
         private void CalculatePlayerVMovement()
         {
-            GameObject obj = GameObject.Find("FollowPlayer");
-            Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
-            Vector3 upOrigin = obj.transform.position + obj.transform.up * 50f;
+            //GameObject obj = GameObject.Find("FollowPlayer");
+            Vector3 rightOrigin = usedCamera.transform.position + usedCamera.transform.right * 50f;
+            Vector3 upOrigin = usedCamera.transform.position + usedCamera.transform.up * 50f;
             Plane fPlane = new Plane(player.transform.up, player.transform.position);
             Plane rPlane = new Plane(player.transform.up, player.transform.position);
 
-            Ray rRay = new Ray(rightOrigin, obj.transform.forward * 100);
-            Ray uRay = new Ray(upOrigin, obj.transform.forward * 100);
+            Ray rRay = new Ray(rightOrigin, usedCamera.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, usedCamera.transform.forward * 100);
 
-            Vector3 cam2Player = player.transform.position - obj.transform.position;
+            Vector3 cam2Player = player.transform.position - usedCamera.transform.position;
             float upOrDown = Vector3.Dot(cam2Player, player.transform.up);
 
             if (fPlane.Raycast(uRay, out float uEnter))

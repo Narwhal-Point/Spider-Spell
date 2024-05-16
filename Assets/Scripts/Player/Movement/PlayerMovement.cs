@@ -213,6 +213,18 @@ namespace Player.Movement
         }
 
         #endregion
+        #region Cameras
+        GameObject followCam;
+        GameObject freelookCamera;
+        public GameObject usedCam;
+
+        enum Cameras
+        {
+            followCamera,
+            freelookCamera
+        }
+        #endregion
+
 
         private void Awake()
         {
@@ -235,6 +247,8 @@ namespace Player.Movement
 
         private void Start()
         {
+            followCam = GameObject.Find("FollowPlayer");
+            freelookCamera = GameObject.Find("Player Camera");
             Rb.freezeRotation = true; // stop character from falling over
             StartYScale = transform.localScale.y;
 
@@ -287,23 +301,34 @@ namespace Player.Movement
         {
             _manager.CurrentState.FixedUpdateState();
             HandleRotation();
-            //CalculatePlayerVMovement();
+            CalculatePlayerVMovement();
             //TopDownRayDirection();
+        }
+        private void CameraSwap(Cameras camera)
+        {
+            if (camera == Cameras.followCamera)
+            {
+                usedCam = followCam;
+            }
+            else if (camera == Cameras.followCamera)
+            {
+                usedCam = freelookCamera;
+            }
         }
         public Vector3 movementForward;
         public Vector3 movementRight;
         private void CalculatePlayerVMovement()
         {
-            GameObject obj = GameObject.Find("FollowPlayer");
-            Vector3 rightOrigin = obj.transform.position + obj.transform.right * 50f;
-            Vector3 upOrigin = obj.transform.position + obj.transform.up * 50f;
+            //GameObject obj = GameObject.Find("FollowPlayer");
+            Vector3 rightOrigin = usedCam.transform.position + usedCam.transform.right * 50f;
+            Vector3 upOrigin = usedCam.transform.position + usedCam.transform.up * 50f;
             Plane fPlane = new Plane(transform.up, transform.position);
             Plane rPlane = new Plane(transform.up, transform.position);
 
-            Ray rRay = new Ray(rightOrigin, obj.transform.forward * 100);
-            Ray uRay = new Ray(upOrigin, obj.transform.forward * 100);
+            Ray rRay = new Ray(rightOrigin, usedCam.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, usedCam.transform.forward * 100);
 
-            Vector3 cam2Player = transform.position - obj.transform.position;
+            Vector3 cam2Player = transform.position - usedCam.transform.position;
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
             if (fPlane.Raycast(uRay, out float uEnter))
@@ -535,7 +560,7 @@ namespace Player.Movement
         {
             GameObject obj = GameObject.Find("FollowPlayer");
             // Target angle based on camera
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + usedCam.transform.eulerAngles.y;
             // Angle to face before reaching target to make it smoother
             float angle = Mathf.SmoothDampAngle(cam.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,
                 turnSmoothTime);
