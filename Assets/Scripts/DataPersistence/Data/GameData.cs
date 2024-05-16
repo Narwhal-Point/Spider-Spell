@@ -10,14 +10,18 @@ public class GameData
     
     public Vector3 position;
 
-    public int jumpCount;
+    public Quaternion rotation;
 
-    public Vector3 spawnPoint = new Vector3(13,-445,-192);
+    public int jumpCount;
+    
+    public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 118.32f);
 
     public GameData()
     {
         this.position = spawnPoint;
         this.jumpCount = 0;
+        this.rotation = Quaternion.Euler(0,90,0);
+        Debug.Log("Rotation GameData: " + rotation);
     }
 
     public int GetPercentageComplete()
