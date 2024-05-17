@@ -66,4 +66,11 @@ public class MainMenu : Menu
     {
         this.GameObject().SetActive(false);
     }
+    
+    public void QuitGame()
+    {
+        UnityEditor.EditorApplication.isPlaying = false;
+        // If running in a build, quit the application
+        Application.Quit();
+    }
 }
