@@ -46,7 +46,7 @@ public class MenuManager : MonoBehaviour
 
     private void Update()
     {
-        if (player.MenuOpenCloseInput)
+        if (player.MenuOpenCloseInput & _keyboardCanvasGO.activeSelf == false & _gamepadCanvasGO.activeSelf == false)
         {
             if (!isPaused)
             {
