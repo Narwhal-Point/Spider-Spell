@@ -568,8 +568,11 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
+            if(_swing.CanSwing)
                 _manager.SwitchState(SwingingState);
+            
+            // if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
+            //     _manager.SwitchState(SwingingState);
         }
 
         // public void OnCrouch(InputValue value)
