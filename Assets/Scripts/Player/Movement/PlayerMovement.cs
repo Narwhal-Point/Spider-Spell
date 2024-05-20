@@ -50,7 +50,7 @@ namespace Player.Movement
         [Header("References")] public Transform orientation;
         public Transform swingOrigin;
         public Transform playerObj;
-        public Transform cam;
+        //public Transform cam;
         public PlayerCam camScript;
         private PlayerSwingHandler _swing;
 
@@ -202,14 +202,14 @@ namespace Player.Movement
 
         public void LoadData(GameData data)
         {
-            Rb.position = data.position;
-            jumpCount = data.jumpCount;
+            /*Rb.position = data.position;
+            jumpCount = data.jumpCount;*/
         }
 
         public void SaveData(GameData data)
         {
-            data.position = Rb.position;
-            data.jumpCount = jumpCount;
+            /*data.position = Rb.position;
+            data.jumpCount = jumpCount;*/
         }
 
         #endregion
@@ -285,8 +285,8 @@ namespace Player.Movement
                     canIncrementJumpCount = true;
                 }
             }
-/*
-            if (Input.GetKey(KeyCode.Escape))
+
+            /*if (Input.GetKey(KeyCode.Escape))
             {
                 // DataPersistenceManager.instance.SaveGame();
                 SceneManager.LoadSceneAsync("MainMenu");
@@ -346,9 +346,9 @@ namespace Player.Movement
 
                     if (rPlane.Raycast(rRay, out float rEnter))
                     {
-                        Vector3 fPoint = rRay.GetPoint(rEnter);
-                        Debug.DrawLine(rightOrigin, fPoint, Color.red);
-                        movementRight = fPoint - transform.position;
+                        //Vector3 fPoint = rRay.GetPoint(rEnter);
+                        //Debug.DrawLine(rightOrigin, fPoint, Color.red);
+                        //movementRight = fPoint - transform.position;
 
                         movementRight = Vector3.Cross(transform.up, movementForward);
 
@@ -392,35 +392,7 @@ namespace Player.Movement
                 // Gizmos.DrawWireCube(transform.position + -transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
             }
         }
-      /*  private void TopDownRayDirection()
-        {
-            // Get the object's transform
-            Transform objectTransform = topDownRayObject.transform;
-
-            // Calculate the direction straight forward
-            Vector3 forwardDirection = objectTransform.forward;
-
-            // Calculate the direction 45 degrees down
-            Vector3 downDirection = Quaternion.AngleAxis(45f, objectTransform.right) * forwardDirection;
-
-            // Cast a ray in both directions
-            RaycastHit hitForward;
-            RaycastHit hitDown;
-
-            // Cast ray forward
-            if (Physics.Raycast(objectTransform.position, forwardDirection, out hitForward, Mathf.Infinity))
-            {
-                Debug.DrawRay(objectTransform.position, forwardDirection * hitForward.distance, Color.green);
-                // Do something if hit
-            }
-
-            // Cast ray down
-            if (Physics.Raycast(objectTransform.position, downDirection, out hitDown, Mathf.Infinity))
-            {
-                Debug.DrawRay(objectTransform.position, downDirection * hitDown.distance, Color.blue);
-                // Do something if hit
-            }
-        }*/
+      
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
@@ -500,7 +472,7 @@ namespace Player.Movement
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                CameraSwap(CamerasEnum.followCamera);
+                //CameraSwap(CamerasEnum.followCamera);
                 Debug.Log("hi2");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
