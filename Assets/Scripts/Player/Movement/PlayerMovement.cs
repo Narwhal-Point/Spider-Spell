@@ -54,6 +54,7 @@ namespace Player.Movement
         public Transform cam;
         public PlayerCam camScript;
         private PlayerSwingHandler _swing;
+        private PlayerGrappleHandler _grapple;
 
         public Vector3 MoveDirection { get; set; }
         public Rigidbody Rb { get; private set; }
@@ -149,7 +150,8 @@ namespace Player.Movement
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
         public PlayerMovementStateSliding SlidingState { get; private set; }
-        public PlayerMovementStateSwinging SwingingState { get; private set; }
+        public PlayerMovementStateGrappling GrapplingState { get; private set; }
+        // public PlayerMovementStateSwinging SwingingState { get; private set; }
         public PlayerMovementStateDashing DashingState { get; private set; }
 
         public int jumpCount;
@@ -237,14 +239,17 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
+            GrapplingState = new PlayerMovementStateGrappling(_manager, this, GetComponent<PlayerGrappleHandler>());
+            // SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
+            
             Rb = GetComponent<Rigidbody>();
             _playerInput = GetComponent<PlayerInput>();
             _menuOpenCloseAction = _playerInput.actions["MenuOpenClose"];
             audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
             _swing = GetComponent<PlayerSwingHandler>();
+            _grapple = GetComponent<PlayerGrappleHandler>();
             _collider = GetComponent<Collider>();
         }
 
@@ -397,7 +402,7 @@ namespace Player.Movement
 
             facingAngles = GetFacingAngle(InputDirection);
 
-            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            if (WallInFront && (InputDirection != Vector2.zero || Rb.velocity.magnitude > 0f))
             {
                 Debug.Log("hi");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -407,7 +412,7 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != GrapplingState)
             {
                 Debug.Log("hi2");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -419,7 +424,7 @@ namespace Player.Movement
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
-                     _manager.CurrentState != SwingingState)
+                     _manager.CurrentState != GrapplingState)
             {
                 // rotate towards the new surface
                 // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
@@ -445,7 +450,7 @@ namespace Player.Movement
                 Debug.Log("new forward: " + transform.forward);
             }
             // TODO: Change camera player rotation
-            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == GrapplingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -457,7 +462,7 @@ namespace Player.Movement
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                     Time.deltaTime * rotationSpeed);
             }
-            else if (IsHeadHit && _manager.CurrentState != SwingingState)
+            else if (IsHeadHit && _manager.CurrentState != GrapplingState)
             {
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -568,9 +573,15 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if(_swing.CanSwing)
-                _manager.SwitchState(SwingingState);
-            
+            if(_grapple.CanGrapple && IsFiring)
+                _manager.SwitchState(GrapplingState);
+            else if (!IsFiring)
+            {
+                if(!Grounded)
+                    _manager.SwitchState(FallingState);
+                else
+                    _manager.SwitchState(IdleState);
+            }
             // if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
             //     _manager.SwitchState(SwingingState);
         }
