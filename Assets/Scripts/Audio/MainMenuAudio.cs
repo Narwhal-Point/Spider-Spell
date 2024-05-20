@@ -15,19 +15,23 @@ public class MainMenuAudio : MonoBehaviour
     [SerializeField] private AudioMixer myMixer;
 
 
-    private void Awake()
-    {
-        if (PlayerPrefs.HasKey("musicVolume"))
-        {
-            Debug.Log("wazaza");
-            float volume = PlayerPrefs.GetFloat("musicVolume");
-            myMixer.SetFloat("music", Mathf.Log10(volume)*20);
-        }
-    }
+    // private void Awake()
+    // {
+    //     if (PlayerPrefs.HasKey("musicVolume"))
+    //     {
+    //         float volume = PlayerPrefs.GetFloat("musicVolume");
+    //         myMixer.SetFloat("music", Mathf.Log10(volume)*20);
+    //     }
+    // }
 
     // Start is called before the first frame update
     void Start()
     {
+        if (PlayerPrefs.HasKey("musicVolume"))
+        {
+            float volume = PlayerPrefs.GetFloat("musicVolume");
+            myMixer.SetFloat("music", Mathf.Log10(volume)*20);
+        }
         musicSource.clip = background;
         musicSource.Play();
     }
