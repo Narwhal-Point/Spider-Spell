@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -89,6 +90,8 @@ namespace Player.Movement
         public bool IsCrouching { get; private set; }
 
         public bool IsAiming { get; private set; }
+
+        public bool IsJumping { get; private set; } = false;
 
         public bool IsSnapping { get; set; } = false;
         
@@ -515,12 +518,10 @@ namespace Player.Movement
             InputDirection = value.Get<Vector2>();
         }
 
-        private bool isJumping = false;
-
         public void OnJump(InputValue value)
         {
-            isJumping = value.isPressed;
-            if (isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
+            IsJumping = value.isPressed;
+            if (IsJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
                 // isJumping = true;
                 _manager.SwitchState(JumpingState);
