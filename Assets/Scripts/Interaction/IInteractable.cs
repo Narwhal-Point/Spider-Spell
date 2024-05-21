@@ -7,5 +7,7 @@ namespace Interaction
         public void Interact();
 
         public Transform GetTransform();
+
+        public string GetInteractionText();
     }
 }

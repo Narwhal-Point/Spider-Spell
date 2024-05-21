@@ -44,7 +44,6 @@ namespace Interaction
                 }
             }
             
-            Debug.Log("found " + closestInteractable);
             return closestInteractable;
         }
         

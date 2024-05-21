@@ -21,14 +21,14 @@ namespace Interaction
         private void Update()
         {
             if (playerInteract.GetInteractableObject() != null)
-                ShowUI();
+                ShowUI(playerInteract.GetInteractableObject());
             else
                 HideUI();
         }
 
-        public void ShowUI()
+        public void ShowUI(IInteractable interactable)
         {
-            _textUI.SetText(interactText);
+            _textUI.SetText(interactable.GetInteractionText());
             ui.SetActive(true);
         }
 
