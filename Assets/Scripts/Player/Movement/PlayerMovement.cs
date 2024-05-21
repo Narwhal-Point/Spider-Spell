@@ -209,13 +209,18 @@ namespace Player.Movement
 
         public void LoadData(GameData data)
         {
+            
             Rb.position = data.position;
+            Rb.rotation = data.rotation;
             jumpCount = data.jumpCount;
+            
+            camScript.RecenterCam();
         }
 
         public void SaveData(GameData data)
         {
             data.position = Rb.position;
+            data.rotation = Rb.rotation;
             data.jumpCount = jumpCount;
         }
 
@@ -253,6 +258,7 @@ namespace Player.Movement
 
         private void Update()
         {
+            PuddleEffects();
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
