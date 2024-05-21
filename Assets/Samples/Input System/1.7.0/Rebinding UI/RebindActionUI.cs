@@ -353,13 +353,27 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                 m_RebindOperation = null;
             }
             
+            string cancelBinding;
+            if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
+            {
+                cancelBinding = "<Gamepad>/start";
+            }
+            else if (Keyboard.current != null && Keyboard.current.wasUpdatedThisFrame)
+            {
+                cancelBinding = "<Keyboard>/escape";
+            }
+            else
+            {
+                // Default to keyboard if no recent input detected (fallback)
+                cancelBinding = "<Keyboard>/escape";
+            }
+            
             //disable the action before use to prevent to errors
             action.Disable();
 
             // Configure the rebind.
             m_RebindOperation = action.PerformInteractiveRebinding(bindingIndex)
-                .WithCancelingThrough("<Keyboard>/escape")
-                .WithCancelingThrough("<Gamepad>/start")
+                .WithCancelingThrough(cancelBinding)
                 .OnCancel(
                     operation =>
                     {
