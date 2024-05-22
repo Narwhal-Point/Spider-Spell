@@ -5,11 +5,12 @@ namespace DataPersistence
     public class Checkpoint : MonoBehaviour//, IDataPersistence
     {
         ParticleSystem starsVFX;
-        [SerializeField] AudioManager audioManager;
+        AudioManager audioManager;
 
         private void Start()
         {
             starsVFX = gameObject.GetComponent<ParticleSystem>();
+            audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         }
 
         void OnTriggerEnter(Collider collider)
