@@ -1,13 +1,26 @@
+using Interaction;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DataPersistence
 {
-    public class Checkpoint : MonoBehaviour//, IDataPersistence
+    public class Checkpoint : MonoBehaviour, IInteractable
     {
-        void OnTriggerEnter(Collider collider)
+        [SerializeField] private string text = "Press [Interact] to save";
+        public void Interact()
         {
-            Debug.Log("test");
             DataPersistenceManager.instance.SaveGame();
+        }
+
+        public Transform GetTransform()
+        {
+            return transform;
+        }
+
+        public string GetInteractionText()
+        {
+            return text;
         }
     }
 }
