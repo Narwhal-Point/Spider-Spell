@@ -28,6 +28,14 @@ public class spiderAnimationState : MonoBehaviour
             animator.SetBool("isWalking",true);
             animator.SetBool("isFalling", false);
             animator.SetBool("isJumping",false);
+            
+            // Calculate the speed ratio
+            float speedRatio = player.Rb.velocity.magnitude / player.walkSpeed;
+            
+            Debug.Log($"Speed Ratio: {speedRatio}");
+
+            // Set the animation speed to the speed ratio
+            animator.speed = speedRatio;
         }
         if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
         {
