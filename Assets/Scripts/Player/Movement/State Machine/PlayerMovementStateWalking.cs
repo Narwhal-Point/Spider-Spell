@@ -21,9 +21,9 @@ namespace Player.Movement.State_Machine
             player.lastDesiredMoveSpeed = player.DesiredMoveSpeed;
             player.DesiredMoveSpeed = player.walkSpeed;
 
-            if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
-                player.ChangeMomentum(2f);
-            else
+            // if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
+            //     player.ChangeMomentum(2f);
+            // else
                 player.MoveSpeed = player.DesiredMoveSpeed;
             
 

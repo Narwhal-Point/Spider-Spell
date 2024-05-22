@@ -483,30 +483,30 @@ namespace Player.Movement
             return (targetAngle, angle);
         }
 
-        public void ChangeMomentum(float speedIncreaseMultiplier)
-        {
-            StopAllCoroutines();
-            StartCoroutine(SmoothlyLerpMoveSpeed(speedIncreaseMultiplier));
-        }
+        // public void ChangeMomentum(float speedIncreaseMultiplier)
+        // {
+        //     StopAllCoroutines();
+        //     StartCoroutine(SmoothlyLerpMoveSpeed(speedIncreaseMultiplier));
+        // }
 
-        private IEnumerator SmoothlyLerpMoveSpeed(float speedIncreaseMultiplier)
-        {
-            // smoothly lerp movementSpeed to desired value
-            float time = 0;
-            float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
-            float startValue = MoveSpeed;
-
-            while (time < difference && Rb.velocity.magnitude > 0.5f)
-            {
-                MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
-
-                time += Time.deltaTime * speedIncreaseMultiplier;
-
-                yield return null;
-            }
-
-            MoveSpeed = DesiredMoveSpeed;
-        }
+        // private IEnumerator SmoothlyLerpMoveSpeed(float speedIncreaseMultiplier)
+        // {
+        //     // smoothly lerp movementSpeed to desired value
+        //     float time = 0;
+        //     float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
+        //     float startValue = MoveSpeed;
+        //
+        //     while (time < difference && Rb.velocity.magnitude > 0.5f)
+        //     {
+        //         MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
+        //
+        //         time += Time.deltaTime * speedIncreaseMultiplier;
+        //
+        //         yield return null;
+        //     }
+        //
+        //     MoveSpeed = DesiredMoveSpeed;
+        // }
 
 
         // input callbacks
