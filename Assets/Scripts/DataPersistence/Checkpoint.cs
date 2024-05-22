@@ -5,12 +5,11 @@ namespace DataPersistence
     public class Checkpoint : MonoBehaviour//, IDataPersistence
     {
         ParticleSystem starsVFX;
-        AudioSource magicSFX;
+        [SerializeField] AudioManager audioManager;
 
         private void Start()
         {
             starsVFX = gameObject.GetComponent<ParticleSystem>();
-            magicSFX = gameObject.GetComponent<AudioSource>();
         }
 
         void OnTriggerEnter(Collider collider)
@@ -18,7 +17,7 @@ namespace DataPersistence
             Debug.Log("test");
             DataPersistenceManager.instance.SaveGame();
             starsVFX.Play();
-            magicSFX.Play();
+            audioManager.PlaySFX(audioManager.checkpointSFX);
         }
     }
 }
