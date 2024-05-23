@@ -212,7 +212,6 @@ namespace Player.Movement
 
         public void LoadData(GameData data)
         {
-            
             Rb.position = data.position;
             Rb.rotation = data.rotation;
             jumpCount = data.jumpCount;
@@ -262,6 +261,12 @@ namespace Player.Movement
         private void Update()
         {
             PuddleEffects();
+            
+            // wake up the rigidbody when it's sleeping so collisions keep working.
+            // This can affect performance, but it should be fine to at least have it on the player.
+            if(Rb.IsSleeping())
+                Rb.WakeUp();
+            
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;

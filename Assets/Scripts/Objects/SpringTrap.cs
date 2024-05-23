@@ -1,108 +1,114 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Player.Movement;
 using UnityEngine;
 
 public class SpringTrap : MonoBehaviour
 {
-    private Vector3 startEulerAngles;
-    [SerializeField] float maxRotationAngle = 45f;
-    [SerializeField] float rotationSpeedUp = 100f;
-    [SerializeField] float rotationSpeedDown = 1f;
-    private float rotateValue;
-    [SerializeField] float waitDurationTop = 1f;
-    [SerializeField] float waitDurationBottom = 4f;
-    [SerializeField] float springStrength = 4f;
-    private float waitTimer = 0f;
-    private bool movingUp = false;
-    private bool waitingTop = false;
-    private bool waitingBottom = true;
-    private bool shot = false;
-    [SerializeField] AudioSource boingSFX;
-    [SerializeField] MeshCollider meshCollider;
-    [SerializeField] Transform normalObject;
-
-    // Start is called before the first frame update
+    private Vector3 _startEulerAngles;
+    
+    [SerializeField] private float maxRotationAngle = 45f;
+    [SerializeField] private float rotationSpeedUp = 100f;
+    [SerializeField] private float rotationSpeedDown = 1f;
+    
+    private float _rotateValue;
+    
+    [SerializeField] private float waitDurationTop = 1f;
+    [SerializeField] private float waitDurationBottom = 4f;
+    [SerializeField] private float springStrength = 4f;
+    
+    private float _waitTimer = 0f;
+    private bool _movingUp = false;
+    private bool _waitingTop = false;
+    private bool _waitingBottom = true;
+    private bool _shot = false;
+    
+    [SerializeField] private AudioSource boingSFX;
+    [SerializeField] private Collider meshCollider;
+    [SerializeField] private Transform normalObject;
+    [SerializeField] private Transform movingObject;
+    
     void Start()
     {
-        startEulerAngles = transform.localEulerAngles;
+        _startEulerAngles = transform.localEulerAngles;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if (waitingBottom)
+        if (_waitingBottom)
         {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitDurationBottom)
+            _waitTimer += Time.deltaTime;
+            if (_waitTimer >= waitDurationBottom)
             {
-                waitingBottom = false;
-                movingUp = true;
-                shot = false;
-                waitTimer = 0f;
+                _waitingBottom = false;
+                _movingUp = true;
+                _shot = false;
+                _waitTimer = 0f;
                 boingSFX.Play();
-                int ignoreGround = LayerMask.NameToLayer("Default");
-                gameObject.layer = ignoreGround;
-                
             }
         }
-        else if (waitingTop)
+        else if (_waitingTop)
         {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitDurationTop)
+            _waitTimer += Time.deltaTime;
+            if (_waitTimer >= waitDurationTop)
             {
-                waitingTop = false;
-                waitTimer = 0f;
+                _waitingTop = false;
+                _waitTimer = 0f;
             }
         }
-        else
+        else if (_movingUp)
         {
-            if (movingUp)
-            {
-                rotateValue = rotationSpeedUp * Time.deltaTime;
-                transform.Rotate(0, 0, rotateValue, Space.Self);
+            _rotateValue = rotationSpeedUp * Time.deltaTime;
+            movingObject.Rotate(0, 0, _rotateValue, Space.Self);
 
-                if (transform.eulerAngles.z - startEulerAngles.z > maxRotationAngle)
-                {
-                    shot = true;
-                    movingUp = false;
-                    waitingTop = true;
-                    meshCollider.enabled = true;
-                }
-            }
-            else
+            if (movingObject.eulerAngles.z - _startEulerAngles.z > maxRotationAngle)
             {
-                Quaternion targetRotation = Quaternion.Euler(startEulerAngles);
-                float step = rotationSpeedDown * Time.deltaTime;
-                transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRotation, step);
-                if (Quaternion.Angle(transform.localRotation, targetRotation) < 0.1f)
-                {
-                    waitingBottom = true;
-                    int ground = LayerMask.NameToLayer("Ground");
-                    gameObject.layer = ground;
-                }
+                _shot = true;
+                _movingUp = false;
+                _waitingTop = true;
+            }
+        }
+        else // if moving down
+        {
+            Quaternion targetRotation = Quaternion.Euler(_startEulerAngles);
+            float step = rotationSpeedDown * Time.deltaTime;
+            movingObject.localRotation = Quaternion.RotateTowards(movingObject.localRotation, targetRotation, step);
+            if (Quaternion.Angle(movingObject.localRotation, targetRotation) < 0.1f)
+            {
+                _waitingBottom = true;
             }
         }
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnTriggerStay(Collider collision)
     {
-        if (movingUp && !shot)
+        if (_movingUp && !_shot)
         {
-            foreach (ContactPoint contact in collision.contacts)
+            if (collision.gameObject.CompareTag("Player"))
             {
-                if (collision.gameObject.CompareTag("Player"))
+                PlayerMovement movement = collision.gameObject.GetComponent<PlayerMovement>();
+                Rigidbody otherRb = collision.gameObject.GetComponent<Rigidbody>();
+                if (otherRb != null)
                 {
-                    Rigidbody otherRigidbody = collision.gameObject.GetComponent<Rigidbody>();
-                    if (otherRigidbody != null)
-                    {
-                        Debug.Log("Shit");
-                        meshCollider.enabled = false;
-                        otherRigidbody.AddForce(normalObject.transform.up * springStrength, ForceMode.Impulse);
-                        shot = true;
-                    }
+                    // don't ask why the movement script needs to be disabled for .2 seconds. If I don't do this the script won't work.
+                    movement.enabled = false;
+                    otherRb.drag = 0f;
+                    otherRb.velocity = new Vector3(0,0,0);
+                    otherRb.AddForce(normalObject.up * springStrength, ForceMode.Impulse);
+                    _shot = true;
+                    
+                    StartCoroutine(delayEnable(movement));
                 }
             }
-        } 
+        }
     }
+    
+    IEnumerator delayEnable(PlayerMovement movement)
+    {
+        yield return new WaitForSeconds(0.2f);
+        movement.enabled = true;
+
+    }
+    
+    
 }

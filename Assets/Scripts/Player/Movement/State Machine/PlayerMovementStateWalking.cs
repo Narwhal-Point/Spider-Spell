@@ -33,11 +33,18 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            SpeedControl();
             if (!player.Grounded)
+            {
                 manager.SwitchState(player.FallingState);
-            else if (player.InputDirection == Vector2.zero)
+                return;
+            }
+            if (player.InputDirection == Vector2.zero)
+            {
                 manager.SwitchState(player.IdleState);
+                return;
+            }
+
+            SpeedControl();
         }
 
         public override void FixedUpdateState()

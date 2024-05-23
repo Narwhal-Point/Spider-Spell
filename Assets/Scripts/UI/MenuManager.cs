@@ -263,9 +263,9 @@ public class MenuManager : MonoBehaviour
     // Function to quit the game
     public void QuitGame()
     {
-#if UNITY_EDITOR 
+        #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#endif
+        #endif
         // If running in a build, quit the application
         Application.Quit();
     }
