@@ -66,7 +66,7 @@ namespace Player.Movement.State_Machine
             _swing.Joint.minDistance = distance;
 
             _swing.Joint.spring = 4.5f;
-            _swing.Joint.damper = 7f;
+            _swing.Joint.damper = 10f;
             _swing.Joint.massScale = 4.5f;
 
             _swing.lr.positionCount = 2;
@@ -105,7 +105,7 @@ namespace Player.Movement.State_Machine
             if (player.IsJumping)
             {
                 Vector3 directionToPoint = _swing.SwingPoint - player.transform.position;
-                player.Rb.AddForce(directionToPoint.normalized * (100f * Time.deltaTime));
+                player.Rb.AddForce(directionToPoint.normalized * (300f * Time.deltaTime));
 
                 float distanceFromPoint = Vector3.Distance(player.transform.position, _swing.SwingPoint);
 
