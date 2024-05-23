@@ -318,6 +318,10 @@ namespace Player.Movement
                 cameras[2].SetActive(true); //follow cam 
             }
         }
+        private void SwapToFreeLookCamera()
+        {
+            CameraSwap(CamerasEnum.freelookCamera);
+        }
         public Vector3 movementForward;
         public Vector3 movementRight;
         private void CalculatePlayerVMovement()
@@ -518,7 +522,7 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Invoke("CameraSwap(CamerasEnum.freelookCamera)", 1);
+                Invoke("SwapToFreeLookCamera", 2f);
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
