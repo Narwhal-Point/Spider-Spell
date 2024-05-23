@@ -3,6 +3,7 @@ using Player.Movement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
@@ -31,9 +32,8 @@ public class MenuManager : MonoBehaviour
     public InputActionAsset actions;
     
     private bool isPaused;
-    private GameObject lastSelected;
-
     public PlayerMovement player;
+    [SerializeField] private InputSystemUIInputModule iptmod;
 
     private void Start()
     {
@@ -46,17 +46,38 @@ public class MenuManager : MonoBehaviour
 
     private void Update()
     {
-        if (player.MenuOpenCloseInput & _keyboardCanvasGO.activeSelf == false & _gamepadCanvasGO.activeSelf == false)
+        bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+        if (player.MenuOpenCloseInput)
         {
             if (!isPaused)
             {
                 Pause();
             }
-            else
-            {
-                UnPause();
-            }
+            // else
+            // {
+            //     UnPause();
+            // }
         }
+
+        else if (cancelAction & (_promptCanvasGO.activeSelf == true | _settingsMenuCanvasGO.activeSelf == true))
+        {
+            cancelAction = false;
+            OpenMainMenu();
+        }
+        
+        
+        else if (cancelAction & (_sensitivityCanvasGO.activeSelf == true | _audioCanvasGO.activeSelf == true))
+        {
+            cancelAction = false;
+            OpenSettingsMenuHandle();
+        }
+        
+        else if (cancelAction & _mainMenuCanvasGO.activeSelf == true)
+        {
+            cancelAction = false;
+            UnPause();
+        }
+        
     }
     
     #region Pause/Unpause Functions
@@ -65,7 +86,7 @@ public class MenuManager : MonoBehaviour
     {
         OpenMainMenu();
         _playerInput.enabled = false;
-        _playerInput.actions["MenuOpenClose"].Enable();
+        // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         isPaused = true;
