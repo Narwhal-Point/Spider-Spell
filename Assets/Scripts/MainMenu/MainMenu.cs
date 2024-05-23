@@ -69,7 +69,10 @@ public class MainMenu : Menu
     
     public void QuitGame()
     {
+
+        #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+        #endif
         // If running in a build, quit the application
         Application.Quit();
     }
