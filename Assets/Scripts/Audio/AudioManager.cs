@@ -65,7 +65,6 @@ public class AudioManager : MonoBehaviour
                 SFXSource.loop = false;
                 SFXSource.pitch = 1;
                 SFXSource.Stop();
-                break;
             }
         }
     }
