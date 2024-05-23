@@ -46,7 +46,7 @@ public class MenuManager : MonoBehaviour
 
     private void Update()
     {
-        if (player.MenuOpenCloseInput)
+        if (player.MenuOpenCloseInput & _keyboardCanvasGO.activeSelf == false & _gamepadCanvasGO.activeSelf == false)
         {
             if (!isPaused)
             {
@@ -250,4 +250,21 @@ public class MenuManager : MonoBehaviour
     }
         
     #endregion
+    
+    // Function to reload the current scene
+    public void ReloadScene()
+    {
+        // Get the current active scene
+        Scene currentScene = SceneManager.GetActiveScene();
+        // Reload the current scene
+        SceneManager.LoadScene(currentScene.name);
+    }
+
+    // Function to quit the game
+    public void QuitGame()
+    {
+        UnityEditor.EditorApplication.isPlaying = false;
+        // If running in a build, quit the application
+        Application.Quit();
+    }
 }

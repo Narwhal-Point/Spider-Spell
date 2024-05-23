@@ -65,7 +65,7 @@ RectTransform:
   m_GameObject: {fileID: 4217963728608983570}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5583100406385404109}
@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.17546813, g: 0.1141567, b: 0.9811321, a: 1}
-    m_SelectedColor: {r: 0.46226403, g: 0.5588955, b: 0.9245283, a: 1}
+    m_PressedColor: {r: 0, g: 0, b: 0, a: 1}
+    m_SelectedColor: {r: 0.98039216, g: 0.36862746, b: 0.36862746, a: 1}
     m_DisabledColor: {r: 0.36477977, g: 0.36477977, b: 0.36477977, a: 0}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
