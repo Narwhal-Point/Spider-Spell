@@ -220,6 +220,7 @@ namespace Player.Movement
         enum CamerasEnum
         {
             followCamera,
+            mainCamera,
             freelookCamera
         }
         #endregion
@@ -307,12 +308,14 @@ namespace Player.Movement
             if (camera == CamerasEnum.freelookCamera)
             {
                 cameras[0].SetActive(true); //player cam
-                cameras[1].SetActive(false); //follow cam 
+                cameras[1].SetActive(true); //main
+                cameras[2].SetActive(false); //follow cam 
             }
             else if (camera == CamerasEnum.followCamera)
             {
-                cameras[0].SetActive(false);
-                cameras[1].SetActive(true);
+                cameras[0].SetActive(false); //player cam
+                cameras[1].SetActive(false); //main
+                cameras[2].SetActive(true); //follow cam 
             }
         }
         public Vector3 movementForward;
@@ -462,6 +465,7 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
+                CameraSwap(CamerasEnum.followCamera);
                 Debug.Log("hi");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
@@ -514,6 +518,7 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
+                Invoke("CameraSwap(CamerasEnum.freelookCamera)", 1);
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
