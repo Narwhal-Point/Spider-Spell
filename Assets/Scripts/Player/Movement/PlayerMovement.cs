@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -89,6 +90,8 @@ namespace Player.Movement
         public bool IsCrouching { get; private set; }
 
         public bool IsAiming { get; private set; }
+
+        public bool IsJumping { get; private set; } = false;
 
         public bool IsSnapping { get; set; } = false;
         
@@ -209,7 +212,6 @@ namespace Player.Movement
 
         public void LoadData(GameData data)
         {
-            
             Rb.position = data.position;
             Rb.rotation = data.rotation;
             jumpCount = data.jumpCount;
@@ -237,7 +239,7 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
+            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(), GetComponent<TrailRenderer>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
@@ -254,11 +256,18 @@ namespace Player.Movement
             StartYScale = transform.localScale.y;
 
             _manager.Initialize(IdleState);
+            GetComponent<TrailRenderer>().enabled = false;
         }
 
         private void Update()
         {
             PuddleEffects();
+            
+            // wake up the rigidbody when it's sleeping so collisions keep working.
+            // This can affect performance, but it should be fine to at least have it on the player.
+            if(Rb.IsSleeping())
+                Rb.WakeUp();
+            
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
@@ -483,30 +492,30 @@ namespace Player.Movement
             return (targetAngle, angle);
         }
 
-        public void ChangeMomentum(float speedIncreaseMultiplier)
-        {
-            StopAllCoroutines();
-            StartCoroutine(SmoothlyLerpMoveSpeed(speedIncreaseMultiplier));
-        }
-
-        private IEnumerator SmoothlyLerpMoveSpeed(float speedIncreaseMultiplier)
-        {
-            // smoothly lerp movementSpeed to desired value
-            float time = 0;
-            float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
-            float startValue = MoveSpeed;
-
-            while (time < difference && Rb.velocity.magnitude > 0.5f)
-            {
-                MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
-
-                time += Time.deltaTime * speedIncreaseMultiplier;
-
-                yield return null;
-            }
-
-            MoveSpeed = DesiredMoveSpeed;
-        }
+        // public void ChangeMomentum(float speedIncreaseMultiplier)
+        // {
+        //     StopAllCoroutines();
+        //     StartCoroutine(SmoothlyLerpMoveSpeed(speedIncreaseMultiplier));
+        // }
+        //
+        // private IEnumerator SmoothlyLerpMoveSpeed(float speedIncreaseMultiplier)
+        // {
+        //     // smoothly lerp movementSpeed to desired value
+        //     float time = 0;
+        //     float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
+        //     float startValue = MoveSpeed;
+        //
+        //     while (time < difference && Rb.velocity.magnitude > 0.5f)
+        //     {
+        //         MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
+        //
+        //         time += Time.deltaTime * speedIncreaseMultiplier;
+        //
+        //         yield return null;
+        //     }
+        //
+        //     MoveSpeed = DesiredMoveSpeed;
+        // }
 
 
         // input callbacks
@@ -515,12 +524,10 @@ namespace Player.Movement
             InputDirection = value.Get<Vector2>();
         }
 
-        private bool isJumping = false;
-
         public void OnJump(InputValue value)
         {
-            isJumping = value.isPressed;
-            if (isJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
+            IsJumping = value.isPressed;
+            if (IsJumping && (_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState))
             {
                 // isJumping = true;
                 _manager.SwitchState(JumpingState);
@@ -568,7 +575,7 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
+            if (_swing.CanSwing)
                 _manager.SwitchState(SwingingState);
         }
 

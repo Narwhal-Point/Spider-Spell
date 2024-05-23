@@ -23,9 +23,9 @@ namespace Player.Movement.State_Machine
             // using swingSpeed for now.
             player.DesiredMoveSpeed = player.swingSpeed;
             
-            if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
-                player.ChangeMomentum(2f);
-            else
+            // if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
+            //     player.ChangeMomentum(2f);
+            // else
                 player.MoveSpeed = player.DesiredMoveSpeed;
         }
 
@@ -33,9 +33,7 @@ namespace Player.Movement.State_Machine
         {
             Movement();
             
-            if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
-                manager.SwitchState(player.SwingingState);
-            else if (player.Grounded)
+            if (player.Grounded)
             {
                 if (player.InputDirection != Vector2.zero)
                 {
