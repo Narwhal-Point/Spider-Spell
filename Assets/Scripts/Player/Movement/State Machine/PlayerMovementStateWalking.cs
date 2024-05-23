@@ -74,7 +74,7 @@ namespace Player.Movement.State_Machine
 
         public override void ExitState()
         {
-            player.audioManager.StopSFX();
+            player.audioManager.StopSFX(player.audioManager.walking);
         }
     }
 }
