@@ -30,6 +30,11 @@ namespace UI
             
             // assign the input action
             _logAction = playerInput.actions["QuestLog"];
+            
+            // disable the gameobject.
+            // if you need to get a component from this gameobject
+            // you should do this in 'Awake'
+            gameObject.SetActive(false);
         }
 
         private void Update()
@@ -47,7 +52,7 @@ namespace UI
             }
         }
 
-        private void OpenQuestLog()
+        public void OpenQuestLog()
         {
             // save the current input device before disabling player input
             _currentControlScheme = playerInput.currentControlScheme;
