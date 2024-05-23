@@ -17,8 +17,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip jumping;
     public AudioClip WitchAppearTutorial;
     public AudioClip poofSFX;
-    
-    
+    public AudioClip checkpointSFX;
+
+
     private void Start()
     {
         musicSource.clip = background;
