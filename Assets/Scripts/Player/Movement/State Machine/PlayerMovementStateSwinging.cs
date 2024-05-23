@@ -7,10 +7,12 @@ namespace Player.Movement.State_Machine
         // private float _desiredMoveSpeed;
         // private float _moveSpeed;
         private readonly PlayerSwingHandler _swing;
+        private TrailRenderer _trail;
         
-        public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player, PlayerSwingHandler swing) : base(manager, player)
+        public PlayerMovementStateSwinging(PlayerMovementStateManager manager, PlayerMovement player, PlayerSwingHandler swing, TrailRenderer trail) : base(manager, player)
         {
             _swing = swing;
+            _trail = trail;
         }
         public override void EnterState()
         {
@@ -30,6 +32,7 @@ namespace Player.Movement.State_Machine
             player.Rb.drag = 0f;
         
             StartSwing();
+            _trail.enabled = true;
         }
 
         public override void UpdateState()
@@ -128,6 +131,7 @@ namespace Player.Movement.State_Machine
         public override void ExitState()
         {
             StopSwing();
+            _trail.enabled = false;
             // player.midAirSound.Stop();
         }
     }

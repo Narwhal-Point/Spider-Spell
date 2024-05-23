@@ -33,9 +33,7 @@ namespace Player.Movement.State_Machine
         {
             Movement();
             
-            if(player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming) // start swinging
-                manager.SwitchState(player.SwingingState);
-            else if (player.Grounded)
+            if (player.Grounded)
             {
                 if (player.InputDirection != Vector2.zero)
                 {

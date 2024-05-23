@@ -239,7 +239,7 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>());
+            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(), GetComponent<TrailRenderer>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
@@ -256,6 +256,7 @@ namespace Player.Movement
             StartYScale = transform.localScale.y;
 
             _manager.Initialize(IdleState);
+            GetComponent<TrailRenderer>().enabled = false;
         }
 
         private void Update()
@@ -574,7 +575,7 @@ namespace Player.Movement
         {
             IsFiring = value.isPressed;
 
-            if ((_manager.CurrentState == IdleState || _manager.CurrentState == WalkingState) && _swing.CanSwing)
+            if (_swing.CanSwing)
                 _manager.SwitchState(SwingingState);
         }
 
