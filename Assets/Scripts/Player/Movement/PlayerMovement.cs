@@ -469,7 +469,7 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                CameraSwap(CamerasEnum.followCamera);
+                //CameraSwap(CamerasEnum.followCamera);
                 Debug.Log("hi");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
