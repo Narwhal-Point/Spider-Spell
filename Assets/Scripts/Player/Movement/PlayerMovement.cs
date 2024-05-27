@@ -214,6 +214,8 @@ namespace Player.Movement
 
         #endregion
         #region Cameras
+        public GameObject camera;
+        private CameraComponentsAdjuster alterCam;
         public GameObject[] cameras;
         public GameObject usedCam;
         public Transform mainCamera;
@@ -243,6 +245,7 @@ namespace Player.Movement
             Rb = GetComponent<Rigidbody>();
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
+            alterCam = camera.GetComponent<CameraComponentsAdjuster>(); 
         }
 
         private void Start()
@@ -251,7 +254,8 @@ namespace Player.Movement
             StartYScale = transform.localScale.y;
 
             _manager.Initialize(IdleState);
-            CameraSwap(CamerasEnum.freelookCamera);
+            // CameraSwap(CamerasEnum.freelookCamera);
+            alterCam.FreeLook();
         }
 
         private void Update()
@@ -305,7 +309,7 @@ namespace Player.Movement
         }
         private void CameraSwap(CamerasEnum camera)
         {
-            if (camera == CamerasEnum.freelookCamera)
+            /*if (camera == CamerasEnum.freelookCamera)
             {
                 cameras[0].SetActive(true); //player cam
                 cameras[1].SetActive(true); //main
@@ -316,7 +320,7 @@ namespace Player.Movement
                 cameras[0].SetActive(false); //player cam
                 cameras[1].SetActive(false); //main
                 cameras[2].SetActive(true); //follow cam 
-            }
+            }*/
         }
         private void SwapToFreeLookCamera()
         {
@@ -469,6 +473,7 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
+                alterCam.FollowPlayer();
                 //CameraSwap(CamerasEnum.followCamera);
                 Debug.Log("hi");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);

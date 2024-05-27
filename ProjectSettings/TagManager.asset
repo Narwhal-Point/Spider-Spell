@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MovingObject
   - DeathPuddle
+  - CamLookAT
   layers:
   - Default
   - TransparentFX

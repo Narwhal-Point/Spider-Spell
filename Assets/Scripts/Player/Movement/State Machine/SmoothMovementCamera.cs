@@ -37,6 +37,8 @@ public class SmoothCamera : CameraAbstract
         }
     }
 
+
+
     protected override Vector3 getHorizontalRotationAxis()
     {
         return observedObject.transform.up;
