@@ -482,6 +482,7 @@ namespace Player.Movement
                 Quaternion combinedRotation = surfaceAlignment * cameraRotation;
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
+                alterCam.DelayMethod(alterCam.FreeLook, 1f);
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {

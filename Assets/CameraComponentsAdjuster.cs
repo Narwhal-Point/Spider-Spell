@@ -18,6 +18,10 @@ public class CameraComponentsAdjuster : MonoBehaviour
 
     private SmoothCamera smoothMovementScript;
 
+    private Transform cachedTransform;
+    private Vector3 originalPosition;
+    private Quaternion originalRotation;
+
     private void Awake()
     {
 
@@ -27,6 +31,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
         this.freeLookCam = GetComponent<CinemachineFreeLook>();
         this.camBrain = GetComponent<CinemachineBrain>();
         this.smoothMovementScript = GetComponent<SmoothCamera>();
+        cachedTransform = transform;
     }
 
     public void DelayMethod(Action action, float delay)
@@ -46,13 +51,15 @@ public class CameraComponentsAdjuster : MonoBehaviour
     public void FreeLook()
     {
         ActivateFreeLook();
+        CashedPositionRotation();
         DeactivateFollowCam();
     }
 
     public void FollowPlayer()
     {
         DeactivateFreeLook();
-        ActivateFollowCam();
+        OriginalPositionRotation();
+        ActivateFollowCam();       
     }
 
     private void ActivateFreeLook()
@@ -72,5 +79,15 @@ public class CameraComponentsAdjuster : MonoBehaviour
     private void DeactivateFollowCam() 
     {
         smoothMovementScript.enabled = false;
+    }
+    private void CashedPositionRotation()
+    {
+        cachedTransform.position = originalPosition;
+        cachedTransform.rotation = originalRotation;
+    }
+    private void OriginalPositionRotation()
+    {
+        originalPosition = cachedTransform.position;
+        originalRotation = cachedTransform.rotation;
     }
 }
