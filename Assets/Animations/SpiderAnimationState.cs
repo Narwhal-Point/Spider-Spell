@@ -19,6 +19,7 @@ public class spiderAnimationState : MonoBehaviour
     {
         if (player.movementState.ToString() == "Idle")
         {
+            animator.speed = 1f;
             animator.SetBool("isWalking",false);
             animator.SetBool("isFalling",false);
             animator.SetBool("isJumping",false);
@@ -39,6 +40,7 @@ public class spiderAnimationState : MonoBehaviour
         }
         if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
         {
+            animator.speed = 1f;
             animator.SetBool("isFalling", true);
             animator.SetBool("isWalking",false);
             animator.SetBool("isJumping",false);
