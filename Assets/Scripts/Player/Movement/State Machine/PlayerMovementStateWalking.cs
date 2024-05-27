@@ -46,7 +46,7 @@ namespace Player.Movement.State_Machine
             //Vector3 direction = new Vector3(player.InputDirection.x, 0f, player.InputDirection.y).normalized;
             //HandleVectorRotation();
             MovePlayer();
-            TurnPlayer();
+            //TurnPlayer();
             /*if (direction.magnitude >= 0.1f)
             {
                 MovePlayer();

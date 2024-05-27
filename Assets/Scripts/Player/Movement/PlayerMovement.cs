@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
@@ -302,7 +303,7 @@ namespace Player.Movement
 
         private void FixedUpdate()
         {
-            _manager.CurrentState.FixedUpdateState();
+            _manager.CurrentState.FixedUpdateState();            
             HandleRotation();
             CalculatePlayerVMovement();
             //TopDownRayDirection();
@@ -332,6 +333,8 @@ namespace Player.Movement
         {
             foreach (var cam in cameras)
             {
+                float rayAngle = Vector3.Angle(movementForward, movementRight);
+                Debug.Log(rayAngle);
                 //Debug.Log(cam.active);
                 if (cam.active)
                 {
@@ -357,13 +360,7 @@ namespace Player.Movement
 
                     if (rPlane.Raycast(rRay, out float rEnter))
                     {
-                        //Vector3 fPoint = rRay.GetPoint(rEnter);
-                        //Debug.DrawLine(rightOrigin, fPoint, Color.red);
-                        //movementRight = fPoint - transform.position;
-
                         movementRight = Vector3.Cross(transform.up, movementForward);
-
-
                         Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
                     }
                }
@@ -528,7 +525,8 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                //Invoke("SwapToFreeLookCamera", 2f);
+                TurnPlayer();
+                /*//Invoke("SwapToFreeLookCamera", 2f);
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, groundHit.normal);
@@ -537,7 +535,7 @@ namespace Player.Movement
 
                 // slerp the rotation to the turning smooth
                 transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                    Time.deltaTime * rotationSpeed);
+                    Time.deltaTime * rotationSpeed);*/
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
@@ -553,6 +551,32 @@ namespace Player.Movement
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
+        }
+
+        private void TurnPlayer()
+        {
+            Vector3 forward = movementForward.normalized;
+            Vector3 right = movementRight.normalized;
+
+            Vector3 forwardRelativeInput = InputDirection.y * forward;
+            Vector3 rightRelativeInput = InputDirection.x * right;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
+
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
+
+            // Rotate towards the combined movement direction
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
