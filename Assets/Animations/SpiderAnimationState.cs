@@ -1,50 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using Player.Movement;
 using UnityEngine;
 
-public class spiderAnimationState : MonoBehaviour
+namespace Animations
 {
-    public Animator animator;
-    public PlayerMovement player;
-
-    // Start is called before the first frame update
-    void Start()
+    public class SpiderAnimationState : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-    }
+        public Animator animator;
+        public PlayerMovement player;
+        private static readonly int IsWalking = Animator.StringToHash("isWalking");
+        private static readonly int IsFalling = Animator.StringToHash("isFalling");
+        private static readonly int IsJumping = Animator.StringToHash("isJumping");
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (player.movementState.ToString() == "Idle")
+        // Start is called before the first frame update
+        void Start()
         {
-            animator.speed = 1f;
-            animator.SetBool("isWalking",false);
-            animator.SetBool("isFalling",false);
-            animator.SetBool("isJumping",false);
+            animator = GetComponent<Animator>();
         }
-        if (player.movementState.ToString() == "Walking")
-        {
-            animator.SetBool("isWalking",true);
-            animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping",false);
-            
-            // Calculate the speed ratio
-            float speedRatio = player.Rb.velocity.magnitude / player.walkSpeed;
-            
-            Debug.Log($"Speed Ratio: {speedRatio}");
 
-            // Set the animation speed to the speed ratio
-            animator.speed = speedRatio;
-        }
-        if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
+        // Update is called once per frame
+        void Update()
         {
-            animator.speed = 1f;
-            animator.SetBool("isFalling", true);
-            animator.SetBool("isWalking",false);
-            animator.SetBool("isJumping",false);
-        }
+            if (player.movementState.ToString() == "Idle")
+            {
+                animator.speed = 1f;
+                animator.SetBool(IsWalking,false);
+                animator.SetBool(IsFalling,false);
+                animator.SetBool(IsJumping,false);
+            }
+            if (player.movementState.ToString() == "Walking")
+            {
+                animator.SetBool(IsWalking,true);
+                animator.SetBool(IsFalling, false);
+                animator.SetBool(IsJumping,false);
+                
+                // Calculate the speed ratio
+                float speedRatio = player.Rb.velocity.magnitude / player.walkSpeed;
+            
+                Debug.Log($"Speed Ratio: {speedRatio}");
+
+                // Set the animation speed to the speed ratio
+                animator.speed = speedRatio;
+            }
+            if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
+            {
+                animator.speed = 1f;
+                animator.SetBool(IsFalling, true);
+                animator.SetBool(IsWalking,false);
+                animator.SetBool(IsJumping,false);
+            }
         
+        }
     }
 }

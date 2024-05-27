@@ -22,7 +22,7 @@ namespace Player.Movement.State_Machine
             _jumpTimer = player.jumpCooldown;
             player.movementState = PlayerMovement.MovementState.Jumping;
             player.Rb.drag = 0; // no ground drag because we're in the air
-            
+
             // player.jumpingSound.Play();
             player.audioManager.PlaySFX(player.audioManager.jumping);
             Jump();
@@ -35,8 +35,6 @@ namespace Player.Movement.State_Machine
 
             if (_jumpTimer <= 0)
             {
-                if (player.IsFiring && player.camScript.CurrentCamera == PlayerCam.CameraStyle.Aiming)
-                    manager.SwitchState(player.SwingingState);
                 ResetJump();
                 if (!player.Grounded && player.Rb.velocity.y < 0)
                 {
