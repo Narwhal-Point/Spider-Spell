@@ -12,7 +12,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
 
     [SerializeField] GameObject cameraObject;
 
-    private FreeLookCinemachineCamera freeLookCam;
+    private CinemachineFreeLook freeLookCam;
 
     private CinemachineBrain camBrain;
 
@@ -24,9 +24,9 @@ public class CameraComponentsAdjuster : MonoBehaviour
     }
     private void Start()
     {
-        this.freeLookCam = cameraObject.GetComponent<FreeLookCinemachineCamera>();
-        this.camBrain = cameraObject.GetComponent<CinemachineBrain>();
-        this.smoothMovementScript = cameraObject.GetComponent<SmoothCamera>();
+        this.freeLookCam = GetComponent<CinemachineFreeLook>();
+        this.camBrain = GetComponent<CinemachineBrain>();
+        this.smoothMovementScript = GetComponent<SmoothCamera>();
     }
 
     public void DelayMethod(Action action, float delay)
