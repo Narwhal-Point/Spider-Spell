@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FreeLookCamera : MonoBehaviour
 {
-    public Transform target; // The target object to follow
-    public float followSpeed = 10.0f; // Speed of following the target
-    public float lookSpeed = 3.0f; // Speed of camera rotation
+    public Transform target; 
+    public float followSpeed = 10.0f; 
+    public float lookSpeed = 3.0f; 
     public Vector3 offset = new Vector3(0, 5, -10); 
 
     private float yaw = 0.0f;
@@ -14,10 +14,8 @@ public class FreeLookCamera : MonoBehaviour
 
     void Start()
     {
-        // Lock the cursor to the center
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Initialize yaw and pitch
         Vector3 angles = transform.eulerAngles;
         yaw = angles.y;
         pitch = angles.x;
@@ -31,21 +29,14 @@ public class FreeLookCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        // Ensure the target is assigned
+      
         if (target == null) return;
 
-        // Get mouse inputs for free look
         yaw += lookSpeed * Input.GetAxis("Mouse X");
         pitch -= lookSpeed * Input.GetAxis("Mouse Y");
         pitch = Mathf.Clamp(pitch, -35f, 60f); 
-
-        // Calculate rotation based on mouse input
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0.0f);
-
-        // Calculate the desired position behind the target
         Vector3 desiredPosition = target.position + rotation * offset;
-
-        // Smoothly move the camera towards the desired position
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
         // Always look at the target
