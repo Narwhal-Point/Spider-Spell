@@ -45,7 +45,6 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString,
             string deviceLayoutName, string controlPath)
         {
-            Debug.Log(controlPath);
             if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
                 return;
 
