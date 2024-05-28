@@ -303,10 +303,13 @@ namespace Player.Movement
 
         private void FixedUpdate()
         {
-            _manager.CurrentState.FixedUpdateState();            
-            HandleRotation();
+            _manager.CurrentState.FixedUpdateState();                        
             CalculatePlayerVMovement();
             //TopDownRayDirection();
+        }
+        private void LateUpdate()
+        {
+            HandleRotation();
         }
         private void CameraSwap(CamerasEnum camera)
         {
@@ -525,17 +528,7 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                TurnPlayer();
-                /*//Invoke("SwapToFreeLookCamera", 2f);
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-
-                // slerp the rotation to the turning smooth
-                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                    Time.deltaTime * rotationSpeed);*/
+                TurnPlayer();                
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
