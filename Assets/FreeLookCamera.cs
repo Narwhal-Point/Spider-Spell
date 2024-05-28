@@ -7,22 +7,22 @@ public class FreeLookCamera : MonoBehaviour
     public Transform target; // The target object to follow
     public float followSpeed = 10.0f; // Speed of following the target
     public float lookSpeed = 3.0f; // Speed of camera rotation
-    public Vector3 offset = new Vector3(0, 5, -10); // Offset from the target
+    public Vector3 offset = new Vector3(0, 5, -10); 
 
     private float yaw = 0.0f;
     private float pitch = 0.0f;
 
     void Start()
     {
-        // Lock the cursor to the center of the screen and hide it
+        // Lock the cursor to the center
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Initialize yaw and pitch based on current rotation
+        // Initialize yaw and pitch
         Vector3 angles = transform.eulerAngles;
         yaw = angles.y;
         pitch = angles.x;
 
-        // Ensure the target is assigned
+       
         if (target == null)
         {
             Debug.LogError("Target not assigned. Please assign a target object for the camera to follow.");
@@ -37,7 +37,7 @@ public class FreeLookCamera : MonoBehaviour
         // Get mouse inputs for free look
         yaw += lookSpeed * Input.GetAxis("Mouse X");
         pitch -= lookSpeed * Input.GetAxis("Mouse Y");
-        pitch = Mathf.Clamp(pitch, -35f, 60f); // Clamp pitch to avoid flipping and unrealistic angles
+        pitch = Mathf.Clamp(pitch, -35f, 60f); 
 
         // Calculate rotation based on mouse input
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0.0f);
@@ -49,6 +49,6 @@ public class FreeLookCamera : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
         // Always look at the target
-        transform.LookAt(target.position + Vector3.up * offset.y); // Adjust look at to the target's height
+        transform.LookAt(target.position + Vector3.up * offset.y); 
     }
 }

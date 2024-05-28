@@ -12,9 +12,12 @@ public class CameraComponentsAdjuster : MonoBehaviour
 
     [SerializeField] GameObject cameraObject;
 
-    private CinemachineFreeLook freeLookCam;
+    //freelook camera script 
+    private FreeLookCamera freelookCamera;
 
-    private CinemachineBrain camBrain;
+    //private CinemachineFreeLook freeLookCam;
+
+    //private CinemachineBrain camBrain;
 
     private SmoothCamera smoothMovementScript;
 
@@ -28,8 +31,9 @@ public class CameraComponentsAdjuster : MonoBehaviour
     }
     private void Start()
     {
-        this.freeLookCam = GetComponent<CinemachineFreeLook>();
-        this.camBrain = GetComponent<CinemachineBrain>();
+        //this.freeLookCam = GetComponent<CinemachineFreeLook>();
+        //this.camBrain = GetComponent<CinemachineBrain>();
+        this.freelookCamera = GetComponent<FreeLookCamera>();
         this.smoothMovementScript = GetComponent<SmoothCamera>();
         cachedTransform = transform;
     }
@@ -64,12 +68,14 @@ public class CameraComponentsAdjuster : MonoBehaviour
 
     private void ActivateFreeLook()
     {
-        freeLookCam.enabled = true;
+        freelookCamera.enabled = true;
+        //freeLookCam.enabled = true;
     }
 
     private void DeactivateFreeLook()
     {
-        freeLookCam.enabled = false;
+        freelookCamera.enabled = false;
+        //freeLookCam.enabled = false;
     }
 
     private void ActivateFollowCam()
