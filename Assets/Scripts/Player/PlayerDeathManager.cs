@@ -40,14 +40,14 @@ namespace Player
         {
             Movement.PlayerMovement.onPlayerInPuddle += PuddleDeathTime;
             Movement.PlayerMovement.onPlayerLeftPuddle += ResetDeathTime;
-            UI.DeathScreenManager.onCanRespawn += ResetToCheckpoint;
+            UI.DeathScreenManager.onDonePlayingDeathEffect += ResetToCheckpoint;
         }
         
         private void UnsubscribeFromEvents()
         {
             Movement.PlayerMovement.onPlayerInPuddle -= PuddleDeathTime;
             Movement.PlayerMovement.onPlayerLeftPuddle -= ResetDeathTime;
-            UI.DeathScreenManager.onCanRespawn -= ResetToCheckpoint;
+            UI.DeathScreenManager.onDonePlayingDeathEffect -= ResetToCheckpoint;
         }
 
 

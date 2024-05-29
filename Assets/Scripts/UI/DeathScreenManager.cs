@@ -29,8 +29,8 @@ namespace UI
         private const float LocalPosWidthEnd = 2112;
 
         // delegate to let scripts now the player is allowed to respawn
-        public delegate void CanRespawn();
-        public static CanRespawn onCanRespawn;
+        public delegate void DonePlayingDeathEffect();
+        public static DonePlayingDeathEffect onDonePlayingDeathEffect;
 
         private void Start()
         {
@@ -137,7 +137,7 @@ namespace UI
             blackImage.enabled = true;
             
             // we can respawn!
-            onCanRespawn?.Invoke();
+            onDonePlayingDeathEffect?.Invoke();
         }
         
         
