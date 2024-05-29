@@ -123,7 +123,7 @@ namespace UI
                 // lerp the side screens towards the center
                 for (int i = 0; i < images.Length; i++)
                 {
-                    images[i].transform.localPosition = Vector3.Lerp(_imageStartPos[i], _imageEndPos[i], t);
+                    images[i].transform.localPosition = Vector3.Lerp(_imageStartPos[i], _imageEndPos[i], t * 0.85f);
                 }
                 
                 // make the spider image smaller
@@ -183,10 +183,10 @@ namespace UI
 
                 for (int i = 0; i < images.Length; i++)
                 {
-                    images[i].transform.localPosition = Vector3.Lerp(startPos[i], endPos[i], t);
+                    images[i].transform.localPosition = Vector3.Lerp(startPos[i], endPos[i], t * 2f);
                 }
 
-                deathScreenImage.transform.localScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 1f), new Vector3(1f, 1f, 1f), t);
+                deathScreenImage.transform.localScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 1f), new Vector3(2.5f, 2.5f, 2.5f), t);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
