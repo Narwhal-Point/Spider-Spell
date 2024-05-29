@@ -58,7 +58,7 @@ namespace Collectables
             
             _collectables.Add(key, sprite);
             sprite.enabled = false;
-            Debug.Log($"Collectables count: {_collectables.Count}");
+            // Debug.Log($"Collectables count: {_collectables.Count}");
         }
 
         private void ShowCollectedCollectable(string key)
