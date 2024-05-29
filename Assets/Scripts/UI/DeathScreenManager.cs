@@ -18,7 +18,7 @@ namespace UI
         [Tooltip("Just a black Image")]
         [SerializeField] private Image blackImage;
 
-        [Tooltip("all the black images, should be top -> bottom -> right - > left")]
+        [Tooltip("all the black images, order should be top -> bottom -> right - > left")]
         [SerializeField] private Image[] images;
         [SerializeField] private PlayerInput playerInput;
         private Vector3[] _imageStartPos;
