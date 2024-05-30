@@ -11,6 +11,10 @@ public class GameData
 
     public int maxCollectables;
 
+    public bool witchCutscenePlayed;
+
+    public bool mainRoomCutscenePlayed;
+
     // public int jumpCount;
 
     public bool journalCollected;
