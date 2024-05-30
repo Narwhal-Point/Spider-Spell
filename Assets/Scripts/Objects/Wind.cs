@@ -25,7 +25,7 @@ public class Wind : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("blowing");
+            // Debug.Log("blowing");
             PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
             Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
             if (otherRb != null)

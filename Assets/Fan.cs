@@ -19,7 +19,8 @@ public class Fan : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (swingHandler.predictionHit.collider && swingHandler.predictionHit.collider.CompareTag("Fan") && InputManager.instance.FireInput)
+        if (swingHandler.predictionHit.collider && swingHandler.predictionHit.collider.gameObject == gameObject &&
+            InputManager.instance.FireInput)
         {
             Debug.Log("Shit");
             wind.SetActive(false);
