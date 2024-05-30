@@ -9,7 +9,9 @@ public class GameData
 
     public Quaternion rotation;
 
-    public int jumpCount;
+    public int maxCollectables;
+
+    // public int jumpCount;
 
     public bool journalCollected;
 
@@ -20,19 +22,15 @@ public class GameData
     public GameData()
     {
         this.position = spawnPoint;
-        this.jumpCount = 0;
+        this.rotation = Quaternion.Euler(0,90,0);
+        maxCollectables = 5;
+        
         Debug.Log("Rotation GameData: " + rotation);
     }
 
     public int GetPercentageComplete()
     {
-        int percentageCompleted = (jumpCount * 100 / 10);
-        if (percentageCompleted > 100)
-        {
-            percentageCompleted = 100;
-            return percentageCompleted;
-        }
-
+        int percentageCompleted = (collectedIngredients.Count * 100 / maxCollectables);
         return percentageCompleted;
     }
 }

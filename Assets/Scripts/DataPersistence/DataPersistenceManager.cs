@@ -114,7 +114,6 @@ public class DataPersistenceManager : MonoBehaviour
          dataPersistenceObj.LoadData(gameData);
       }
       Debug.Log("Loaded location = " + gameData.position);
-      Debug.Log("Loaded jumpcount = " + gameData.jumpCount);
    }
 
    public void SaveGame()
@@ -137,7 +136,6 @@ public class DataPersistenceManager : MonoBehaviour
          dataPersistenceObj.SaveData(gameData);
       }
       Debug.Log("Saved location = " + gameData.position);
-      Debug.Log("Saved jumpcount = " + gameData.jumpCount);
       
       // timestamp the data so we know when it was last saved
       gameData.lastUpdated = System.DateTime.Now.ToBinary();
