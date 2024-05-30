@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 
@@ -13,6 +14,8 @@ public class GameData
     public Quaternion rotation;
 
     public int jumpCount;
+
+    public bool journalCollected;
     
     public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 198f);
 
