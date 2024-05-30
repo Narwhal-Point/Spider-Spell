@@ -306,11 +306,9 @@ namespace Player.Movement
             _manager.CurrentState.FixedUpdateState();                        
             CalculatePlayerVMovement();
             //TopDownRayDirection();
-        }
-        private void LateUpdate()
-        {
             HandleRotation();
         }
+        
         private void CameraSwap(CamerasEnum camera)
         {
             /*if (camera == CamerasEnum.freelookCamera)

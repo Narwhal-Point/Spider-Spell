@@ -8,9 +8,13 @@ public class FreeLookCamera : MonoBehaviour
     public float followSpeed = 10.0f;
     public float lookSpeed = 3.0f;
     public Vector3 offset = new Vector3(0, 5, -10);
+    public float lerpSpeed = 5.0f;
 
     private float yaw = 0.0f;
     private float pitch = 0.0f;
+
+    private Vector3 velocity = Vector3.zero;
+    private Vector3 lookAtTarget;
 
     void Start()
     {
@@ -18,6 +22,11 @@ public class FreeLookCamera : MonoBehaviour
         Vector3 angles = transform.eulerAngles;
         yaw = angles.y;
         pitch = angles.x;
+
+        if (target != null)
+        {
+            lookAtTarget = target.position + Vector3.up * offset.y;
+        }
     }
 
     void LateUpdate()
@@ -32,10 +41,10 @@ public class FreeLookCamera : MonoBehaviour
         Vector3 desiredPosition = target.position + rotation * offset;
 
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, followSpeed * Time.deltaTime);
-   
-        transform.LookAt(target.position + Vector3.up * offset.y);
-    }
 
-    // Use a private velocity variable for SmoothDamp
-    private Vector3 velocity = Vector3.zero;
+        Vector3 targetPosition = target.position + Vector3.up * offset.y;
+        lookAtTarget = Vector3.Lerp(lookAtTarget, targetPosition, lerpSpeed * Time.deltaTime);
+
+        transform.LookAt(lookAtTarget);
+    }
 }
