@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [System.Serializable]
-
 public class GameData
 {
     public long lastUpdated;
-    
+
     public Vector3 position;
 
     public Quaternion rotation;
@@ -16,14 +12,15 @@ public class GameData
     public int jumpCount;
 
     public bool journalCollected;
-    
+
+    // public Dictionary<string, GameObject> CollectedIngredients = new Dictionary<string, GameObject>();
+    public SerializableDictionary<string, string> collectedIngredients = new SerializableDictionary<string, string>();
     public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 198f);
 
     public GameData()
     {
         this.position = spawnPoint;
         this.jumpCount = 0;
-        this.rotation = Quaternion.Euler(0,90,0);
         Debug.Log("Rotation GameData: " + rotation);
     }
 
@@ -35,6 +32,7 @@ public class GameData
             percentageCompleted = 100;
             return percentageCompleted;
         }
+
         return percentageCompleted;
     }
 }

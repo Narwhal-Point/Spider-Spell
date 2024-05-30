@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Collectables
 {
-    public class CollectableManager : MonoBehaviour
+    public class CollectableManager : MonoBehaviour, IDataPersistence
     {
         private readonly Dictionary<string, Image> _collectables = new Dictionary<string, Image>();
         public static CollectableManager instance;
@@ -58,7 +58,7 @@ namespace Collectables
             
             _collectables.Add(key, sprite);
             sprite.enabled = false;
-            Debug.Log($"Collectables count: {_collectables.Count}");
+            // Debug.Log($"Collectables count: {_collectables.Count}");
         }
 
         private void ShowCollectedCollectable(string key)
@@ -66,6 +66,25 @@ namespace Collectables
             bool success = _collectables.TryGetValue(key, out var sprite);
             if(success)
                 sprite.enabled = true;
+        }
+
+        // saving and loading name of gameobject because otherwise it doesn't work.
+        public void LoadData(GameData data)
+        {
+            foreach (var ingredient in data.collectedIngredients)
+            {
+                GameObject o = GameObject.Find(ingredient.Value);
+                AddToInventory(ingredient.Key, o);
+            }
+        }
+
+        public void SaveData(GameData data)
+        {
+            foreach (var ingredient in _inventory)
+            {
+                string ingredientName = ingredient.Value.name;
+                data.collectedIngredients.TryAdd(ingredient.Key, ingredientName);
+            }
         }
     }
 }
