@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Player.Movement;
 using UnityEngine;
@@ -35,8 +36,27 @@ public class MenuManager : MonoBehaviour
     public PlayerMovement player;
     [SerializeField] private InputSystemUIInputModule iptmod;
 
+    // fix for inputs defaulting to keyboard after closing menu
+    #region Input Caching
+    
+    private string _cachedControlScheme;
+
+    private void CacheControlScheme()
+    {
+        _cachedControlScheme = _playerInput.currentControlScheme;
+    }
+
+    private void SetControlScheme()
+    {
+        _playerInput.enabled = true;
+       _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+    }
+    
+    #endregion
+    
     private void Start()
     {
+        _cachedControlScheme = _playerInput.currentControlScheme;
         var rebinds = PlayerPrefs.GetString("rebinds");
         if (!string.IsNullOrEmpty(rebinds))
             actions.LoadBindingOverridesFromJson(rebinds);
@@ -77,9 +97,8 @@ public class MenuManager : MonoBehaviour
             cancelAction = false;
             UnPause();
         }
-        
     }
-    
+
     #region Pause/Unpause Functions
 
     public void Pause()
@@ -110,6 +129,8 @@ public class MenuManager : MonoBehaviour
 
     private void OpenMainMenu()
     {
+        CacheControlScheme();
+        
         _mainMenuCanvasGO.SetActive(true);
         _audioCanvasGO.SetActive(false);
         _sensitivityCanvasGO.SetActive(false);
@@ -209,6 +230,8 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
+        
+        SetControlScheme();
     }
     
     #endregion
