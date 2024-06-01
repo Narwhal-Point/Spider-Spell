@@ -31,8 +31,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
     }
     private void Start()
     {
-        //this.freeLookCam = GetComponent<CinemachineFreeLook>();
-        //this.camBrain = GetComponent<CinemachineBrain>();
+
         this.freelookCamera = GetComponent<FreeLookCamera>();
         this.smoothMovementScript = GetComponent<SmoothCamera>();
         cachedTransform = transform;
