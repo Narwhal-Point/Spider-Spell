@@ -525,8 +525,23 @@ namespace Player.Movement
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
-            {
-                TurnPlayer();                
+            {                
+                if (groundHit.collider.CompareTag("smoothObject"))
+                {
+                    Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                    Quaternion surfaceAlignment =
+                        Quaternion.FromToRotation(Vector3.up, groundHit.normal);
+                    Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                    orientation.rotation = combinedRotation;
+
+                    // slerp the rotation to the turning smooth
+                    transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                        Time.deltaTime * rotationSpeed);
+                }
+                else
+                {
+                    TurnPlayer();
+                }
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
