@@ -1,70 +1,113 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class AudioManager : MonoBehaviour
+namespace Audio
 {
-    [Header("Audio Source")] [SerializeField]
-    public AudioSource musicSource;
-
-    // turn audio source into array, so we have multiple.
-    [SerializeField] public AudioSource[] SFXSources;
-
-    [Header("Audio Clip")] public AudioClip background;
-    public AudioClip walking;
-    public AudioClip landing;
-    public AudioClip webshooting;
-    public AudioClip jumping;
-    public AudioClip WitchAppearTutorial;
-    public AudioClip poofSFX;
-    public AudioClip checkpointSFX;
-
-
-    private void Start()
+    public class AudioManager : MonoBehaviour
     {
-        musicSource.clip = background;
-        musicSource.Play();
-    }
+        [Header("Audio Source")] [SerializeField]
+        public AudioSource musicSource;
 
-    public void PlaySFX(AudioClip clip)
-    {
-        // loop through the sounds. When an empty one is found play the sound.
-        foreach (var SFXSource in SFXSources)
+        // turn audio source into array, so we have multiple.
+        [FormerlySerializedAs("SFXSources")] [SerializeField] public AudioSource[] sfxSources;
+
+        [Header("Audio Clip")] public AudioClip background;
+        public AudioClip walking;
+        public AudioClip landing;
+        public AudioClip webshooting;
+        public AudioClip jumping;
+        [FormerlySerializedAs("WitchAppearTutorial")] public AudioClip witchAppearTutorial;
+        [FormerlySerializedAs("poofSFX")] public AudioClip poofSfx;
+        [FormerlySerializedAs("checkpointSFX")] public AudioClip checkpointSfx;
+        public AudioClip stoneShoving;
+    
+        // some sounds need to be on a specific location. To still pause them we add them to this list.
+        public static readonly List<AudioSource> LocationSpecificAudioSource = new List<AudioSource>();
+
+
+        private void Start()
         {
-            if (!SFXSource.isPlaying)
+            musicSource.clip = background;
+            musicSource.Play();
+        }
+
+        private void Update()
+        {
+            if (Time.timeScale == 0)
             {
-                SFXSource.PlayOneShot(clip);
-                break;
+                foreach (var sfxSource in sfxSources)
+                {
+                    sfxSource.Pause();
+                }
+
+                foreach (var audioSource in LocationSpecificAudioSource)
+                {
+                    audioSource.Pause();
+                }
+            }
+            if (Time.timeScale != 0)
+            {
+                foreach (var sfxSource in sfxSources)
+                {
+                    sfxSource.UnPause();
+                }
+
+                foreach (var audioSource in LocationSpecificAudioSource)
+                {
+                    audioSource.UnPause();
+                }
             }
         }
-    }
 
-    public void PlayLoopSFX(AudioClip clip)
-    {
-        // loop through the sounds. When an empty one is found play the sound.
-        foreach (var SFXSource in SFXSources)
+        public void PlaySFX(AudioClip clip)
         {
-            if (!SFXSource.isPlaying)
+            if (Time.timeScale == 0)
             {
-                SFXSource.clip = clip;
-                SFXSource.loop = true;
-                SFXSource.pitch = 1.65f;
-                SFXSource.Play();
-                break;
+                return;
+            }
+            // loop through the sounds. When an empty one is found play the sound.
+            foreach (var sfxSource in sfxSources)
+            {
+                if (!sfxSource.isPlaying)
+                {
+                    sfxSource.PlayOneShot(clip);
+                    break;
+                }
             }
         }
-    }
 
-    public void StopSFX(AudioClip clip)
-    {
-        // loop through the sounds. When the one that corresponds to the audio clip is found stop playing.
-        foreach (var SFXSource in SFXSources)
+        public void PlayLoopSFX(AudioClip clip)
         {
-            if (SFXSource.clip == clip)
+            if (Time.timeScale == 0)
             {
-                SFXSource.loop = false;
-                SFXSource.pitch = 1;
-                SFXSource.Stop();
+                return;
+            }
+            // loop through the sounds. When an empty one is found play the sound.
+            foreach (var sfxSource in sfxSources)
+            {
+                if (!sfxSource.isPlaying)
+                {
+                    sfxSource.clip = clip;
+                    sfxSource.loop = true;
+                    sfxSource.pitch = 1.65f;
+                    sfxSource.Play();
+                    break;
+                }
+            }
+        }
+
+        public void StopSFX(AudioClip clip)
+        {
+            // loop through the sounds. When the one that corresponds to the audio clip is found stop playing.
+            foreach (var sfxSource in sfxSources)
+            {
+                if (sfxSource.clip == clip)
+                {
+                    sfxSource.loop = false;
+                    sfxSource.pitch = 1;
+                    sfxSource.Stop();
+                }
             }
         }
     }
