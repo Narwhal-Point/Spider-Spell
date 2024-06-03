@@ -39,7 +39,7 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Transparancy: 1
+    - _Transparancy: 0.7
     - _wave_speed: 3
     m_Colors:
     - _Color_01: {r: 0.08235294, g: 0.35686275, b: 0.1137255, a: 0}
