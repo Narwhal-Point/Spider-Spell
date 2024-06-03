@@ -468,7 +468,6 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         //
         //     return false;
         // }
-        
         private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompositeParts = false)
         {
             InputBinding newBinding = action.bindings[bindingIndex];
@@ -483,9 +482,9 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                     if (binding.isPartOfComposite && currentIndex != bindingIndex)
                     {
                         if (binding.effectivePath == newBinding.effectivePath)
-                        {
+                        { 
                             Debug.Log("Duplicate binding found in composite: " + newBinding.effectivePath);
-                            return true;
+                            return false;
                         }
                     }
 
@@ -497,8 +496,9 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
                 if (binding.effectivePath == newBinding.effectivePath)
                 {
+                    Debug.Log($"Action name: {action.name}");
                     Debug.Log("Duplicate binding found: " + newBinding.effectivePath);
-                    return true;
+                    return false;
                 }               
 
             }

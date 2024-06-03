@@ -57,7 +57,7 @@ namespace Player.Movement.State_Machine
             player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
 
             player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f * player.InputDirection.magnitude), ForceMode.Force);
         }
 
         private void SpeedControl()

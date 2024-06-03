@@ -9,7 +9,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
     {
         public KeyboardIcons keyboardIcons;
         public MouseIcons mouseIcons;
-
+        
         // void Start()
         // {
         //     // Get all input devices
@@ -45,7 +45,6 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString,
             string deviceLayoutName, string controlPath)
         {
-            Debug.Log(controlPath);
             if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
                 return;
 
@@ -115,41 +114,53 @@ public struct KeyboardIcons
     public Sprite key8;
     public Sprite key9;
 
-    // Function keys
-    public Sprite keyF1;
-    public Sprite keyF2;
-    public Sprite keyF3;
-    public Sprite keyF4;
-    public Sprite keyF5;
-    public Sprite keyF6;
-    public Sprite keyF7;
-    public Sprite keyF8;
-    public Sprite keyF9;
-    public Sprite keyF10;
-    public Sprite keyF11;
-    public Sprite keyF12;
-
-    // Modifier keys
-    public Sprite keyCtrl;
-    public Sprite keyShift;
-    public Sprite keyAlt;
-    public Sprite keyWin;
-    public Sprite keySpaceBar;
-
-    // Special characters
-    public Sprite keyDot;
-    public Sprite keyComma;
-    public Sprite keyQuestionMark;
-    public Sprite keyApostrophe;
-    public Sprite keyDoubleQuote;
-    public Sprite keyBacktick; // Also known as Grave accent or Grave
-    public Sprite keyUnderscore;
-
     // Navigation keys
     public Sprite keyArrowLeft;
     public Sprite keyArrowRight;
     public Sprite keyArrowUp;
     public Sprite keyArrowDown;
+    
+    // Additional keys
+    public Sprite keyTab;
+    public Sprite keyTilde;
+    public Sprite keyAsterisk;
+    public Sprite keyBackspace;
+    public Sprite keyBracketLeft;
+    public Sprite keyBracketRight;
+    public Sprite keyCapsLock;
+    public Sprite keyCtrl;
+    public Sprite keyDelete;
+    public Sprite keyEnd;
+    public Sprite keyEnter;
+    public Sprite keyEscape;
+    public Sprite keyHome;
+    public Sprite keyInsert;
+    public Sprite keyLessThan;
+    public Sprite keyGreaterThan;
+    public Sprite keyMinus;
+    public Sprite keyNumLock;
+    public Sprite keyPageDown;
+    public Sprite keyPageUp;
+    public Sprite keyPlus;
+    public Sprite keyQuestionMark;
+    public Sprite keyQuote;
+    public Sprite keySemicolon;
+    public Sprite keyShift;
+    public Sprite keyBackslash;
+    public Sprite keySpacebar;
+
+    // Numpad keys
+    public Sprite keyNumpad0;
+    public Sprite keyNumpad1;
+    public Sprite keyNumpad2;
+    public Sprite keyNumpad3;
+    public Sprite keyNumpad4;
+    public Sprite keyNumpad5;
+    public Sprite keyNumpad6;
+    public Sprite keyNumpad7;
+    public Sprite keyNumpad8;
+    public Sprite keyNumpad9;
+    
 
     public Sprite GetSprite(string controlPath)
 {
@@ -195,42 +206,57 @@ public struct KeyboardIcons
         case "8": return key8;
         case "9": return key9;
         case "0": return key0;
-
-        // Function keys
-        case "f1": return keyF1;
-        case "f2": return keyF2;
-        case "f3": return keyF3;
-        case "f4": return keyF4;
-        case "f5": return keyF5;
-        case "f6": return keyF6;
-        case "f7": return keyF7;
-        case "f8": return keyF8;
-        case "f9": return keyF9;
-        case "f10": return keyF10;
-        case "f11": return keyF11;
-        case "f12": return keyF12;
-
-        // Modifier keys
-        case "ctrl": return keyCtrl;
-        case "shift": return keyShift;
-        case "alt": return keyAlt;
-        case "win": return keyWin;
-
-        // Special characters
-        case "period": return keyDot;
-        case "comma": return keyComma;
-        case "questionmark": return keyQuestionMark;
-        case "apostrophe": return keyApostrophe;
-        case "doublequote": return keyDoubleQuote;
-        case "backtick": return keyBacktick;
-        case "underscore": return keyUnderscore;
-        case "space": return keySpaceBar;
-
+        
         // Navigation keys
         case "leftArrow": return keyArrowLeft;
         case "upArrow": return keyArrowUp;
         case "downArrow": return keyArrowDown;
         case "rightArrow": return keyArrowRight;
+        
+        // Additional keys
+        case "tab": return keyTab;
+        case "tilde": return keyTilde;
+        case "asterisk": return keyAsterisk;
+        case "backspace": return keyBackspace;
+        case "leftBracket": return keyBracketLeft;
+        case "rightBracket": return keyBracketRight;
+        case "capsLock": return keyCapsLock;
+        case "ctrl": return keyCtrl;
+        case "leftCtrl": return keyCtrl;
+        case "rightCtrl": return keyCtrl;
+        case "delete": return keyDelete;
+        case "end": return keyEnd;
+        case "enter": return keyEnter;
+        case "escape": return keyEscape;
+        case "home": return keyHome;
+        case "insert": return keyInsert;
+        case "lessThan": return keyLessThan;
+        case "greaterThan": return keyGreaterThan;
+        case "minus": return keyMinus;
+        case "numLock": return keyNumLock;
+        case "pageDown": return keyPageDown;
+        case "pageUp": return keyPageUp;
+        case "plus": return keyPlus;
+        case "questionMark": return keyQuestionMark;
+        case "quote": return keyQuote;
+        case "semicolon": return keySemicolon;
+        case "shift": return keyShift;
+        case "leftShift": return keyShift;
+        case "rightShift": return keyShift;
+        case "backslash": return keyBackslash;
+        case "space": return keySpacebar;
+
+        // Numpad keys
+        case "numpad0": return keyNumpad0;
+        case "numpad1": return keyNumpad1;
+        case "numpad2": return keyNumpad2;
+        case "numpad3": return keyNumpad3;
+        case "numpad4": return keyNumpad4;
+        case "numpad5": return keyNumpad5;
+        case "numpad6": return keyNumpad6;
+        case "numpad7": return keyNumpad7;
+        case "numpad8": return keyNumpad8;
+        case "numpad9": return keyNumpad9;
 
         default:
             return null;

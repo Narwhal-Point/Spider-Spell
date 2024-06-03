@@ -14,7 +14,7 @@ public class GameData
 
     public int jumpCount;
     
-    public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 118.32f);
+    public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 198f);
 
     public GameData()
     {
