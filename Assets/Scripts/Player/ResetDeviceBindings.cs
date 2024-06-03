@@ -13,14 +13,12 @@ public class ResetDeviceBindings : MonoBehaviour
     {
         foreach(InputActionMap map in _inputActions.actionMaps)
         {
-            Debug.Log(map.ToString());
             map.RemoveAllBindingOverrides();
         }
     }
 
     public void ResetControlSchemeBinding()
     {
-        Debug.Log("wazaa");
         foreach (InputActionMap map in _inputActions.actionMaps)
         {
             foreach (InputAction action in map.actions)

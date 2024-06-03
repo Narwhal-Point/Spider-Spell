@@ -16,6 +16,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _promptCanvasGO;
     [SerializeField] private GameObject _sensitivityCanvasGO;
     [SerializeField] private GameObject _audioCanvasGO;
+    [SerializeField] private GameObject _waitForInputKeyboard;
+    [SerializeField] private GameObject _waitForInputGamePad;
     
     [Header("Player Scripts to Deactivate on Pause")]
     public PlayerInput _playerInput;
@@ -67,6 +69,18 @@ public class MenuManager : MonoBehaviour
         
         
         else if (cancelAction & (_sensitivityCanvasGO.activeSelf == true | _audioCanvasGO.activeSelf == true))
+        {
+            cancelAction = false;
+            OpenSettingsMenuHandle();
+        }
+        
+        else if (cancelAction & _keyboardCanvasGO.activeSelf == true & _waitForInputKeyboard.activeSelf ==false)
+        {
+            cancelAction = false;
+            OpenSettingsMenuHandle();
+        }
+        
+        else if (cancelAction & _gamepadCanvasGO.activeSelf == true & _waitForInputGamePad.activeSelf ==false)
         {
             cancelAction = false;
             OpenSettingsMenuHandle();
