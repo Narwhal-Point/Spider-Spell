@@ -10,7 +10,7 @@ namespace Audio
         public AudioSource musicSource;
 
         // turn audio source into array, so we have multiple.
-        [FormerlySerializedAs("SFXSources")] [SerializeField] public AudioSource[] sfxSources;
+        [FormerlySerializedAs("SFXSources")] [SerializeField] private AudioSource[] sfxSources;
 
         [Header("Audio Clip")] public AudioClip background;
         public AudioClip walking;
@@ -20,7 +20,6 @@ namespace Audio
         [FormerlySerializedAs("WitchAppearTutorial")] public AudioClip witchAppearTutorial;
         [FormerlySerializedAs("poofSFX")] public AudioClip poofSfx;
         [FormerlySerializedAs("checkpointSFX")] public AudioClip checkpointSfx;
-        public AudioClip stoneShoving;
     
         // some sounds need to be on a specific location. To still pause them we add them to this list.
         public static readonly List<AudioSource> LocationSpecificAudioSource = new List<AudioSource>();
@@ -32,31 +31,29 @@ namespace Audio
             musicSource.Play();
         }
 
-        private void Update()
+        public void PauseAudio()
         {
-            if (Time.timeScale == 0)
+            foreach (var sfxSource in sfxSources)
             {
-                foreach (var sfxSource in sfxSources)
-                {
-                    sfxSource.Pause();
-                }
-
-                foreach (var audioSource in LocationSpecificAudioSource)
-                {
-                    audioSource.Pause();
-                }
+                sfxSource.Pause();
             }
-            if (Time.timeScale != 0)
-            {
-                foreach (var sfxSource in sfxSources)
-                {
-                    sfxSource.UnPause();
-                }
 
-                foreach (var audioSource in LocationSpecificAudioSource)
-                {
-                    audioSource.UnPause();
-                }
+            foreach (var audioSource in LocationSpecificAudioSource)
+            {
+                audioSource.Pause();
+            }
+        }
+
+        public void UnpauseAudio()
+        {
+            foreach (var sfxSource in sfxSources)
+            {
+                sfxSource.UnPause();
+            }
+
+            foreach (var audioSource in LocationSpecificAudioSource)
+            {
+                audioSource.UnPause();
             }
         }
 
