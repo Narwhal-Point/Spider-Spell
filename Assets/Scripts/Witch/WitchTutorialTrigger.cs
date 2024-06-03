@@ -1,4 +1,5 @@
 using System;
+using Audio;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Witch
         {
             if (!_active)
             {
-                audio.PlaySFX(audio.WitchAppearTutorial);
+                audio.PlaySFX(audio.witchAppearTutorial);
                 _active = true;
                 witch.SetActive(true);
                 

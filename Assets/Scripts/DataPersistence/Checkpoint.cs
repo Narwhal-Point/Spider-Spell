@@ -1,3 +1,4 @@
+using Audio;
 using Interaction;
 using TMPro;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace DataPersistence
         {
             DataPersistenceManager.instance.SaveGame();
             starsVFX.Play();
-            audioManager.PlaySFX(audioManager.checkpointSFX);
+            audioManager.PlaySFX(audioManager.checkpointSfx);
         }
 
         public Transform GetTransform()
