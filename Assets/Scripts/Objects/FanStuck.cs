@@ -18,6 +18,12 @@ public class FanStuck : MonoBehaviour
         z = 0.0f;
     }
 
+    private void OnEnable()
+    {
+        Material newMaterial = Resources.Load<Material>("Material/fan_blade_texture_stuck");
+        gameObject.GetComponent<MeshRenderer>().material = newMaterial;
+    }
+
     // Update is called once per frame
     void Update()
     {
