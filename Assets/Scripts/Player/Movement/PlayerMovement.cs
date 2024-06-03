@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
