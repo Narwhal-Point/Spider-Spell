@@ -469,11 +469,11 @@ namespace Player.Movement
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 isDirection = true;
-                alterCam.FollowPlayer();
+                //alterCam.FollowPlayer();
                 angle = facingAngles.Item1;
                 hit = wallHit;
                 TransformUponAngle(hit, angle);
-                alterCam.DelayMethod(alterCam.FreeLook, 0.2f);
+                //alterCam.DelayMethod(alterCam.FreeLook, 0.2f);
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
