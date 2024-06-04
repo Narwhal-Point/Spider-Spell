@@ -9,16 +9,16 @@ public class FreeLookCamera : MonoBehaviour
     public float lookSpeed = 3.0f;
     public Vector3 offset = new Vector3(0, 5, -10);
     public float lerpSpeed = 5.0f;
-    public float rotationLerpSpeed = 5.0f; 
+    public float rotationLerpSpeed = 5.0f;
     public float collisionRadius = 0.5f;
-    public LayerMask collisionLayers; 
+    public LayerMask collisionLayers;
 
     private float yaw = 0.0f;
     private float pitch = 0.0f;
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 lookAtTarget;
-   
+
     private Vector3 sphereCastStart;
     private Vector3 sphereCastEnd;
 
@@ -35,7 +35,7 @@ public class FreeLookCamera : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         if (target == null) return;
 
@@ -64,7 +64,7 @@ public class FreeLookCamera : MonoBehaviour
         //Snooth lookAt
         Vector3 targetPosition = target.position + Vector3.up * offset.y;
         lookAtTarget = Vector3.Lerp(lookAtTarget, targetPosition, lerpSpeed * Time.deltaTime);
-       
+
         Quaternion desiredRotation = Quaternion.LookRotation(lookAtTarget - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, rotationLerpSpeed * Time.deltaTime);
     }
