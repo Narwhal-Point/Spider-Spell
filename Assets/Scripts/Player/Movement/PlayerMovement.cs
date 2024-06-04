@@ -213,7 +213,7 @@ namespace Player.Movement
             Rb.rotation = data.rotation;
             jumpCount = data.jumpCount;
             
-            camScript.RecenterCam();
+            //camScript.RecenterCam();
         }
 
         public void SaveData(GameData data)
