@@ -18,8 +18,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
     //private CinemachineFreeLook freeLookCam;
 
     //private CinemachineBrain camBrain;
-
-    private SmoothCamera smoothMovementScript;
+    private CameraPositionFixer cameraPositionFixer;
 
     private Transform cachedTransform;
     private Vector3 originalPosition;
@@ -33,7 +32,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
     {
 
         this.freelookCamera = GetComponent<FreeLookCamera>();
-        this.smoothMovementScript = GetComponent<SmoothCamera>();
+        this.cameraPositionFixer = GetComponent<CameraPositionFixer>();
         cachedTransform = transform;
     }
 
@@ -42,7 +41,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
         if (action != null)
         {
             StartCoroutine(InvokeActionWithDelay(action, delay));
-        }        
+        }
     }
 
     private IEnumerator InvokeActionWithDelay(Action action, float delay)
@@ -62,7 +61,7 @@ public class CameraComponentsAdjuster : MonoBehaviour
     {
         DeactivateFreeLook();
         OriginalPositionRotation();
-        ActivateFollowCam();       
+        ActivateFollowCam();
     }
 
     private void ActivateFreeLook()
@@ -79,11 +78,12 @@ public class CameraComponentsAdjuster : MonoBehaviour
 
     private void ActivateFollowCam()
     {
-        smoothMovementScript.enabled = true;
+        cameraPositionFixer.enabled = true;
+        cameraPositionFixer.ResetCameraPosition();
     }
-    private void DeactivateFollowCam() 
+    private void DeactivateFollowCam()
     {
-        smoothMovementScript.enabled = false;
+        cameraPositionFixer.enabled = false;
     }
     private void CashedPositionRotation()
     {

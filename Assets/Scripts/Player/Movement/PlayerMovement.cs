@@ -205,6 +205,22 @@ namespace Player.Movement
 
         #endregion
 
+        #region Cameras
+        public GameObject camera;
+        private FreeLookCamera freeLookCamera;
+        private CameraComponentsAdjuster alterCam;
+        public GameObject[] cameras;
+        public GameObject usedCam;
+        public Transform mainCamera;
+        private bool isDirection;
+        enum CamerasEnum
+        {
+            followCamera,
+            mainCamera,
+            freelookCamera
+        }
+        #endregion
+
         #region Loading and Saving
 
         public void LoadData(GameData data)
@@ -245,6 +261,9 @@ namespace Player.Movement
             audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
+            //initiate Camera componenets 
+            alterCam = camera.GetComponent<CameraComponentsAdjuster>();
+            freeLookCamera = GetComponent<FreeLookCamera>();
         }
 
         private void Start()
@@ -254,6 +273,9 @@ namespace Player.Movement
 
             _manager.Initialize(IdleState);
             GetComponent<TrailRenderer>().enabled = false;
+
+            //Start with freeLookCamera 
+            alterCam.FreeLook();
         }
 
         private void Update()
