@@ -18,6 +18,8 @@ namespace UI
         [FormerlySerializedAs("_deviceType")] [SerializeField]
         private DeviceType deviceType;
 
+        [SerializeField] private string startupString = "Press [Sprint] to do nothing";
+
         private PlayerInput _playerInput;
         private TMP_Text _textBox;
 
@@ -30,7 +32,7 @@ namespace UI
 
         private void Start()
         {
-            SetText("Press [Sprint] to do nothing");
+            SetText(startupString);
         }
 
         [ContextMenu("Set Text without action")]

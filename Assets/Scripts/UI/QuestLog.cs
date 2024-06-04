@@ -8,10 +8,12 @@ namespace UI
     {
         // input
         [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private string closingMessage = "Press [QuestLog] to Close";
         private InputAction _logAction;
 
         // image gameobject to enable / disable
         private GameObject _logImage;
+        private SetTextToTextBox _closeText;
 
         // current control scheme and device
         private string _currentControlScheme;
@@ -26,6 +28,7 @@ namespace UI
             // get the image and disable it
             _logImage = transform.GetChild(0).gameObject;
             _logImage.SetActive(false);
+            _closeText = transform.GetChild(0).GetChild(0).GetComponent<SetTextToTextBox>();
         }
 
         private void Update()
@@ -38,6 +41,7 @@ namespace UI
                 }
                 else
                 {
+                    _closeText.SetText(closingMessage);
                     OpenQuestLog();
                 }
             }
