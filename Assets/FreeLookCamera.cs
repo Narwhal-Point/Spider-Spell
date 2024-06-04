@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FreeLookCamera : MonoBehaviour
 {
@@ -21,13 +22,23 @@ public class FreeLookCamera : MonoBehaviour
 
     private Vector3 sphereCastStart;
     private Vector3 sphereCastEnd;
+    private PlayerInput _playerInput;
+    InputAction lookInput;
+
+    private void Awake()
+    {
+        //Input Manager
+        //_playerInput = GetComponent<PlayerInput>();
+        //lookInput = _playerInput.actions["Look"];
+    }
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Vector3 angles = transform.eulerAngles;
+
         yaw = angles.y;
-        pitch = angles.x;
+        pitch = angles.x;       
 
         if (target != null)
         {
@@ -38,6 +49,11 @@ public class FreeLookCamera : MonoBehaviour
     void FixedUpdate()
     {
         if (target == null) return;
+
+        //Vector2 lookValue = lookInput.ReadValue<Vector2>();
+
+        /* yaw += lookSpeed * lookValue.x;
+         pitch -= lookSpeed * lookValue.y;*/
 
         yaw += lookSpeed * Input.GetAxis("Mouse X");
         pitch -= lookSpeed * Input.GetAxis("Mouse Y");
