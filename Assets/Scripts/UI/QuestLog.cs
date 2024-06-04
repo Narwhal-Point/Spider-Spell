@@ -1,20 +1,15 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UnityEngine.InputSystem.UI;
-using UnityEngine.Serialization;
+
 
 namespace UI
 {
-    public class QuestLog : MonoBehaviour
+    public class QuestLog : MonoBehaviour, IDataPersistence
     {
         // input
         [SerializeField] private PlayerInput playerInput;
         private InputAction _logAction;
-        
+
         // image gameobject to enable / disable
         private GameObject _logImage;
 
@@ -22,26 +17,22 @@ namespace UI
         private string _currentControlScheme;
         private InputDevice _currentInputDevice;
 
-        private void Start()
+
+        private void Awake()
         {
+            // these actions need to be called in awake, because if they're called in start they don't get assigned.
+            // assign the input action
+            _logAction = playerInput.actions["QuestLog"];
             // get the image and disable it
             _logImage = transform.GetChild(0).gameObject;
             _logImage.SetActive(false);
-            
-            // assign the input action
-            _logAction = playerInput.actions["QuestLog"];
-            
-            // disable the gameobject.
-            // if you need to get a component from this gameobject
-            // you should do this in 'Awake'
-            gameObject.SetActive(false);
         }
 
         private void Update()
         {
             if (InputManager.instance.QuestLogInput)
             {
-                if (_logImage.activeSelf) 
+                if (_logImage.activeSelf)
                 {
                     CloseQuestLog();
                 }
@@ -77,6 +68,17 @@ namespace UI
             _logImage.SetActive(false);
             // resume the game
             Time.timeScale = 1f;
+        }
+
+        // Make the journal collected value persistant
+        public void LoadData(GameData data)
+        {
+            gameObject.SetActive(data.journalCollected);
+        }
+
+        public void SaveData(GameData data)
+        {
+            data.journalCollected = gameObject.activeSelf;
         }
     }
 }

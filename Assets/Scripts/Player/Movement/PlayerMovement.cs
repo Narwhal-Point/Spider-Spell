@@ -232,7 +232,6 @@ namespace Player.Movement
         {
             Rb.position = data.position;
             Rb.rotation = data.rotation;
-            jumpCount = data.jumpCount;
             
             //camScript.RecenterCam();
         }
@@ -241,7 +240,6 @@ namespace Player.Movement
         {
             data.position = Rb.position;
             data.rotation = Rb.rotation;
-            data.jumpCount = jumpCount;
         }
 
         #endregion
