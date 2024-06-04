@@ -24,11 +24,10 @@ namespace Player.Movement.State_Machine
             // if (Mathf.Abs(player.DesiredMoveSpeed - player.lastDesiredMoveSpeed) > 4f && player.MoveSpeed != 0)
             //     player.ChangeMomentum(2f);
             // else
-                player.MoveSpeed = player.DesiredMoveSpeed;
+            player.MoveSpeed = player.DesiredMoveSpeed;
             
 
             player.Rb.drag = player.groundDrag;
-            
         }
 
         public override void UpdateState()
@@ -54,9 +53,18 @@ namespace Player.Movement.State_Machine
 
         private void MovePlayer()
         {
-            player.MoveDirection = player.CalculateMoveDirection(player.facingAngles.Item1, player.groundHit);
+            Vector3 forward = player.movementForward.normalized;
+            Vector3 right = player.movementRight.normalized;
 
-            player.Rb.AddForce(-player.playerObj.up * 10f, ForceMode.Force);
+            Vector3 forwardRelativeInput = player.InputDirection.y * forward;
+            Vector3 rightRelativeInput = player.InputDirection.x * right;
+
+            Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
+            planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, player.groundHit.normal).normalized;
+            Vector3 movementWithSpeed = planeRelativeMovement * player.MoveSpeed * Time.deltaTime;
+            player.MoveDirection = movementWithSpeed;
+
+            player.Rb.AddForce(-player.transform.up * 10f, ForceMode.Force);
             player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);
         }
 

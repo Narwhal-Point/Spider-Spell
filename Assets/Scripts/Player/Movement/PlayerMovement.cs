@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
+using Audio;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -208,6 +205,27 @@ namespace Player.Movement
 
         #endregion
 
+        #region Cameras
+        public GameObject camera;
+        private FreeLookCamera freeLookCamera;
+        private CameraComponentsAdjuster alterCam;
+        public GameObject[] cameras;
+        public GameObject usedCam;
+        public Transform mainCamera;
+        private bool isDirection;
+        enum CamerasEnum
+        {
+            followCamera,
+            mainCamera,
+            freelookCamera
+        }
+        #endregion
+
+        #region Movement direction variables
+        public Vector3 movementForward;
+        public Vector3 movementRight;
+        #endregion
+
         #region Loading and Saving
 
         public void LoadData(GameData data)
@@ -215,7 +233,7 @@ namespace Player.Movement
             Rb.position = data.position;
             Rb.rotation = data.rotation;
             
-            camScript.RecenterCam();
+            //camScript.RecenterCam();
         }
 
         public void SaveData(GameData data)
@@ -246,6 +264,9 @@ namespace Player.Movement
             audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
+            //initiate Camera componenets 
+            alterCam = camera.GetComponent<CameraComponentsAdjuster>();
+            freeLookCamera = GetComponent<FreeLookCamera>();
         }
 
         private void Start()
@@ -255,6 +276,9 @@ namespace Player.Movement
 
             _manager.Initialize(IdleState);
             GetComponent<TrailRenderer>().enabled = false;
+
+            //Start with freeLookCamera 
+            alterCam.FreeLook();
         }
 
         private void Update()
@@ -299,6 +323,7 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
+            CalculatePlayerVMovement();
             HandleRotation();
         }
 
@@ -309,6 +334,38 @@ namespace Player.Movement
             Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
+        }
+
+        private void CalculatePlayerVMovement()
+        {
+            float rayAngle = Vector3.Angle(movementForward, movementRight);
+            Debug.Log(rayAngle);
+            //Debug.Log(cam.active);
+            //Debug.Log(cam.active + cam.name);
+            Vector3 rightOrigin = cam.transform.position + cam.transform.right * 50f;
+            Vector3 upOrigin = cam.transform.position + cam.transform.up * 50f;
+            Plane fPlane = new Plane(transform.up, transform.position);
+            Plane rPlane = new Plane(transform.up, transform.position);
+
+            Ray rRay = new Ray(rightOrigin, cam.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, cam.transform.forward * 100);
+
+            Vector3 cam2Player = transform.position - cam.transform.position;
+            float upOrDown = Vector3.Dot(cam2Player, transform.up);
+
+            if (fPlane.Raycast(uRay, out float uEnter))
+            {
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+            }
+
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
+                movementRight = Vector3.Cross(transform.up, movementForward);
+                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }
         }
 
         void OnDrawGizmos()
@@ -394,6 +451,9 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
+            float angle = 0;
+            RaycastHit hit = new RaycastHit();
+
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
@@ -406,78 +466,103 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                isDirection = true;
+                //alterCam.FollowPlayer();
+                angle = facingAngles.Item1;
+                hit = wallHit;
+                TransformUponAngle(hit, angle);
+                //alterCam.DelayMethod(alterCam.FreeLook, 0.2f);
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi2");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, lowWallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                angle = facingAngles.Item1;
+                hit = lowWallHit;
+                TransformUponAngle(hit, angle);
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
-                // rotate towards the new surface
-                // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                // Quaternion surfaceAlignment =
-                //     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
-                // Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                // orientation.rotation = combinedRotation;
-                // transform.rotation = orientation.rotation;
-                Quaternion oldOrientation = transform.rotation;
-                Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
-                Quaternion newOrientation = rotation * oldOrientation;
-
-                Debug.Log("old forward: " + transform.forward);
-                orientation.rotation = newOrientation;
-                transform.rotation = newOrientation;
-
-                // move the player to the new surface
-                Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-
-                transform.position = newPlayerPos + offset;
-                Rb.velocity = Vector3.zero;
-                Debug.Log("new forward: " + transform.forward);
+                EdgeTransformation();
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-
-                // slerp the rotation to the turning smooth
-                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                    Time.deltaTime * rotationSpeed);
+                if (groundHit.collider.CompareTag("smoothObject"))
+                {
+                    angle = facingAngles.Item1;
+                    hit = groundHit;
+                    TransformUponAngle(hit, angle);
+                    // smooth turn
+                    transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                        Time.deltaTime * rotationSpeed);
+                }
+                else
+                {
+                    TurnPlayer();
+                }
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, headHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                angle = facingAngles.Item1;
+                hit = headHit;
+                TransformUponAngle(hit, angle);
             }
             else if (InputDirection != Vector2.zero)
             {
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
+        }
+        private void TransformUponAngle(RaycastHit hit, float angle)
+        {
+            Quaternion cameraRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceAlignment =
+                Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+            orientation.rotation = combinedRotation;
+            transform.rotation = orientation.rotation;
+        }
+        private void EdgeTransformation()
+        {
+            Quaternion oldOrientation = transform.rotation;
+            Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
+            Quaternion newOrientation = rotation * oldOrientation;
+
+            orientation.rotation = newOrientation;
+            transform.rotation = newOrientation;
+
+            Vector3 newPlayerPos = angleHit.point;
+            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
+
+            transform.position = newPlayerPos + offset;
+            Rb.velocity = Vector3.zero;
+        }
+
+        private void TurnPlayer()
+        {
+            Vector3 forward = movementForward.normalized;
+            Vector3 right = movementRight.normalized;
+
+            Vector3 forwardRelativeInput = InputDirection.y * forward;
+            Vector3 rightRelativeInput = InputDirection.x * right;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
+
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
+
+            // Rotate towards the combined movement direction
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
