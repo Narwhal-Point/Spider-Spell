@@ -28,8 +28,8 @@ public class FreeLookCamera : MonoBehaviour
     private void Awake()
     {
         //Input Manager
-        //_playerInput = GetComponent<PlayerInput>();
-        //lookInput = _playerInput.actions["Look"];
+        _playerInput = GameObject.Find("Player").GetComponent<PlayerInput>();
+        lookInput = _playerInput.actions["Look"];
     }
 
     void Start()
@@ -50,13 +50,13 @@ public class FreeLookCamera : MonoBehaviour
     {
         if (target == null) return;
 
-        //Vector2 lookValue = lookInput.ReadValue<Vector2>();
+        Vector2 lookValue = lookInput.ReadValue<Vector2>();
 
-        /* yaw += lookSpeed * lookValue.x;
-         pitch -= lookSpeed * lookValue.y;*/
+         yaw += lookSpeed * lookValue.x;
+         pitch -= lookSpeed * lookValue.y;
 
-        yaw += lookSpeed * Input.GetAxis("Mouse X");
-        pitch -= lookSpeed * Input.GetAxis("Mouse Y");
+        // yaw += lookSpeed * Input.GetAxis("Mouse X");
+        // pitch -= lookSpeed * Input.GetAxis("Mouse Y");
         pitch = Mathf.Clamp(pitch, -35f, 60f);
 
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0.0f);
