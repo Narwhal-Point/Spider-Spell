@@ -46,14 +46,14 @@ public class FreeLookCamera : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (target == null) return;
 
         Vector2 lookValue = lookInput.ReadValue<Vector2>();
 
-         yaw += lookSpeed * lookValue.x;
-         pitch -= lookSpeed * lookValue.y;
+         yaw += lookSpeed * lookValue.x * Time.deltaTime;
+         pitch -= lookSpeed * lookValue.y * Time.deltaTime;
 
         // yaw += lookSpeed * Input.GetAxis("Mouse X");
         // pitch -= lookSpeed * Input.GetAxis("Mouse Y");
