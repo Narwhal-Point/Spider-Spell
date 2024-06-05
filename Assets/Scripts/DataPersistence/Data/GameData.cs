@@ -15,6 +15,8 @@ public class GameData
 
     public bool mainRoomCutscenePlayed;
 
+    public bool exploreTextShown;
+
     // public int jumpCount;
 
     public bool journalCollected;
