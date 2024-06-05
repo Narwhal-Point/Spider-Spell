@@ -2,6 +2,7 @@ using Player.Movement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Wind : MonoBehaviour
 {
@@ -17,8 +18,10 @@ public class Wind : MonoBehaviour
             PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
             PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
             Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
+            PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
             if (otherRb != null)
             {
+                playerInput.enabled = false;
                 swingHandler.lr.positionCount = 0;
                 swingHandler.DestroyJoint();
                 otherRb.velocity = Vector3.zero;
@@ -48,8 +51,10 @@ public class Wind : MonoBehaviour
     {
         PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
         Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
+        PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
         if (otherRb != null)
         {
+            playerInput.enabled = true;
             movement.enabled = true;
             otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
         }
