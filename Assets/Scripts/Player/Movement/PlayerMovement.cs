@@ -1,5 +1,6 @@
 using Audio;
 using Player.Movement.State_Machine;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -212,7 +213,6 @@ namespace Player.Movement
         public GameObject[] cameras;
         public GameObject usedCam;
         public Transform mainCamera;
-        private bool isDirection;
         enum CamerasEnum
         {
             followCamera,
@@ -242,6 +242,10 @@ namespace Player.Movement
             data.rotation = Rb.rotation;
         }
 
+        #endregion
+
+        #region Delay Player Direction On Transitioning
+        bool IsTransitioned = false;
         #endregion
 
         private void Awake()
@@ -317,7 +321,7 @@ namespace Player.Movement
                 {
                     canIncrementJumpCount = true;
                 }
-            }
+            }            
         }
 
         private void FixedUpdate()
@@ -334,6 +338,22 @@ namespace Player.Movement
             Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
+        }
+        private void ResetCameraPositionBelowPlane()
+        {
+            // Calculate the distance between the camera and the plane
+            Vector3 cameraToPlane = transform.position - cam.transform.position;
+            float distanceToPlane = Vector3.Dot(cameraToPlane, transform.up);
+
+            // If the camera is below the plane
+            if (distanceToPlane > 0)
+            {
+                // Calculate the new camera position
+                Vector3 newCameraPosition = cam.transform.position + transform.up * distanceToPlane;
+
+                // Set the new camera position
+                cam.transform.position = newCameraPosition;
+            }
         }
 
         private void CalculatePlayerVMovement()
@@ -366,6 +386,14 @@ namespace Player.Movement
                 movementRight = Vector3.Cross(transform.up, movementForward);
                 Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
+
+            /*// Check if the camera is below the plane
+            bool isCameraBelow = !fPlane.GetSide(cam.transform.position);
+
+            if (isCameraBelow)
+            {
+                ResetCameraPositionBelowPlane();
+            }*/
         }
 
         void OnDrawGizmos()
@@ -449,6 +477,16 @@ namespace Player.Movement
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
         }
 
+        private void IsTransitionedChanger()
+        {
+            if (IsTransitioned)
+            {
+                IsTransitioned = false;
+                return;
+            }
+            IsTransitioned = true;
+        }
+
         private void HandleRotation()
         {
             float angle = 0;
@@ -466,12 +504,9 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                isDirection = true;
-                //alterCam.FollowPlayer();
                 angle = facingAngles.Item1;
                 hit = wallHit;
                 TransformUponAngle(hit, angle);
-                //alterCam.DelayMethod(alterCam.FreeLook, 0.2f);
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
@@ -488,7 +523,7 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                if (groundHit.collider && groundHit.collider.CompareTag("smoothObject"))
+                if (groundHit.collider.CompareTag("smoothObject"))
                 {
                     angle = facingAngles.Item1;
                     hit = groundHit;
