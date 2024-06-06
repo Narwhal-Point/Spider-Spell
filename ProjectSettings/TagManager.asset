@@ -9,6 +9,7 @@ TagManager:
   - MovingObject
   - DeathPuddle
   - smoothObject
+  - Fan
   layers:
   - Default
   - TransparentFX
