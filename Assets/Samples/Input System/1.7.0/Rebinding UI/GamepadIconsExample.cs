@@ -14,7 +14,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
     public class GamepadIconsExample : MonoBehaviour
     {
         public GamepadIcons xbox;
-        public GamepadIcons ps4;
+        public GamepadIcons dualsense;
+        public GamepadIcons switch_;
 
         protected void OnEnable()
         {
@@ -34,7 +35,9 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             var icon = default(Sprite);
             if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "DualShockGamepad"))
-                icon = ps4.GetSprite(controlPath);
+                icon = dualsense.GetSprite(controlPath);
+            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "SwitchProControllerHID"))
+                icon = switch_.GetSprite(controlPath);
             else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Gamepad"))
                 icon = xbox.GetSprite(controlPath);
 
