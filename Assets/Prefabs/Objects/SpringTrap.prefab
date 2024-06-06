@@ -1029,9 +1029,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxRotationAngle: 45
   rotationSpeedUp: 300
-  rotationSpeedDown: 25
-  waitDurationTop: 1
-  waitDurationBottom: 2
+  rotationSpeedDown: 50
+  waitDurationTop: 0.5
+  waitDurationBottom: 0.5
   springStrength: 30
   boingSFX: {fileID: 6131169241535207376}
   meshCollider: {fileID: 1012079814031786658}
