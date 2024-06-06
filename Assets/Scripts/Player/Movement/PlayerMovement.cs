@@ -523,7 +523,7 @@ namespace Player.Movement
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                if (groundHit.collider.CompareTag("smoothObject"))
+                if (groundHit.collider.CompareTag("smoothObject") && _manager.CurrentState != SwingingState)
                 {
                     angle = facingAngles.Item1;
                     hit = groundHit;
