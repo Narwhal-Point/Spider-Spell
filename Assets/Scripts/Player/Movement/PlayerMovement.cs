@@ -338,8 +338,18 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            CalculatePlayerVMovement();
+            if (!IsTransitioned)
+            {
+                CalculatePlayerVMovement();
+            }
+            
             HandleRotation();
+        }
+
+        private void SetPlayerDirection()
+        {
+            movementForward = transform.forward;
+            movementRight = Vector3.Cross(transform.up, movementForward);
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -399,15 +409,7 @@ namespace Player.Movement
                 movementRight = Vector3.Cross(transform.up, movementForward);
                 Debug.DrawLine(transform.position,
                     transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-            }
-
-            /*// Check if the camera is below the plane
-            bool isCameraBelow = !fPlane.GetSide(cam.transform.position);
-
-            if (isCameraBelow)
-            {
-                ResetCameraPositionBelowPlane();
-            }*/
+            }           
         }
 
         void OnDrawGizmos()
@@ -518,26 +520,33 @@ namespace Player.Movement
             facingAngles = GetFacingAngle(InputDirection);
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
-            {
+            {                
                 angle = facingAngles.Item1;
                 hit = wallHit;
                 TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
                 TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 EdgeTransformation();
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
+                IsTransitioned = false;
                 if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
                 {
                     angle = facingAngles.Item1;
@@ -558,9 +567,13 @@ namespace Player.Movement
                 angle = facingAngles.Item1;
                 hit = headHit;
                 TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (InputDirection != Vector2.zero)
             {
+                IsTransitioned = true;
+                SetPlayerDirection();
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
@@ -589,6 +602,7 @@ namespace Player.Movement
             Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
 
             transform.position = newPlayerPos + offset;
+
             Rb.velocity = Vector3.zero;
         }
 
