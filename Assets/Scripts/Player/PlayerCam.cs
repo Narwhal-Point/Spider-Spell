@@ -1,4 +1,3 @@
-using System.Collections;
 using Cinemachine;
 using Player.Movement;
 using UnityEngine;
@@ -32,27 +31,6 @@ namespace Player
             // Hide the cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-
-            
-        }
-
-        // hacky way of aligning the camera with the player on startup.
-        // should probably be hidden behind a quick loading animation or something
-        // TODO: Loading animation screen
-        IEnumerator disableCamRecenter()
-        {
-            yield return new WaitForSeconds(1);
-            
-            cameras[0].m_RecenterToTargetHeading.m_enabled = false;
-        }
-
-        public void RecenterCam()
-        {
-            cameras[0].m_RecenterToTargetHeading.m_RecenteringTime = 0;
-            cameras[0].m_RecenterToTargetHeading.m_WaitTime = 0;
-            cameras[0].m_RecenterToTargetHeading.m_enabled = true;
-            
-            StartCoroutine(disableCamRecenter());
         }
 
         // Update is called once per frame

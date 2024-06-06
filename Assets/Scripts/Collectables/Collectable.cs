@@ -16,7 +16,6 @@ namespace Collectables
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("hallo wereld");
             CollectableManager.instance.AddToInventory(id, gameObject);
 
             GetComponent<MeshRenderer>().enabled = false;
