@@ -208,7 +208,7 @@ namespace Player.Movement
         #region Cameras
         public GameObject camera;
         private FreeLookCamera freeLookCamera;
-        private CameraComponentsAdjuster alterCam;
+        // private CameraComponentsAdjuster alterCam;
         public GameObject[] cameras;
         public GameObject usedCam;
         public Transform mainCamera;
@@ -265,7 +265,7 @@ namespace Player.Movement
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
             //initiate Camera componenets 
-            alterCam = camera.GetComponent<CameraComponentsAdjuster>();
+            // alterCam = camera.GetComponent<CameraComponentsAdjuster>();
             freeLookCamera = GetComponent<FreeLookCamera>();
         }
 
@@ -278,7 +278,7 @@ namespace Player.Movement
             GetComponent<TrailRenderer>().enabled = false;
 
             //Start with freeLookCamera 
-            alterCam.FreeLook();
+            // alterCam.FreeLook();
         }
 
         private void Update()

@@ -1,3 +1,4 @@
+using System;
 using Audio;
 using UnityEngine;
 
@@ -25,6 +26,11 @@ namespace Objects
             _audioSource = GetComponent<AudioSource>();
         
             AudioManager.LocationSpecificAudioSource.Add(_audioSource);
+        }
+
+        private void OnDestroy()
+        {
+            AudioManager.LocationSpecificAudioSource.Remove(_audioSource);
         }
 
         // Update is called once per frame
