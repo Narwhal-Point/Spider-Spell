@@ -30,16 +30,37 @@ namespace UI
             _textBox = GetComponent<TMP_Text>();
         }
 
+        private void InitComponents()
+        {
+            // if the components are empty for some reason. Add them
+            if (_playerInput == null)
+            {
+                _playerInput = GameObject.Find("Player").GetComponent<PlayerInput>();
+            }
+            if(_textBox == null)
+                _textBox = GetComponent<TMP_Text>();
+        }
+
         private void Start()
         {
+            InitComponents();
+            
             SetText(startupString);
         }
 
         [ContextMenu("Set Text without action")]
         public void SetText(string message)
         {
+            // probably inefficient as fuck, but the quest log won't work if this doesn't get called here :(
+            InitComponents();
+            
             string currentControlScheme = _playerInput.currentControlScheme;
-            Debug.LogWarning($"Current Control Scheme: {currentControlScheme}");
+            if (currentControlScheme == "")
+            {
+                Debug.LogWarning("Empty String");
+                return;
+            }
+
             if (currentControlScheme == "Gamepad")
             {
                 deviceType = DeviceType.Gamepad;
@@ -70,7 +91,7 @@ namespace UI
                 if (match.Success)
                 {
                     string actionName = match.Groups[1].Value;
-                    
+
                     try
                     {
                         _playerInput.actions.FindAction(actionName, true);
@@ -80,7 +101,7 @@ namespace UI
                         Debug.LogWarning($"action {actionName} does not exist!");
                         continue;
                     }
-                    
+
                     InputBinding binding = _playerInput.actions.FindAction(actionName).bindings[(int)deviceType];
                     TMP_SpriteAsset spriteAsset = buttonassets.spriteAssets[(int)deviceType];
 
@@ -88,16 +109,19 @@ namespace UI
                     {
                         // add all bindings that are part of this binding to the list
                         List<InputBinding> compositeBindings = new List<InputBinding>();
-                        compositeBindings.AddRange(_playerInput.actions.FindAction(actionName).bindings.Where(compositeBinding =>
-                            compositeBinding.isPartOfComposite));
-                        
+                        compositeBindings.AddRange(_playerInput.actions.FindAction(actionName).bindings.Where(
+                            compositeBinding =>
+                                compositeBinding.isPartOfComposite));
+
                         // set all the icons
                         string replacement = "";
                         foreach (var compositeBinding in compositeBindings)
                         {
                             replacement +=
-                                CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, compositeBinding, spriteAsset);
+                                CompleteTextWithButtonPromptSprite.ReadAndReplaceBinding(match.Value, compositeBinding,
+                                    spriteAsset);
                         }
+
                         message = message.Replace(match.Value, replacement);
                     }
                     else
