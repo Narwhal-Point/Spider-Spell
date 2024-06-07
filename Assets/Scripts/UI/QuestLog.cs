@@ -45,7 +45,6 @@ namespace UI
                 }
                 else
                 {
-                    _closeText.SetText(closingMessage);
                     OpenQuestLog();
                 }
             }
@@ -53,6 +52,8 @@ namespace UI
 
         public void OpenQuestLog()
         {
+            _closeText.SetText(closingMessage);
+            
             // needs to play when timescale is 1.
             _audioManager.PlaySFX(_audioManager.paperSfx);
             

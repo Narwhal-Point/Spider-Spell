@@ -1,5 +1,6 @@
 using Audio;
 using Player.Movement.State_Machine;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -70,7 +71,7 @@ namespace Player.Movement
         public AudioManager audioManager;
         // public AudioSource midAirSound;
         // public bool jumpAnimation;
-        
+
 
         public TMP_Text text;
         public TMP_Text speed_text;
@@ -91,11 +92,11 @@ namespace Player.Movement
         public bool IsJumping { get; private set; } = false;
 
         public bool IsSnapping { get; set; } = false;
-        
+
         public bool MenuOpenCloseInput { get; private set; }
-        
+
         private InputAction _menuOpenCloseAction;
-        
+
         private PlayerInput _playerInput;
 
         // enum to display active state on screen
@@ -171,7 +172,7 @@ namespace Player.Movement
         [Tooltip("value Rigidbody velocity is divided by.")]
         [SerializeField]
         private float puddleSpeedReduction = 2f;
-        
+
         private float OriginalDesiredMoveSpeed;
         private bool _enteredPuddle;
 
@@ -184,6 +185,7 @@ namespace Player.Movement
                     _enteredPuddle = true;
                     onPlayerInPuddle?.Invoke();
                 }
+
                 Slowdown(puddleSpeedReduction);
             }
             else if (groundHit.collider && !groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle == true &&
@@ -206,24 +208,30 @@ namespace Player.Movement
         #endregion
 
         #region Cameras
+
         public GameObject camera;
+
         private FreeLookCamera freeLookCamera;
-        private CameraComponentsAdjuster alterCam;
+
+        // private CameraComponentsAdjuster alterCam;
         public GameObject[] cameras;
         public GameObject usedCam;
         public Transform mainCamera;
-        private bool isDirection;
+
         enum CamerasEnum
         {
             followCamera,
             mainCamera,
             freelookCamera
         }
+
         #endregion
 
         #region Movement direction variables
+
         public Vector3 movementForward;
         public Vector3 movementRight;
+
         #endregion
 
         #region Loading and Saving
@@ -232,7 +240,7 @@ namespace Player.Movement
         {
             Rb.position = data.position;
             Rb.rotation = data.rotation;
-            
+
             //camScript.RecenterCam();
         }
 
@@ -241,6 +249,12 @@ namespace Player.Movement
             data.position = Rb.position;
             data.rotation = Rb.rotation;
         }
+
+        #endregion
+
+        #region Delay Player Direction On Transitioning
+
+        bool IsTransitioned = false;
 
         #endregion
 
@@ -255,7 +269,8 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(), GetComponent<TrailRenderer>());
+            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(),
+                GetComponent<TrailRenderer>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
@@ -265,7 +280,7 @@ namespace Player.Movement
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
             //initiate Camera componenets 
-            alterCam = camera.GetComponent<CameraComponentsAdjuster>();
+            // alterCam = camera.GetComponent<CameraComponentsAdjuster>();
             freeLookCamera = GetComponent<FreeLookCamera>();
         }
 
@@ -284,12 +299,12 @@ namespace Player.Movement
         private void Update()
         {
             PuddleEffects();
-            
+
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
-            if(Rb.IsSleeping())
+            if (Rb.IsSleeping())
                 Rb.WakeUp();
-            
+
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
@@ -323,8 +338,18 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            CalculatePlayerVMovement();
+            if (!IsTransitioned)
+            {
+                CalculatePlayerVMovement();
+            }
+            
             HandleRotation();
+        }
+
+        private void SetPlayerDirection()
+        {
+            movementForward = transform.forward;
+            movementRight = Vector3.Cross(transform.up, movementForward);
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -334,6 +359,23 @@ namespace Player.Movement
             Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
+        }
+
+        private void ResetCameraPositionBelowPlane()
+        {
+            // Calculate the distance between the camera and the plane
+            Vector3 cameraToPlane = transform.position - cam.transform.position;
+            float distanceToPlane = Vector3.Dot(cameraToPlane, transform.up);
+
+            // If the camera is below the plane
+            if (distanceToPlane > 0)
+            {
+                // Calculate the new camera position
+                Vector3 newCameraPosition = cam.transform.position + transform.up * distanceToPlane;
+
+                // Set the new camera position
+                cam.transform.position = newCameraPosition;
+            }
         }
 
         private void CalculatePlayerVMovement()
@@ -358,14 +400,16 @@ namespace Player.Movement
                 Vector3 fPoint = uRay.GetPoint(uEnter);
                 Debug.DrawLine(upOrigin, fPoint, Color.red);
                 movementForward = fPoint - transform.position;
-                Debug.DrawLine(transform.position, transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+                Debug.DrawLine(transform.position,
+                    transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
             }
 
             if (rPlane.Raycast(rRay, out float rEnter))
             {
                 movementRight = Vector3.Cross(transform.up, movementForward);
-                Debug.DrawLine(transform.position, transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-            }
+                Debug.DrawLine(transform.position,
+                    transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }           
         }
 
         void OnDrawGizmos()
@@ -449,6 +493,17 @@ namespace Player.Movement
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
         }
 
+        private void IsTransitionedChanger()
+        {
+            if (IsTransitioned)
+            {
+                IsTransitioned = false;
+                return;
+            }
+
+            IsTransitioned = true;
+        }
+
         private void HandleRotation()
         {
             float angle = 0;
@@ -465,30 +520,34 @@ namespace Player.Movement
             facingAngles = GetFacingAngle(InputDirection);
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
-            {
-                isDirection = true;
-                //alterCam.FollowPlayer();
+            {                
                 angle = facingAngles.Item1;
                 hit = wallHit;
                 TransformUponAngle(hit, angle);
-                //alterCam.DelayMethod(alterCam.FreeLook, 0.2f);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
                 TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 EdgeTransformation();
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                if (groundHit.collider.CompareTag("smoothObject"))
+                IsTransitioned = false;
+                if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
                 {
                     angle = facingAngles.Item1;
                     hit = groundHit;
@@ -497,6 +556,7 @@ namespace Player.Movement
                     transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
                         Time.deltaTime * rotationSpeed);
                 }
+
                 else
                 {
                     TurnPlayer();
@@ -507,13 +567,18 @@ namespace Player.Movement
                 angle = facingAngles.Item1;
                 hit = headHit;
                 TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (InputDirection != Vector2.zero)
             {
+                IsTransitioned = true;
+                SetPlayerDirection();
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
         }
+
         private void TransformUponAngle(RaycastHit hit, float angle)
         {
             Quaternion cameraRotation = Quaternion.Euler(0f, angle, 0f);
@@ -523,6 +588,7 @@ namespace Player.Movement
             orientation.rotation = combinedRotation;
             transform.rotation = orientation.rotation;
         }
+
         private void EdgeTransformation()
         {
             Quaternion oldOrientation = transform.rotation;
@@ -536,6 +602,7 @@ namespace Player.Movement
             Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
 
             transform.position = newPlayerPos + offset;
+
             Rb.velocity = Vector3.zero;
         }
 
@@ -562,7 +629,8 @@ namespace Player.Movement
             combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
 
             // Rotate towards the combined movement direction
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(combinedMovement, transform.up), 15f);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                Quaternion.LookRotation(combinedMovement, transform.up), 15f);
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)

@@ -39,6 +39,7 @@ namespace UI
         public void SetText(string message)
         {
             string currentControlScheme = _playerInput.currentControlScheme;
+            Debug.LogWarning($"Current Control Scheme: {currentControlScheme}");
             if (currentControlScheme == "Gamepad")
             {
                 deviceType = DeviceType.Gamepad;
