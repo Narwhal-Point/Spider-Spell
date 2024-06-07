@@ -339,7 +339,7 @@ namespace Player.Movement
         private void CalculatePlayerVMovement()
         {
             float rayAngle = Vector3.Angle(movementForward, movementRight);
-            Debug.Log(rayAngle);
+            // Debug.Log(rayAngle);
             //Debug.Log(cam.active);
             //Debug.Log(cam.active + cam.name);
             Vector3 rightOrigin = cam.transform.position + cam.transform.right * 50f;

@@ -17,8 +17,6 @@ public class SaveSlot : MonoBehaviour
     [SerializeField] private GameObject hasDataContent;
     
     [SerializeField] private TextMeshProUGUI percentageCompleteText;
-    
-    [SerializeField] private TextMeshProUGUI locationText;
 
     private Button saveSlotButton;
 
@@ -41,7 +39,6 @@ public class SaveSlot : MonoBehaviour
             hasDataContent.SetActive(true);
 
             percentageCompleteText.text = data.GetPercentageComplete() + "% COMPLETE";
-            locationText.text = "LOCATION TEXT: " + data.position;
         }
     }
 
