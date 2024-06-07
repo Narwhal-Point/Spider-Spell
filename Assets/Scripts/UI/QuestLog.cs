@@ -1,3 +1,4 @@
+using Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ namespace UI
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private string closingMessage = "Press [QuestLog] to Close";
         private InputAction _logAction;
+        private AudioManager _audioManager;
 
         // image gameobject to enable / disable
         private GameObject _logImage;
@@ -29,6 +31,8 @@ namespace UI
             _logImage = transform.GetChild(0).gameObject;
             _logImage.SetActive(false);
             _closeText = transform.GetChild(0).GetChild(0).GetComponent<SetTextToTextBox>();
+
+            _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         }
 
         private void Update()
@@ -49,6 +53,9 @@ namespace UI
 
         public void OpenQuestLog()
         {
+            // needs to play when timescale is 1.
+            _audioManager.PlaySFX(_audioManager.paperSfx);
+            
             // save the current input device before disabling player input
             _currentControlScheme = playerInput.currentControlScheme;
             _currentInputDevice = playerInput.devices[0];
@@ -72,6 +79,9 @@ namespace UI
             _logImage.SetActive(false);
             // resume the game
             Time.timeScale = 1f;
+            
+            // needs to play when timescale is 1.
+            _audioManager.PlaySFX(_audioManager.paperSfx);
         }
 
         // Make the journal collected value persistant
