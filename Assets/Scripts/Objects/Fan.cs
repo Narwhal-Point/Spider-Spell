@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Player.Movement;
-using static UnityEngine.InputManagerEntry;
 
 public class Fan : MonoBehaviour
 {
