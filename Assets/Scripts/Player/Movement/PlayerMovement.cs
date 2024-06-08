@@ -520,7 +520,7 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {                
-                angle = facingAngles.Item1;
+              /*  angle = facingAngles.Item1;
                 hit = wallHit;
                 if (hit.transform.up == -Vector3.up)
                 {
@@ -532,7 +532,7 @@ namespace Player.Movement
                     TransformUponAngle(hit, angle);
                 }                
                 IsTransitioned = true;
-                SetPlayerDirection();
+                SetPlayerDirection();*/
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
