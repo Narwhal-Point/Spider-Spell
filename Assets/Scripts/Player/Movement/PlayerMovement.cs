@@ -522,7 +522,15 @@ namespace Player.Movement
             {                
                 angle = facingAngles.Item1;
                 hit = wallHit;
-                TransformUponAngle(hit, angle);
+                if (hit.transform.up == -Vector3.up)
+                {
+                    angle = -facingAngles.Item1;
+                    TransformUponAngle(hit, angle);
+                }
+                else
+                {
+                    TransformUponAngle(hit, angle);
+                }                
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
@@ -575,6 +583,15 @@ namespace Player.Movement
                 SetPlayerDirection();
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
+            }
+        }
+
+        private void DirectionInverse()
+        {
+            if (transform.up == -Vector3.up)
+            {
+                movementForward = -transform.forward;
+                movementRight = Vector3.Cross(transform.up, -movementForward);
             }
         }
 
