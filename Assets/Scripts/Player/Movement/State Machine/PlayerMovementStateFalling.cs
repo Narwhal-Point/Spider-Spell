@@ -31,7 +31,7 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            Debug.Log(player.Rb.velocity.magnitude);
+            // Debug.Log(player.Rb.velocity.magnitude);
 
             Vector3 velocity = player.Rb.velocity;
             float dragCoefficient = 0.275f;
