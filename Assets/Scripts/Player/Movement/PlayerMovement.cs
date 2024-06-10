@@ -507,7 +507,7 @@ namespace Player.Movement
 
             facingAngles = GetFacingAngle(InputDirection);
 
-            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            if (WallInFront && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = wallHit;
@@ -524,7 +524,7 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
-            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            else if (WallInFrontLow &&  Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
@@ -533,7 +533,7 @@ namespace Player.Movement
                 SetPlayerDirection();
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
+            else if (EdgeFound &&  Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 EdgeTransformation();
@@ -541,7 +541,7 @@ namespace Player.Movement
                 SetPlayerDirection();
             }
             // TODO: Change camera player rotation
-            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            else if (Grounded &&  Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
             {
                 IsTransitioned = false;
                 if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
