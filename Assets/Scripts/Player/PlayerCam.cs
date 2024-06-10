@@ -37,6 +37,18 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            HandleCameraSwitch();
+            
+            // check if player used recenter key
+            if (InputManager.instance.RecenterInput)
+            {
+                // recenter the current camera
+                RecenterCam(_playerMovement.IsAiming ? cameras[1] : cameras[0]);
+            }
+        }
+
+        private void HandleCameraSwitch()
+        {
             CurrentCamera = _playerMovement.IsAiming ? CameraStyle.Aiming : CameraStyle.Normal;
 
             if (CurrentCamera == CameraStyle.Normal)
@@ -72,20 +84,37 @@ namespace Player
         
         // hacky way of aligning the camera with the player on startup.
         // Hidden behind the spider spawn in screen from the death effect.
-        private IEnumerator DisableCamRecenter()
+        private static IEnumerator DisableCamRecenter(CinemachineFreeLook cam, float delay)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(delay);
             
-            cameras[0].m_RecenterToTargetHeading.m_enabled = false;
+            cam.m_RecenterToTargetHeading.m_enabled = false;
+            cam.m_YAxisRecentering.m_enabled = false;
+            // cam.m_RecenterToTargetHeading.m_RecenteringTime = 1;
+            // cam.m_RecenterToTargetHeading.m_WaitTime = 2;
         }
 
-        public void RecenterCam()
+        public void InstantRecenterCam()
         {
             cameras[0].m_RecenterToTargetHeading.m_RecenteringTime = 0;
             cameras[0].m_RecenterToTargetHeading.m_WaitTime = 0;
             cameras[0].m_RecenterToTargetHeading.m_enabled = true;
             
-            StartCoroutine(DisableCamRecenter());
+            StartCoroutine(DisableCamRecenter(cameras[0], 1f));
+        }
+
+        private void RecenterCam(CinemachineFreeLook cam)
+        {
+            cam.m_RecenterToTargetHeading.m_WaitTime = 0;
+            cam.m_RecenterToTargetHeading.m_RecenteringTime = 1;
+            
+            cam.m_YAxisRecentering.m_WaitTime = 0;
+            cam.m_YAxisRecentering.m_RecenteringTime = 1;
+            
+            cam.m_RecenterToTargetHeading.m_enabled = true;
+            cam.m_YAxisRecentering.m_enabled = true;
+            
+            StartCoroutine(DisableCamRecenter(cam, 2.5f));
         }
     }
 }
