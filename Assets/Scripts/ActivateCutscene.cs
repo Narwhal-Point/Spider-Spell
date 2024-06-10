@@ -7,17 +7,32 @@ using UnityEngine.Playables;
 public class ActivateCutscene : MonoBehaviour, IDataPersistence
 {
     [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private bool delayedStart;
+    [Tooltip("The delay in seconds for when delayed Start is enabled")]
+    [SerializeField] private float delay;
 
     private bool _cutscenePlayed;
     private bool _saved;
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Player") && !_cutscenePlayed)
+        if(delayedStart && collision.CompareTag("Player") && !_cutscenePlayed)
+        {
+            _cutscenePlayed = true;
+            StartCoroutine(DelayStart());
+        }
+        else if (collision.CompareTag("Player") && !_cutscenePlayed)
         {
             _cutscenePlayed = true;
             playableDirector.Play();
         }
+    }
+
+    private IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(delay);
+        
+        playableDirector.Play();
     }
 
     public void LoadData(GameData data)
