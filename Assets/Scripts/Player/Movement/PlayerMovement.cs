@@ -297,6 +297,9 @@ namespace Player.Movement
 
         private void Update()
         {
+            Debug.Log($"Grounded value: {Grounded}");
+            Debug.Log($"array wall hits: {_wallWasHit}");
+            
             PuddleEffects();
 
             // wake up the rigidbody when it's sleeping so collisions keep working.
@@ -312,6 +315,7 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
+            WallCheck();
             
             // state update
             _manager.CurrentState.UpdateState();
@@ -419,6 +423,37 @@ namespace Player.Movement
                 //Draw a cube at the maximum distance
                 Gizmos.DrawWireCube(-transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
                 // Gizmos.DrawWireCube(transform.position + -transform.up * (playerHeight * 0.5f + 0.2f), new Vector3(0.5f, 0.1f, 0.7f) * 2);
+            }
+        }
+
+        // aditional raycasts to the right, left and back of the player. Only gets used while in air to make it easier for people to attach themselves to the wall
+        // when falling. Noticed that a lot of people are struggling with this.
+        private bool _wallWasHit;
+        private RaycastHit _wallHit2;
+        private void WallCheck()
+        {
+            if(WallInFront || WallInFrontLow)
+                return;
+            
+            Vector3[] raycastDirections =
+            {
+                -transform.forward,
+                transform.right,
+                -transform.right,
+            };
+
+            // Perform raycasts in all directions to detect climbable surfaces
+            foreach (Vector3 dir in raycastDirections)
+            {
+                _wallWasHit = Physics.Raycast(transform.position, dir, out var hit, 1f, ground);
+
+                if (_wallWasHit)
+                {
+                    _wallHit2 = hit;
+                    return;
+                }
+
+                Debug.DrawRay(transform.position, dir * 1f);
             }
         }
 
@@ -532,6 +567,24 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
+            else if (_wallWasHit && _manager.CurrentState != SwingingState && !Grounded)
+            {
+                angle = facingAngles.Item1;
+                hit = _wallHit2;
+                if (hit.transform.up == -Vector3.up)
+                {
+                    angle = -facingAngles.Item1;
+                    TransformUponAngle(hit, angle);
+                }
+                else
+                {
+                    TransformUponAngle(hit, angle);
+                }
+
+                IsTransitioned = true;
+                SetPlayerDirection();
+            }
+            
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound &&  Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
