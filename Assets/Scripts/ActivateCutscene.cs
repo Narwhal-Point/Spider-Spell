@@ -13,15 +13,10 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (_cutscenePlayed)
-        {
-            GetComponent<BoxCollider>().enabled = false;
-        }
-        else if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !_cutscenePlayed)
         {
             _cutscenePlayed = true;
             playableDirector.Play();
-            GetComponent<BoxCollider>().enabled = false;
         }
     }
 
