@@ -1,3 +1,4 @@
+using System.Collections;
 using Cinemachine;
 using Player.Movement;
 using UnityEngine;
@@ -67,7 +68,24 @@ namespace Player
                 cameras[0].gameObject.SetActive(false);
                 cameras[1].gameObject.SetActive(true);
             }
+        }
+        
+        // hacky way of aligning the camera with the player on startup.
+        // Hidden behind the spider spawn in screen from the death effect.
+        private IEnumerator DisableCamRecenter()
+        {
+            yield return new WaitForSeconds(1);
+            
+            cameras[0].m_RecenterToTargetHeading.m_enabled = false;
+        }
 
+        public void RecenterCam()
+        {
+            cameras[0].m_RecenterToTargetHeading.m_RecenteringTime = 0;
+            cameras[0].m_RecenterToTargetHeading.m_WaitTime = 0;
+            cameras[0].m_RecenterToTargetHeading.m_enabled = true;
+            
+            StartCoroutine(DisableCamRecenter());
         }
     }
 }
