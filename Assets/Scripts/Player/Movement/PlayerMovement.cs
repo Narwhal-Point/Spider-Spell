@@ -105,8 +105,7 @@ namespace Player.Movement
         {
             Idle,
             Walking,
-
-            // Sprinting,
+            Sprinting,
             // Crouching,
             Sliding,
             Jumping,
@@ -144,7 +143,7 @@ namespace Player.Movement
 
         public PlayerMovementStateWalking WalkingState { get; private set; }
 
-        // public PlayerMovementStateSprinting SprintingState { get; private set; }
+        public PlayerMovementStateSprinting SprintingState { get; private set; }
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
@@ -263,7 +262,7 @@ namespace Player.Movement
 
             IdleState = new PlayerMovementStateIdle(_manager, this);
             WalkingState = new PlayerMovementStateWalking(_manager, this);
-            // SprintingState = new PlayerMovementStateSprinting(_manager, this);
+            SprintingState = new PlayerMovementStateSprinting(_manager, this);
             // CrouchingState = new PlayerMovementStateCrouching(_manager, this);
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
@@ -759,21 +758,21 @@ namespace Player.Movement
         // }
 
 
-        // public void OnSprint(InputValue value)
-        // {
-        //     IsSprinting = value.isPressed;
-        //     
-        //     // might be better to handle this in the current state using a special function for checking if a state switch is logical
-        //     
-        //     if (_manager.CurrentState == WalkingState && IsSprinting)
-        //     {
-        //         _manager.SwitchState(SprintingState);
-        //     }
-        //     else if (_manager.CurrentState == SprintingState && !IsSprinting)
-        //     {
-        //         _manager.SwitchState(WalkingState);
-        //     }
-        // }
+        public void OnSprint(InputValue value)
+        {
+            IsSprinting = value.isPressed;
+            
+            // might be better to handle this in the current state using a special function for checking if a state switch is logical
+            
+            if (_manager.CurrentState == WalkingState && IsSprinting)
+            {
+                _manager.SwitchState(SprintingState);
+            }
+            else if (_manager.CurrentState == SprintingState && !IsSprinting)
+            {
+                _manager.SwitchState(WalkingState);
+            }
+        }
 
         // public void OnDash()
         // {
