@@ -4,16 +4,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class ActivateCutscene : MonoBehaviour
+public class ActivateCutscene : MonoBehaviour, IDataPersistence
 {
     [SerializeField] private PlayableDirector playableDirector;
-    
+
+    private bool _cutscenePlayed;
+    private bool _saved;
+
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Player"))
+        if (_cutscenePlayed)
         {
+            GetComponent<BoxCollider>().enabled = false;
+        }
+        else if (collision.CompareTag("Player"))
+        {
+            _cutscenePlayed = true;
             playableDirector.Play();
             GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+
+    public void LoadData(GameData data)
+    {
+        if (playableDirector.name == "Witch Cutscene")
+        {
+            _cutscenePlayed = data.witchCutscenePlayed;
+        }
+        else if (playableDirector.name == "Entering Main Room")
+        {
+            _cutscenePlayed = data.mainRoomCutscenePlayed;
+        }
+    }
+
+    public void SaveData(GameData data)
+    {
+        if (_saved)
+            return;
+        if (_cutscenePlayed)
+        {
+            if (playableDirector.name == "Witch Cutscene")
+            {
+                data.witchCutscenePlayed = true;
+                _saved = true;
+            }
+            else if (playableDirector.name == "Entering Main Room")
+            {
+                data.mainRoomCutscenePlayed = true;
+                _saved = true;
+            }
         }
     }
 }

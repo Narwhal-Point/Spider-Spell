@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Audio;
 using UnityEngine;
 
 public class DisappearingPlatform : MonoBehaviour
@@ -48,7 +49,7 @@ public class DisappearingPlatform : MonoBehaviour
             if (disappearTime - disappearTimer < 0.1 && !playedFX)
             {
                 poofVFX.Play();
-                audioManager.PlaySFX(audioManager.poofSFX);
+                audioManager.PlaySFX(audioManager.poofSfx);
                 playedFX = true;
             }
 
@@ -72,7 +73,7 @@ public class DisappearingPlatform : MonoBehaviour
     void Reset2Original()
     {
         //poofVFX.Play();
-        audioManager.PlaySFX(audioManager.poofSFX);
+        audioManager.PlaySFX(audioManager.poofSfx);
         meshRenderer.enabled = true;
         boxCollider.enabled = true;
         disappearing = false;

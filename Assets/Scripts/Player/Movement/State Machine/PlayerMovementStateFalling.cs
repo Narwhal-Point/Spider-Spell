@@ -31,7 +31,24 @@ namespace Player.Movement.State_Machine
 
         public override void UpdateState()
         {
-            Movement();
+            // Debug.Log(player.Rb.velocity.magnitude);
+
+            Vector3 velocity = player.Rb.velocity;
+            float dragCoefficient = 0.275f;
+
+            // Apply custom drag to X and Z axes if velocity magnitude is above the threshold
+            if (velocity.magnitude >= 15f)
+            {
+                velocity.x *= 1 - dragCoefficient * Time.deltaTime;
+                velocity.z *= 1 - dragCoefficient * Time.deltaTime;
+                velocity.y *= 1 + dragCoefficient * Time.deltaTime;
+                player.Rb.velocity = velocity;
+            }
+
+            if (velocity.magnitude <= 15f)
+            {
+                Movement();
+            }
             
             if (player.Grounded)
             {
@@ -63,20 +80,20 @@ namespace Player.Movement.State_Machine
         {
             if (player.InputDirection.y > 0.6)
             {
-                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.forward * (player.airSpeed * 75f * Time.deltaTime));
             }
-
+            
             if (player.InputDirection.y < -0.6)
-                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 100f * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.forward * (player.airSpeed * 75f * Time.deltaTime));
             
             if (player.InputDirection.x > 0.6)
             {
-                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+                player.Rb.AddForce(player.orientation.right * (player.airSpeed * 75f * Time.deltaTime));
             }
-
+            
             if (player.InputDirection.x < -0.6)
             {
-                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 100f * Time.deltaTime));
+                player.Rb.AddForce(-player.orientation.right * (player.airSpeed * 75f * Time.deltaTime));
             }
         }
     }

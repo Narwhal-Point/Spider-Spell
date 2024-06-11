@@ -1,92 +1,104 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Audio;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class PistonManager : MonoBehaviour
+namespace Objects
 {
-    [SerializeField] GameObject[] pistons;
-    [SerializeField] Vector3 targetDirection;
-    private Vector3 moveDirection;
-    [SerializeField] float maxMoveWidth = 7f;
-    private float currentMoved = 0f;
-    [SerializeField] float moveSpeed = 4f;
-    private bool moveFirstGroup = true;
-    private bool movingOut = true;
-    private bool waiting = true;
-    [SerializeField] float waitDuration = 0.5f;
-    private float waitTimer = 0f;
-    [SerializeField] AudioSource shoveSFX;
-
-    // Start is called before the first frame update
-    void Start()
+    public class PistonManager : MonoBehaviour
     {
-        targetDirection = transform.right;
-    }
+        [SerializeField] private GameObject[] pistons;
+        [SerializeField] private Vector3 targetDirection;
+        private Vector3 _moveDirection;
+        [SerializeField] private float maxMoveWidth = 7f;
+        private float _currentMoved;
+        [SerializeField] private float moveSpeed = 4f;
+        [SerializeField] private bool moveFirstGroup = true;
+        private bool _movingOut = true;
+        private bool _waiting = true;
+        [SerializeField] private float waitDuration = 0.5f;
+        private float _waitTimer;
+        private AudioSource _audioSource;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (moveFirstGroup)
+        // Start is called before the first frame update
+        void Start()
         {
-            if (pistons.Length > 0)
-            {
-                MovePistons(0);
-            }
+            targetDirection = transform.right;
+            _audioSource = GetComponent<AudioSource>();
+        
+            AudioManager.LocationSpecificAudioSource.Add(_audioSource);
         }
-        else
-        {
-            if (pistons.Length > 1)
-            {
-                MovePistons(1);
-            }
-        }
-    }
 
-    public void MovePistons(int startIndex)
-    {
-        if (waiting)
+        private void OnDestroy()
         {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitDuration)
-            {
-                waiting = false;
-                waitTimer = 0f;
-                shoveSFX.Play();
-            }
+            AudioManager.LocationSpecificAudioSource.Remove(_audioSource);
         }
-        else
-        {
-            if (movingOut)
-            {
 
-                for (int i = startIndex; i < pistons.Length; i += 2)
+        // Update is called once per frame
+        void Update()
+        {
+            if (moveFirstGroup)
+            {
+                if (pistons.Length > 0)
                 {
-                    moveDirection = targetDirection.normalized * moveSpeed * Time.deltaTime;
-                    pistons[i].transform.position += moveDirection;
-                }
-                currentMoved += moveDirection.magnitude;
-                if (currentMoved >= maxMoveWidth)
-                {
-                    movingOut = false;
-                    waiting = true;
-                    shoveSFX.Stop();
+                    MovePistons(0);
                 }
             }
-            if (!movingOut)
+            else
             {
-                for (int i = startIndex; i < pistons.Length; i += 2)
+                if (pistons.Length > 1)
                 {
-                    moveDirection = -targetDirection.normalized * moveSpeed * Time.deltaTime;
-                    pistons[i].transform.position += moveDirection;
+                    MovePistons(1);
                 }
-                currentMoved -= moveDirection.magnitude;
-                if (currentMoved <= 0)
+            }
+        }
+
+        private void MovePistons(int startIndex)
+        {
+            if (_waiting)
+            {
+                _waitTimer += Time.deltaTime;
+                if (_waitTimer >= waitDuration)
                 {
-                    movingOut = true;
-                    moveFirstGroup = (moveFirstGroup) ? false : true;
-                    waiting = true;
-                    shoveSFX.Stop();
+                    _waiting = false;
+                    _waitTimer = 0f;
+                    _audioSource.Play();
+                }
+            }
+            else
+            {
+                if (_movingOut)
+                {
+                    for (int i = startIndex; i < pistons.Length; i += 2)
+                    {
+                        _moveDirection = targetDirection.normalized * (moveSpeed * Time.deltaTime);
+                        pistons[i].transform.position += _moveDirection;
+                    }
+
+                    _currentMoved += _moveDirection.magnitude;
+                    if (_currentMoved >= maxMoveWidth)
+                    {
+                        _movingOut = false;
+                        _waiting = true;
+                        _audioSource.Stop();
+                    }
+                }
+
+                if (!_movingOut)
+                {
+                    for (int i = startIndex; i < pistons.Length; i += 2)
+                    {
+                        _moveDirection = -targetDirection.normalized * (moveSpeed * Time.deltaTime);
+                        pistons[i].transform.position += _moveDirection;
+                    }
+
+                    _currentMoved -= _moveDirection.magnitude;
+                    if (_currentMoved <= 0)
+                    {
+                        _movingOut = true;
+                        moveFirstGroup = !moveFirstGroup;
+                        _waiting = true;
+                        _audioSource.Stop();
+                    }
                 }
             }
         }

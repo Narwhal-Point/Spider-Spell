@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Audio;
 using Player.Movement;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,6 +18,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _promptCanvasGO;
     [SerializeField] private GameObject _sensitivityCanvasGO;
     [SerializeField] private GameObject _audioCanvasGO;
+    [SerializeField] private GameObject _waitForInputKeyboard;
+    [SerializeField] private GameObject _waitForInputGamePad;
     
     [Header("Player Scripts to Deactivate on Pause")]
     public PlayerInput _playerInput;
@@ -30,11 +33,13 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _promptFirst;
     [SerializeField] private GameObject _audioFirst; 
     
-    public InputActionAsset actions;
+    [Header("Misc")]
     
-    private bool isPaused;
-    public PlayerMovement player;
+    [SerializeField] private InputActionAsset actions;
+    [SerializeField] private AudioManager audioManager;
+    [SerializeField] private PlayerMovement player;
     [SerializeField] private InputSystemUIInputModule iptmod;
+    private bool _isPaused;
 
     // fix for inputs defaulting to keyboard after closing menu
     #region Input Caching
@@ -69,7 +74,7 @@ public class MenuManager : MonoBehaviour
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
         if (player.MenuOpenCloseInput)
         {
-            if (!isPaused)
+            if (!_isPaused)
             {
                 Pause();
             }
@@ -92,6 +97,18 @@ public class MenuManager : MonoBehaviour
             OpenSettingsMenuHandle();
         }
         
+        else if (cancelAction & _keyboardCanvasGO.activeSelf == true & _waitForInputKeyboard.activeSelf ==false)
+        {
+            cancelAction = false;
+            OpenSettingsMenuHandle();
+        }
+        
+        else if (cancelAction & _gamepadCanvasGO.activeSelf == true & _waitForInputGamePad.activeSelf ==false)
+        {
+            cancelAction = false;
+            OpenSettingsMenuHandle();
+        }
+        
         else if (cancelAction & _mainMenuCanvasGO.activeSelf == true)
         {
             cancelAction = false;
@@ -108,13 +125,13 @@ public class MenuManager : MonoBehaviour
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        isPaused = true;
+        _isPaused = true;
         Time.timeScale = 0f;
     }
     
     public void UnPause()
     {
-        isPaused = false;
+        _isPaused = false;
         Time.timeScale = 1f;
 
         CloseAllMenus();
@@ -140,6 +157,7 @@ public class MenuManager : MonoBehaviour
         _gamepadCanvasGO.SetActive(false);
         
         EventSystem.current.SetSelectedGameObject(_mainMenuFirst);
+        audioManager.PauseAudio();
     }
 
     private void OpenSettingsMenuHandle()
@@ -230,6 +248,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
+        audioManager.UnpauseAudio();
         
         SetControlScheme();
     }

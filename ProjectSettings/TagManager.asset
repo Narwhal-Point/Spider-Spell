@@ -8,6 +8,8 @@ TagManager:
   - Audio
   - MovingObject
   - DeathPuddle
+  - smoothObject
+  - Fan
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - Swingable
   - 
   - 
   - 

@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
+using Audio;
 using Player.Movement.State_Machine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Player.Movement
 {
@@ -73,7 +70,7 @@ namespace Player.Movement
         public AudioManager audioManager;
         // public AudioSource midAirSound;
         // public bool jumpAnimation;
-        
+
 
         public TMP_Text text;
         public TMP_Text speed_text;
@@ -94,11 +91,11 @@ namespace Player.Movement
         public bool IsJumping { get; private set; } = false;
 
         public bool IsSnapping { get; set; } = false;
-        
+
         public bool MenuOpenCloseInput { get; private set; }
-        
+
         private InputAction _menuOpenCloseAction;
-        
+
         private PlayerInput _playerInput;
 
         // enum to display active state on screen
@@ -174,7 +171,7 @@ namespace Player.Movement
         [Tooltip("value Rigidbody velocity is divided by.")]
         [SerializeField]
         private float puddleSpeedReduction = 2f;
-        
+
         private float OriginalDesiredMoveSpeed;
         private bool _enteredPuddle;
 
@@ -187,6 +184,7 @@ namespace Player.Movement
                     _enteredPuddle = true;
                     onPlayerInPuddle?.Invoke();
                 }
+
                 Slowdown(puddleSpeedReduction);
             }
             else if (groundHit.collider && !groundHit.collider.CompareTag("DeathPuddle") && _enteredPuddle == true &&
@@ -208,23 +206,54 @@ namespace Player.Movement
 
         #endregion
 
+        #region Cameras
+
+        public GameObject camera;
+
+        private FreeLookCamera freeLookCamera;
+
+        // private CameraComponentsAdjuster alterCam;
+        public GameObject[] cameras;
+        public GameObject usedCam;
+        public Transform mainCamera;
+
+        enum CamerasEnum
+        {
+            followCamera,
+            mainCamera,
+            freelookCamera
+        }
+
+        #endregion
+
+        #region Movement direction variables
+
+        public Vector3 movementForward;
+        public Vector3 movementRight;
+
+        #endregion
+
         #region Loading and Saving
 
         public void LoadData(GameData data)
         {
             Rb.position = data.position;
             Rb.rotation = data.rotation;
-            jumpCount = data.jumpCount;
-            
-            camScript.RecenterCam();
+
+            //camScript.RecenterCam();
         }
 
         public void SaveData(GameData data)
         {
             data.position = Rb.position;
             data.rotation = Rb.rotation;
-            data.jumpCount = jumpCount;
         }
+
+        #endregion
+
+        #region Delay Player Direction On Transitioning
+
+        bool IsTransitioned = false;
 
         #endregion
 
@@ -239,7 +268,8 @@ namespace Player.Movement
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
             SlidingState = new PlayerMovementStateSliding(_manager, this);
-            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(), GetComponent<TrailRenderer>());
+            SwingingState = new PlayerMovementStateSwinging(_manager, this, GetComponent<PlayerSwingHandler>(),
+                GetComponent<TrailRenderer>());
             DashingState = new PlayerMovementStateDashing(_manager, this, dashDuration, dashForce, dashCooldown,
                 DashUpwardForce);
             Rb = GetComponent<Rigidbody>();
@@ -248,6 +278,9 @@ namespace Player.Movement
             audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
             _swing = GetComponent<PlayerSwingHandler>();
             _collider = GetComponent<Collider>();
+            //initiate Camera componenets 
+            // alterCam = camera.GetComponent<CameraComponentsAdjuster>();
+            freeLookCamera = GetComponent<FreeLookCamera>();
         }
 
         private void Start()
@@ -257,17 +290,20 @@ namespace Player.Movement
 
             _manager.Initialize(IdleState);
             GetComponent<TrailRenderer>().enabled = false;
+
+            //Start with freeLookCamera 
+            // alterCam.FreeLook();
         }
 
         private void Update()
         {
             PuddleEffects();
-            
+
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
-            if(Rb.IsSleeping())
+            if (Rb.IsSleeping())
                 Rb.WakeUp();
-            
+
             MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
@@ -276,32 +312,28 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
-
+            
             // state update
             _manager.CurrentState.UpdateState();
-
-            if (_manager.CurrentState == JumpingState && Grounded && canIncrementJumpCount)
-            {
-                jumpCount++;
-                canIncrementJumpCount = false;
-                jumpCountCooldownTimer = jumpCountCooldown;
-            }
-
-            // Update jump count cooldown timer
-            if (!canIncrementJumpCount)
-            {
-                jumpCountCooldownTimer -= Time.deltaTime;
-                if (jumpCountCooldownTimer <= 0)
-                {
-                    canIncrementJumpCount = true;
-                }
-            }
         }
 
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
+            
+            
+            if (!IsTransitioned && _manager.CurrentState != JumpingState)
+            {
+                CalculatePlayerVMovement();
+            }
+
             HandleRotation();
+        }
+
+        private void SetPlayerDirection()
+        {
+            movementForward = transform.forward;
+            movementRight = Vector3.Cross(transform.up, movementForward);
         }
 
         public Vector3 CalculateMoveDirection(float angle, RaycastHit hit)
@@ -311,6 +343,57 @@ namespace Player.Movement
             Quaternion combinedRotation = surfaceRotation * facingRotation;
             Vector3 moveDirection = combinedRotation * Vector3.forward;
             return moveDirection;
+        }
+
+        private void ResetCameraPositionBelowPlane()
+        {
+            // Calculate the distance between the camera and the plane
+            Vector3 cameraToPlane = transform.position - cam.transform.position;
+            float distanceToPlane = Vector3.Dot(cameraToPlane, transform.up);
+
+            // If the camera is below the plane
+            if (distanceToPlane > 0)
+            {
+                // Calculate the new camera position
+                Vector3 newCameraPosition = cam.transform.position + transform.up * distanceToPlane;
+
+                // Set the new camera position
+                cam.transform.position = newCameraPosition;
+            }
+        }
+
+        private void CalculatePlayerVMovement()
+        {
+            float rayAngle = Vector3.Angle(movementForward, movementRight);
+            // Debug.Log(rayAngle);
+            //Debug.Log(cam.active);
+            //Debug.Log(cam.active + cam.name);
+            Vector3 rightOrigin = cam.transform.position + cam.transform.right * 50f;
+            Vector3 upOrigin = cam.transform.position + cam.transform.up * 50f;
+            Plane fPlane = new Plane(transform.up, transform.position);
+            Plane rPlane = new Plane(transform.up, transform.position);
+
+            Ray rRay = new Ray(rightOrigin, cam.transform.forward * 100);
+            Ray uRay = new Ray(upOrigin, cam.transform.forward * 100);
+
+            Vector3 cam2Player = transform.position - cam.transform.position;
+            float upOrDown = Vector3.Dot(cam2Player, transform.up);
+
+            if (fPlane.Raycast(uRay, out float uEnter))
+            {
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position,
+                    transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+            }
+
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
+                movementRight = Vector3.Cross(transform.up, movementForward);
+                Debug.DrawLine(transform.position,
+                    transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }
         }
 
         void OnDrawGizmos()
@@ -362,13 +445,13 @@ namespace Player.Movement
 
             IsHeadHit = Physics.Raycast(transform.position, playerObj.up, out headHit,
                 playerHeight * 0.5f + 0.2f, ground);
-            Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
 
             // check if an angled surface is in front of the player
             float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
+#if UNITY_EDITOR
             // debug ray drawings
             // to the ground
             if (!Grounded)
@@ -389,13 +472,31 @@ namespace Player.Movement
                     playerObj.forward * wallCastDistance, Color.red);
             }
 
+            // top
+            Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
+
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
+#endif
+        }
+
+        private void IsTransitionedChanger()
+        {
+            if (IsTransitioned)
+            {
+                IsTransitioned = false;
+                return;
+            }
+
+            IsTransitioned = true;
         }
 
         private void HandleRotation()
         {
+            float angle = 0;
+            RaycastHit hit = new RaycastHit();
+
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
@@ -408,78 +509,134 @@ namespace Player.Movement
 
             if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                angle = facingAngles.Item1;
+                hit = wallHit;
+                if (hit.transform.up == -Vector3.up)
+                {
+                    angle = -facingAngles.Item1;
+                    TransformUponAngle(hit, angle);
+                }
+                else
+                {
+                    TransformUponAngle(hit, angle);
+                }
+
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi2");
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, lowWallHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                angle = facingAngles.Item1;
+                hit = lowWallHit;
+                TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
             else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
-                // rotate towards the new surface
-                // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                // Quaternion surfaceAlignment =
-                //     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
-                // Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                // orientation.rotation = combinedRotation;
-                // transform.rotation = orientation.rotation;
-                Quaternion oldOrientation = transform.rotation;
-                Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
-                Quaternion newOrientation = rotation * oldOrientation;
-
-                Debug.Log("old forward: " + transform.forward);
-                orientation.rotation = newOrientation;
-                transform.rotation = newOrientation;
-
-                // move the player to the new surface
-                Vector3 newPlayerPos = angleHit.point;
-                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
-
-                transform.position = newPlayerPos + offset;
-                Rb.velocity = Vector3.zero;
-                Debug.Log("new forward: " + transform.forward);
+                EdgeTransformation();
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             // TODO: Change camera player rotation
             else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
+                IsTransitioned = false;
+                if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
+                {
+                    angle = facingAngles.Item1;
+                    hit = groundHit;
+                    TransformUponAngle(hit, angle);
+                    // smooth turn
+                    transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                        Time.deltaTime * rotationSpeed);
+                }
 
-                // slerp the rotation to the turning smooth
-                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                    Time.deltaTime * rotationSpeed);
+                else
+                {
+                    TurnPlayer();
+                }
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
-                Quaternion surfaceAlignment =
-                    Quaternion.FromToRotation(Vector3.up, headHit.normal);
-                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
-                orientation.rotation = combinedRotation;
-                transform.rotation = orientation.rotation;
+                angle = facingAngles.Item1;
+                hit = headHit;
+                TransformUponAngle(hit, angle);
+                IsTransitioned = true;
+                SetPlayerDirection();
             }
             else if (InputDirection != Vector2.zero)
             {
+                IsTransitioned = true;
+                SetPlayerDirection();
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
+        }
+
+        private void DirectionInverse()
+        {
+            if (transform.up == -Vector3.up)
+            {
+                movementForward = -transform.forward;
+                movementRight = Vector3.Cross(transform.up, -movementForward);
+            }
+        }
+
+        private void TransformUponAngle(RaycastHit hit, float angle)
+        {
+            Quaternion cameraRotation = Quaternion.Euler(0f, angle, 0f);
+            Quaternion surfaceAlignment =
+                Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+            orientation.rotation = combinedRotation;
+            transform.rotation = orientation.rotation;
+        }
+
+        private void EdgeTransformation()
+        {
+            Quaternion oldOrientation = transform.rotation;
+            Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
+            Quaternion newOrientation = rotation * oldOrientation;
+
+            orientation.rotation = newOrientation;
+            transform.rotation = newOrientation;
+
+            Vector3 newPlayerPos = angleHit.point;
+            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
+
+            transform.position = newPlayerPos + offset;
+
+            Rb.velocity = Vector3.zero;
+        }
+
+        private void TurnPlayer()
+        {
+            Vector3 forward = movementForward.normalized;
+            Vector3 right = movementRight.normalized;
+
+            Vector3 forwardRelativeInput = InputDirection.y * forward;
+            Vector3 rightRelativeInput = InputDirection.x * right;
+            // Calculate the combined movement direction relative to the camera
+            Vector3 combinedMovement = forwardRelativeInput + rightRelativeInput;
+
+            // Project the combined movement onto the horizontal plane
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up).normalized;
+
+            // Check if movement is negligible or zero
+            if (combinedMovement == Vector3.zero || Vector3.Angle(combinedMovement, transform.forward) < Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Project the combined movement onto the horizontal plane again (not normalized this time)
+            combinedMovement = Vector3.ProjectOnPlane(combinedMovement, transform.up);
+
+            // Rotate towards the combined movement direction
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                Quaternion.LookRotation(combinedMovement, transform.up), 15f);
         }
 
         private (float, float) GetFacingAngle(Vector2 direction)
