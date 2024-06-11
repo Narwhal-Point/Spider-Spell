@@ -99,6 +99,7 @@ namespace Player.Movement
         private PlayerInput _playerInput;
 
         // enum to display active state on screen
+        // also gets used to get the correct animations now.
         public MovementState movementState;
 
         public enum MovementState
