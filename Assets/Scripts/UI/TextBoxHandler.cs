@@ -2,17 +2,15 @@ using UnityEngine;
 
 namespace UI
 {
-    public class TextBoxHandler : MonoBehaviour
+    public class TextBoxHandler : MonoBehaviour, IDataPersistence
     {
-        [Header("Add your text here")]
-        [Tooltip("The file containing all your text for the current area trigger")]
+        [Header("Add your text here")] [Tooltip("The file containing all your text for the current area trigger")]
         public TextAsset textFile;
-        
+
         [Tooltip("Use this if you don't want to use a text file")]
         public string backupText;
 
-        [Header("Textbox")]
-        [Tooltip("The background of your text area, should contain your text components")]
+        [Header("Textbox")] [Tooltip("The background of your text area, should contain your text components")]
         public GameObject textBackground;
 
         [Tooltip("The object displaying your text, should be a child of textBackground")]
@@ -20,16 +18,20 @@ namespace UI
 
         // class that handles setting the text
         private SetTextToTextBox _textUI;
-        
+
 
         [Header("interact key")]
         // Interact button in the right corner.
         [Tooltip("Interact button in the right corner of the text box")]
         public GameObject displayInteractKeyHandler;
+
         private SetTextToTextBox _interactTextUI;
-        
-        [Tooltip("Toggle this to toggle the interact key in the bottom right corner of the text box")]
-        [SerializeField] private bool enableInteractKey = true;
+
+        [Tooltip("Toggle this to toggle the interact key in the bottom right corner of the text box")] [SerializeField]
+        private bool enableInteractKey = true;
+
+        [Tooltip("If this is checked the text box will only be shown once.")] [SerializeField]
+        private bool onlyShowTextBoxOnce;
 
         // the array that will contain all the text
         private string[] _text;
@@ -70,10 +72,10 @@ namespace UI
         private void Start()
         {
             // set the button for the corner
-                _interactTextUI = displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
-                _interactTextUI.SetText("[Interact]");
-            
-            if(!enableInteractKey)
+            _interactTextUI = displayInteractKeyHandler.GetComponent<SetTextToTextBox>();
+            _interactTextUI.SetText("[Interact]");
+
+            if (!enableInteractKey)
             {
                 displayInteractKeyHandler.SetActive(false);
             }
@@ -102,7 +104,7 @@ namespace UI
 
 
             // enable the text boxes
-            if(enableInteractKey)
+            if (enableInteractKey)
                 displayInteractKeyHandler.SetActive(true);
             textObject.SetActive(true);
             textBackground.SetActive(true);
@@ -112,6 +114,10 @@ namespace UI
         private void OnTriggerExit(Collider other)
         {
             DisableText();
+            if (onlyShowTextBoxOnce)
+            {
+                gameObject.SetActive(false);
+            }
         }
 
         private void Update()
@@ -135,7 +141,7 @@ namespace UI
             }
 
             // keep updating text ui for if input device changes
-            if(enableInteractKey)
+            if (enableInteractKey)
                 _interactTextUI.SetText("[Interact]");
             _textUI.SetText(_displayText);
         }
@@ -143,11 +149,27 @@ namespace UI
         private void DisableText()
         {
             displayInteractKeyHandler.SetActive(false);
-            if(enableInteractKey)
+            if (enableInteractKey)
                 textObject.SetActive(false);
             textBackground.SetActive(false);
             _playerInArea = false;
             _currentLine = 0;
+        }
+
+        // very not scalable. If we want other text boxes that only have their text shown once we should do this differently.
+        // Probably with a dictionary or something.
+        public void LoadData(GameData data)
+        {
+            if (onlyShowTextBoxOnce)
+            {
+                gameObject.SetActive(!data.exploreTextShown);
+            }
+        }
+
+        public void SaveData(GameData data)
+        {
+            if (onlyShowTextBoxOnce)
+                data.exploreTextShown = gameObject.activeSelf;
         }
     }
 }
