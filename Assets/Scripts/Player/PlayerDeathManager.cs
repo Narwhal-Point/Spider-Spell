@@ -89,10 +89,11 @@ namespace Player
 
                 yield return null;
             }
+            
             // stop dying sound
             audioManager.StopSFX(audioManager.dyingSound);
             audioManager.StopSFX(audioManager.acidSound);
-            
+
             _deathPuddleTimer = 0;
             KillPlayer();
         }
@@ -111,6 +112,7 @@ namespace Player
         private void ResetDeathTime()
         {
             StopCoroutine(nameof(DeathTimeCoroutine));
+            
             // stop dying sound
             audioManager.StopSFX(audioManager.dyingSound);
             audioManager.StopSFX(audioManager.acidSound);
@@ -121,7 +123,7 @@ namespace Player
 
         #endregion
 
-        private void KillPlayer()
+        public void KillPlayer()
         {
             _playerInput.enabled = false;
             audioManager.PlaySFX(audioManager.gameOver);

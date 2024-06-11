@@ -11,9 +11,13 @@ public class GameData
 
     public int maxCollectables;
 
+    public bool introCutscenePlayed;
+
     public bool witchCutscenePlayed;
 
     public bool mainRoomCutscenePlayed;
+
+    public bool exploreTextShown;
 
     // public int jumpCount;
 

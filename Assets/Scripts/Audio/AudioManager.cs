@@ -20,6 +20,7 @@ namespace Audio
         [FormerlySerializedAs("WitchAppearTutorial")] public AudioClip witchAppearTutorial;
         [FormerlySerializedAs("poofSFX")] public AudioClip poofSfx;
         [FormerlySerializedAs("checkpointSFX")] public AudioClip checkpointSfx;
+        public AudioClip paperSfx;
         public AudioClip dyingSound;
         public AudioClip acidSound;
         public AudioClip gameOver;
