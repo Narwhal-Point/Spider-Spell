@@ -380,9 +380,6 @@ namespace Player.Movement
         private void CalculatePlayerVMovement()
         {
             float rayAngle = Vector3.Angle(movementForward, movementRight);
-            // Debug.Log(rayAngle);
-            //Debug.Log(cam.active);
-            //Debug.Log(cam.active + cam.name);
             Vector3 rightOrigin = cam.transform.position + cam.transform.right * 50f;
             Vector3 upOrigin = cam.transform.position + cam.transform.up * 50f;
             Plane fPlane = new Plane(transform.up, transform.position);
@@ -394,21 +391,26 @@ namespace Player.Movement
             Vector3 cam2Player = transform.position - cam.transform.position;
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
-            if (fPlane.Raycast(uRay, out float uEnter))
+            float angle = Vector3.Angle(uRay.direction, fPlane.normal);
+            /*Debug.Log(angle);*/
+            if (angle >= 100)
             {
-                Vector3 fPoint = uRay.GetPoint(uEnter);
-                Debug.DrawLine(upOrigin, fPoint, Color.red);
-                movementForward = fPoint - transform.position;
-                Debug.DrawLine(transform.position,
-                    transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
-            }
+                if (fPlane.Raycast(uRay, out float uEnter))
+                {
+                    Vector3 fPoint = uRay.GetPoint(uEnter);
+                    Debug.DrawLine(upOrigin, fPoint, Color.red);
+                    movementForward = fPoint - transform.position;
+                    Debug.DrawLine(transform.position,
+                        transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+                }
 
-            if (rPlane.Raycast(rRay, out float rEnter))
-            {
-                movementRight = Vector3.Cross(transform.up, movementForward);
-                Debug.DrawLine(transform.position,
-                    transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-            }           
+                if (rPlane.Raycast(rRay, out float rEnter))
+                {
+                    movementRight = Vector3.Cross(transform.up, movementForward);
+                    Debug.DrawLine(transform.position,
+                        transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+                }
+            } 
         }
 
         void OnDrawGizmos()
@@ -598,8 +600,7 @@ namespace Player.Movement
         private void TransformUponAngle(RaycastHit hit, float angle)
         {
             Quaternion cameraRotation = Quaternion.Euler(0f, angle, 0f);
-            Quaternion surfaceAlignment =
-                Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Quaternion surfaceAlignment = Quaternion.FromToRotation(Vector3.up, hit.normal);
             Quaternion combinedRotation = surfaceAlignment * cameraRotation;
             orientation.rotation = combinedRotation;
             transform.rotation = orientation.rotation;

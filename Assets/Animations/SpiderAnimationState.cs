@@ -36,7 +36,7 @@ namespace Animations
                 // Calculate the speed ratio
                 float speedRatio = player.Rb.velocity.magnitude / player.walkSpeed;
             
-                Debug.Log($"Speed Ratio: {speedRatio}");
+                //Debug.Log($"Speed Ratio: {speedRatio}");
 
                 // Set the animation speed to the speed ratio
                 animator.speed = speedRatio;

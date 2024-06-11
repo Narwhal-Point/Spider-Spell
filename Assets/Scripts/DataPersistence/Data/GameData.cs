@@ -29,7 +29,7 @@ public class GameData
         this.rotation = Quaternion.Euler(0,90,0);
         maxCollectables = 5;
         
-        Debug.Log("Rotation GameData: " + rotation);
+        //Debug.Log("Rotation GameData: " + rotation);
     }
 
     public int GetPercentageComplete()
