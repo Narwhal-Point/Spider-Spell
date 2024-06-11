@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Audio;
@@ -29,7 +30,12 @@ public class FanSpin : MonoBehaviour
         }
         transform.localRotation = Quaternion.Euler(startRotation.x, startRotation.y, z);
     }
-    
+
+    private void OnDisable()
+    {
+        _audioSource.Stop();
+    }
+
     private void OnDestroy()
     {
         AudioManager.LocationSpecificAudioSource.Remove(_audioSource);
