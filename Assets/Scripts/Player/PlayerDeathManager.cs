@@ -1,4 +1,5 @@
 using System.Collections;
+using Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -24,11 +25,13 @@ namespace Player
         private float _deathPuddleTimer;
         [SerializeField] private Volume volume;
         private Vignette _vignette;
+        private AudioManager audioManager;
         private void Start()
         {
             _playerInput = GetComponent<PlayerInput>();
             InitVignette();
             SubscribeToEvents();
+            audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         }
 
         private void OnDestroy()
@@ -69,6 +72,10 @@ namespace Player
 
         private IEnumerator DeathTimeCoroutine()
         {
+            // start dying sound
+            audioManager.PlayLoopSFX(audioManager.dyingSound);
+            audioManager.PlayLoopSFX(audioManager.acidSound);
+            
             while (_deathPuddleTimer < puddleDeathDelay)
             {
                 // make the vignette always reach 1 in '_deathPuddleTimer' time.
@@ -82,6 +89,10 @@ namespace Player
 
                 yield return null;
             }
+            
+            // stop dying sound
+            audioManager.StopSFX(audioManager.dyingSound);
+            audioManager.StopSFX(audioManager.acidSound);
 
             _deathPuddleTimer = 0;
             KillPlayer();
@@ -101,6 +112,11 @@ namespace Player
         private void ResetDeathTime()
         {
             StopCoroutine(nameof(DeathTimeCoroutine));
+            
+            // stop dying sound
+            audioManager.StopSFX(audioManager.dyingSound);
+            audioManager.StopSFX(audioManager.acidSound);
+            
             _deathPuddleTimer = 0;
             StartCoroutine(DisableVignette());
         }
@@ -110,6 +126,7 @@ namespace Player
         public void KillPlayer()
         {
             _playerInput.enabled = false;
+            audioManager.PlaySFX(audioManager.gameOver);
             onPlayerDied?.Invoke();
         }
         private void ResetToCheckpoint()

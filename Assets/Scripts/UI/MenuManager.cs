@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Audio;
 using Player.Movement;
 using UnityEngine;
