@@ -107,7 +107,7 @@ namespace Player
 
         #endregion
 
-        private void KillPlayer()
+        public void KillPlayer()
         {
             _playerInput.enabled = false;
             onPlayerDied?.Invoke();
