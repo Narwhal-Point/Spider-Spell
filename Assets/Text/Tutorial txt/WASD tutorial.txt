@@ -1,1 +1,1 @@
-Press [Move] to move around and look around with [Look]. You may want to look at the open book. You can close this window by interacting: [Interact]
+Alright soldier! Try moving those slinky legs of yours! We’re going to have a lot of work to do to get you into shape! Move to my cage by using [Move]!
