@@ -312,36 +312,21 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
-
+            
             // state update
             _manager.CurrentState.UpdateState();
-
-            if (_manager.CurrentState == JumpingState && Grounded && canIncrementJumpCount)
-            {
-                jumpCount++;
-                canIncrementJumpCount = false;
-                jumpCountCooldownTimer = jumpCountCooldown;
-            }
-
-            // Update jump count cooldown timer
-            if (!canIncrementJumpCount)
-            {
-                jumpCountCooldownTimer -= Time.deltaTime;
-                if (jumpCountCooldownTimer <= 0)
-                {
-                    canIncrementJumpCount = true;
-                }
-            }
         }
 
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            if (!IsTransitioned)
+            
+            
+            if (!IsTransitioned && _manager.CurrentState != JumpingState)
             {
                 CalculatePlayerVMovement();
             }
-            
+
             HandleRotation();
         }
 
@@ -462,13 +447,13 @@ namespace Player.Movement
 
             IsHeadHit = Physics.Raycast(transform.position, playerObj.up, out headHit,
                 playerHeight * 0.5f + 0.2f, ground);
-            Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
 
             // check if an angled surface is in front of the player
             float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
                 -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
+#if UNITY_EDITOR
             // debug ray drawings
             // to the ground
             if (!Grounded)
@@ -489,9 +474,13 @@ namespace Player.Movement
                     playerObj.forward * wallCastDistance, Color.red);
             }
 
+            // top
+            Debug.DrawRay(transform.position, playerObj.up * (playerHeight * 0.5f + 0.2f), Color.magenta);
+
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
                 -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
+#endif
         }
 
         private void IsTransitionedChanger()
@@ -533,6 +522,7 @@ namespace Player.Movement
                 {
                     TransformUponAngle(hit, angle);
                 }
+
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
