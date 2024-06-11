@@ -14,6 +14,8 @@ public class GameData
     public bool witchCutscenePlayed;
 
     public bool mainRoomCutscenePlayed;
+    
+    public bool shouldSkipIntro;
 
     // public int jumpCount;
 

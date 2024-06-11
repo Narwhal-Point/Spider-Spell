@@ -41,7 +41,7 @@ public class SaveSlotsMenu : Menu
         DataPersistenceManager.instance.SaveGame();
 
         // load the scene - which will in turn save the game because of OnSceneUnloaded in the DataPersistenceManager
-        SceneManager.LoadSceneAsync("SampleScene");
+        SceneManager.LoadSceneAsync("IntroScene");
     }
 
     public void OnBackClicked()
