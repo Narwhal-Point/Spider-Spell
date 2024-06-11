@@ -20,6 +20,8 @@ namespace Audio
         [FormerlySerializedAs("WitchAppearTutorial")] public AudioClip witchAppearTutorial;
         [FormerlySerializedAs("poofSFX")] public AudioClip poofSfx;
         [FormerlySerializedAs("checkpointSFX")] public AudioClip checkpointSfx;
+        public AudioClip dyingSound;
+        public AudioClip acidSound;
     
         // some sounds need to be on a specific location. To still pause them we add them to this list.
         public static readonly List<AudioSource> LocationSpecificAudioSource = new List<AudioSource>();
