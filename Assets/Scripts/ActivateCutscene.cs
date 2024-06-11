@@ -45,6 +45,10 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
         {
             _cutscenePlayed = data.mainRoomCutscenePlayed;
         }
+        else if (playableDirector.name == "Start cutscene")
+        {
+            _cutscenePlayed = data.introCutscenePlayed;
+        }
     }
 
     public void SaveData(GameData data)
@@ -58,9 +62,14 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
                 data.witchCutscenePlayed = true;
                 _saved = true;
             }
-            else if (playableDirector.name == "Entering Main Room")
+            if (playableDirector.name == "Entering Main Room")
             {
                 data.mainRoomCutscenePlayed = true;
+                _saved = true;
+            }
+            if (playableDirector.name == "Start cutscene")
+            {
+                data.introCutscenePlayed = true;
                 _saved = true;
             }
         }
