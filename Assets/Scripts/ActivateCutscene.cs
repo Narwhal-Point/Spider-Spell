@@ -16,12 +16,15 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
 
     private void OnTriggerEnter(Collider collision)
     {
-        if(delayedStart && collision.CompareTag("Player") && !_cutscenePlayed)
+        if(_cutscenePlayed)
+            return;
+        
+        if(delayedStart && collision.CompareTag("Player"))
         {
             _cutscenePlayed = true;
             StartCoroutine(DelayStart());
         }
-        else if (collision.CompareTag("Player") && !_cutscenePlayed)
+        else if (collision.CompareTag("Player"))
         {
             _cutscenePlayed = true;
             playableDirector.Play();
