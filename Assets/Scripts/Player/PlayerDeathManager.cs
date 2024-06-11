@@ -124,6 +124,7 @@ namespace Player
         private void KillPlayer()
         {
             _playerInput.enabled = false;
+            audioManager.PlaySFX(audioManager.gameOver);
             onPlayerDied?.Invoke();
         }
         private void ResetToCheckpoint()
