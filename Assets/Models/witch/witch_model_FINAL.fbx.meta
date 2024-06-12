@@ -3,7 +3,67 @@ guid: b5562625dabfc8c44a24ee0421989e05
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bangs
+    second: {fileID: 2100000, guid: 8d3e01576f8cc8043ba2725de628c134, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Broom
+    second: {fileID: 2100000, guid: 9b3606868f5b2824289509830895e560, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Hair strand
+    second: {fileID: 2100000, guid: 9ee5fdde5560c2a4895e3440ab232ee2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Hat
+    second: {fileID: 2100000, guid: 9df705f3ca9a5414eace3fbe2f625342, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 5dfe6d4726194a241933a1b2f61517c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.003
+    second: {fileID: 2100000, guid: 0acb1a6b43271554ca11495bcb9025d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Metal
+    second: {fileID: 2100000, guid: 13d4ced670e8dd34f8b896507875ad3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Metal Buckle
+    second: {fileID: 2100000, guid: c8e19e2c88c7e0c41b30e06272522d87, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: b5ee4ac29a408c24a89e648b4ed300ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: dress
+    second: {fileID: 2100000, guid: ca49fcd522d6fa8408f2b60a0db1924e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin
+    second: {fileID: 2100000, guid: c722d869036b5df4fac3c5ed0ec5569a, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: spider-web-pattern-26434467
+    second: {fileID: 2800000, guid: f595873b325e59342881b4919deea59a, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
