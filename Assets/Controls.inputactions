@@ -83,7 +83,7 @@
                     "id": "64ea5aa2-20cc-4082-bed6-b283b3c05590",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
                 },
                 {
@@ -506,7 +506,7 @@
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -624,7 +624,7 @@
                 {
                     "name": "",
                     "id": "ffeb347d-5af2-4fd5-a46a-0f8422f1f9d9",
-                    "path": "<Keyboard>/x",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",

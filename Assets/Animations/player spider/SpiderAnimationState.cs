@@ -39,7 +39,7 @@ namespace Animations
                 // Set the animation speed to the speed ratio
                 animator.speed = speedRatio;
             }
-            if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping")
+            if (player.movementState.ToString() == "Falling" || player.movementState.ToString() == "Jumping" || player.movementState.ToString() == "Swinging")
             {
                 animator.speed = 1f;
                 animator.SetBool(IsFalling, true);

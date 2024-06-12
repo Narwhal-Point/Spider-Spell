@@ -99,14 +99,14 @@ namespace Player.Movement
         private PlayerInput _playerInput;
 
         // enum to display active state on screen
+        // also gets used to get the correct animations now.
         public MovementState movementState;
 
         public enum MovementState
         {
             Idle,
             Walking,
-
-            // Sprinting,
+            Sprinting,
             // Crouching,
             Sliding,
             Jumping,
@@ -144,7 +144,7 @@ namespace Player.Movement
 
         public PlayerMovementStateWalking WalkingState { get; private set; }
 
-        // public PlayerMovementStateSprinting SprintingState { get; private set; }
+        public PlayerMovementStateSprinting SprintingState { get; private set; }
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
@@ -263,7 +263,7 @@ namespace Player.Movement
 
             IdleState = new PlayerMovementStateIdle(_manager, this);
             WalkingState = new PlayerMovementStateWalking(_manager, this);
-            // SprintingState = new PlayerMovementStateSprinting(_manager, this);
+            SprintingState = new PlayerMovementStateSprinting(_manager, this);
             // CrouchingState = new PlayerMovementStateCrouching(_manager, this);
             JumpingState = new PlayerMovementStateJumping(_manager, this);
             FallingState = new PlayerMovementStateFalling(_manager, this);
@@ -297,6 +297,9 @@ namespace Player.Movement
 
         private void Update()
         {
+            Debug.Log($"Grounded value: {Grounded}");
+            Debug.Log($"array wall hits: {_wallWasHit}");
+            
             PuddleEffects();
 
             // wake up the rigidbody when it's sleeping so collisions keep working.
@@ -312,6 +315,7 @@ namespace Player.Movement
 
             // raycasts to check if a surface has been hit
             SurfaceCheck();
+            WallCheck();
             
             // state update
             _manager.CurrentState.UpdateState();
@@ -424,6 +428,37 @@ namespace Player.Movement
             }
         }
 
+        // aditional raycasts to the right, left and back of the player. Only gets used while in air to make it easier for people to attach themselves to the wall
+        // when falling. Noticed that a lot of people are struggling with this.
+        private bool _wallWasHit;
+        private RaycastHit _wallHit2;
+        private void WallCheck()
+        {
+            if(WallInFront || WallInFrontLow)
+                return;
+            
+            Vector3[] raycastDirections =
+            {
+                -transform.forward,
+                transform.right,
+                -transform.right,
+            };
+
+            // Perform raycasts in all directions to detect climbable surfaces
+            foreach (Vector3 dir in raycastDirections)
+            {
+                _wallWasHit = Physics.Raycast(transform.position, dir, out var hit, 1f, ground);
+
+                if (_wallWasHit)
+                {
+                    _wallHit2 = hit;
+                    return;
+                }
+
+                Debug.DrawRay(transform.position, dir * 1f);
+            }
+        }
+
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
@@ -509,7 +544,7 @@ namespace Player.Movement
 
             facingAngles = GetFacingAngle(InputDirection);
 
-            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            if (WallInFront && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = wallHit;
@@ -526,7 +561,7 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
-            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            else if (WallInFrontLow &&  Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
@@ -534,8 +569,26 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
+            else if (_wallWasHit && _manager.CurrentState != SwingingState && !Grounded)
+            {
+                angle = facingAngles.Item1;
+                hit = _wallHit2;
+                if (hit.transform.up == -Vector3.up)
+                {
+                    angle = -facingAngles.Item1;
+                    TransformUponAngle(hit, angle);
+                }
+                else
+                {
+                    TransformUponAngle(hit, angle);
+                }
+
+                IsTransitioned = true;
+                SetPlayerDirection();
+            }
+            
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
+            else if (EdgeFound &&  Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 EdgeTransformation();
@@ -543,7 +596,7 @@ namespace Player.Movement
                 SetPlayerDirection();
             }
             // TODO: Change camera player rotation
-            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
+            else if (Grounded &&  Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
             {
                 IsTransitioned = false;
                 if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
@@ -707,21 +760,21 @@ namespace Player.Movement
         // }
 
 
-        // public void OnSprint(InputValue value)
-        // {
-        //     IsSprinting = value.isPressed;
-        //     
-        //     // might be better to handle this in the current state using a special function for checking if a state switch is logical
-        //     
-        //     if (_manager.CurrentState == WalkingState && IsSprinting)
-        //     {
-        //         _manager.SwitchState(SprintingState);
-        //     }
-        //     else if (_manager.CurrentState == SprintingState && !IsSprinting)
-        //     {
-        //         _manager.SwitchState(WalkingState);
-        //     }
-        // }
+        public void OnSprint(InputValue value)
+        {
+            IsSprinting = value.isPressed;
+            
+            // might be better to handle this in the current state using a special function for checking if a state switch is logical
+            
+            if (_manager.CurrentState == WalkingState && IsSprinting)
+            {
+                _manager.SwitchState(SprintingState);
+            }
+            else if (_manager.CurrentState == SprintingState && !IsSprinting)
+            {
+                _manager.SwitchState(WalkingState);
+            }
+        }
 
         // public void OnDash()
         // {
