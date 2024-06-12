@@ -1,3 +1,5 @@
+using System.Linq;
+using Audio;
 using Player;
 using UnityEngine;
 
@@ -20,6 +22,8 @@ namespace Objects
         private bool _stayUp;
         private bool _coolingDown;
         private float _initialHeight;
+        private AudioSource _audioSourceLow;
+        private AudioSource _audioSourceHigh;
 
         // Start is called before the first frame update
         private void Start()
@@ -31,6 +35,14 @@ namespace Objects
             _timer = 0;
             _startingScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
             _initialHeight = _startingScale.y;
+            
+            // set _audioSource for low fire and high fire (low fire should be the top AudioSource component)
+            AudioSource[] audioSources = GetComponents<AudioSource>();
+            _audioSourceLow = audioSources[0];
+            _audioSourceHigh = audioSources[1];
+            AudioManager.LocationSpecificAudioSource.Add(_audioSourceLow);
+            AudioManager.LocationSpecificAudioSource.Add(_audioSourceHigh);
+            _audioSourceHigh.Stop();
         }
 
         // Update is called once per frame
@@ -56,6 +68,9 @@ namespace Objects
                     _goingDown = true;
                     fireVFX.gravityModifier = calmGravity;
                     _timer = 0;
+                    // Switch sound effects to a low fire
+                    _audioSourceLow.Play();
+                    _audioSourceHigh.Stop();
                 }
             }
             else if (_goingDown)
@@ -79,6 +94,9 @@ namespace Objects
                     _goingUp = true;
                     fireVFX.gravityModifier = heavyGravity;
                     _timer = 0;
+                    // Switch sound effects to a high fire
+                    _audioSourceHigh.Play();
+                    _audioSourceLow.Stop();
                 }
             }
         }
@@ -92,6 +110,12 @@ namespace Objects
                 PlayerDeathManager deathManager = other.gameObject.GetComponent<PlayerDeathManager>();
                 deathManager.KillPlayer();
             }
+        }
+        
+        private void OnDestroy()
+        {
+            AudioManager.LocationSpecificAudioSource.Remove(_audioSourceLow);
+            AudioManager.LocationSpecificAudioSource.Remove(_audioSourceHigh);
         }
     }
 }
