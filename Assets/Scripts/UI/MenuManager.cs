@@ -1,3 +1,4 @@
+using System.Collections;
 using Audio;
 using Player.Movement;
 using UnityEngine;
@@ -135,10 +136,16 @@ public class MenuManager : MonoBehaviour
         _isPaused = false;
         Time.timeScale = 1f;
 
+        StartCoroutine(DelayInputEnable());
         CloseAllMenus();
-        InputManager.instance.EnableAllInputs();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    IEnumerator DelayInputEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        InputManager.instance.EnableAllInputs();
     }
     
     #endregion
