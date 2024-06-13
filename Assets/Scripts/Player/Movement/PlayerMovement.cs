@@ -334,9 +334,15 @@ namespace Player.Movement
             else
             {
                 SetPlayerDirection();
+            }            
+            if (_manager.CurrentState == JumpingState)
+            {
+                DelayClass.DelayMethod(HandleRotation, 0.2f);
             }
-
-            HandleRotation();
+            else
+            {
+                HandleRotation();
+            }            
         }
 
         private void SetPlayerDirection()
@@ -381,7 +387,7 @@ namespace Player.Movement
             if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
-                Rb.velocity = Vector3.zero;
+                Rb.velocity *= 0.1f;
             }
         }
         private void CalculatePlayerVMovement()
