@@ -835,7 +835,7 @@
                     "path": "<Gamepad>/leftStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -846,7 +846,7 @@
                     "path": "<Gamepad>/rightStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -857,7 +857,7 @@
                     "path": "<Gamepad>/leftStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -868,7 +868,7 @@
                     "path": "<Gamepad>/rightStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -879,7 +879,7 @@
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -890,7 +890,7 @@
                     "path": "<Gamepad>/rightStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -901,7 +901,7 @@
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -912,7 +912,7 @@
                     "path": "<Gamepad>/rightStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;playstation",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -1198,7 +1198,7 @@
                     "path": "*/{Submit}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR;playstation",
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1231,7 +1231,7 @@
                     "path": "*/{Cancel}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR;playstation",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false

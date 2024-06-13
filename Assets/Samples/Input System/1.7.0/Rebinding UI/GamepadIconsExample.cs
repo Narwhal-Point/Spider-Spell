@@ -18,6 +18,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         public GamepadIcons switch_;
         private PlayerInput _playerInput;
 
+        private string _cachedControlScheme;
+
         private void Awake()
         {
             _playerInput = GameObject.Find("Player").GetComponent<PlayerInput>();
@@ -34,18 +36,37 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             }
         }
 
-        protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString, string deviceLayoutName, string controlPath)
+        protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString,
+            string deviceLayoutName, string controlPath)
         {
             if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
                 return;
 
+
+            string currentControlScheme = _playerInput.currentControlScheme;
+
             var icon = default(Sprite);
-            if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "DualShockGamepad"))
+            if (_playerInput.currentControlScheme == "Keyboard&Mouse" && _cachedControlScheme != "")
+                currentControlScheme = _cachedControlScheme;
+
+            if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "DualShockGamepad") ||
+                currentControlScheme == "playstation")
+            {
+                _cachedControlScheme = "playstation";
                 icon = dualsense.GetSprite(controlPath);
-            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "SwitchProControllerHID") || _playerInput.currentControlScheme == "Switch")
+            }
+            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "SwitchProControllerHID") ||
+                     currentControlScheme == "Switch")
+            {
+                _cachedControlScheme = "Switch";
                 icon = switch_.GetSprite(controlPath);
-            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Gamepad"))
+            }
+            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Gamepad") ||
+                     currentControlScheme == "Gamepad")
+            {
+                _cachedControlScheme = "Gamepad";
                 icon = xbox.GetSprite(controlPath);
+            }
 
             var textComponent = component.bindingText;
 
@@ -115,6 +136,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                     case "leftStickPress": return leftStickPress;
                     case "rightStickPress": return rightStickPress;
                 }
+
                 return null;
             }
         }
