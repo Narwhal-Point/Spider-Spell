@@ -112,6 +112,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Recenter",
+                    "type": "Button",
+                    "id": "1c3dc802-576d-47c1-a5ed-966f3f550695",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -717,6 +726,50 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "QuestLog",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3bbeba4-1f06-4a82-ba74-efa324b461ca",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Recenter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5aecec1d-f06f-4158-b947-427401e0014f",
+                    "path": "<DualShockGamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "playstation",
+                    "action": "Recenter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cec6d8c1-d381-43ff-ae3b-f24c6ce4fa44",
+                    "path": "<SwitchProControllerHID>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Switch",
+                    "action": "Recenter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2e5baf07-9d0c-49be-adfd-2dd4572796de",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Recenter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

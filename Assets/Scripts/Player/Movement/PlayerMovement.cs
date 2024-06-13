@@ -240,7 +240,7 @@ namespace Player.Movement
             Rb.position = data.position;
             Rb.rotation = data.rotation;
 
-            //camScript.RecenterCam();
+            camScript.InstantRecenterCam();
         }
 
         public void SaveData(GameData data)

@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
     public bool FireInput { get; private set; }
     public bool InteractInput { get; private set; }
     public bool QuestLogInput { get; private set; }
+    
+    public bool RecenterInput { get; private set; }
 
     [SerializeField] private PlayerInput playerInput;
 
@@ -16,6 +18,7 @@ public class InputManager : MonoBehaviour
     private InputAction _fireAction;
     private InputAction _interactAction;
     private InputAction _logAction;
+    private InputAction _recenterAction;
     // private InputAction fallAction;
     // private InputAction menuOpenAction;
     // private InputAction rotateAction;
@@ -42,6 +45,7 @@ public class InputManager : MonoBehaviour
         FireInput = _fireAction.WasPressedThisFrame();
         InteractInput = _interactAction.WasPressedThisFrame();
         QuestLogInput = _logAction.WasPressedThisFrame();
+        RecenterInput = _recenterAction.WasPressedThisFrame();
         // FallPressed = fallAction.WasPressedThisFrame();
         // MenuPressed = menuOpenAction.WasPressedThisFrame();
         // RotatePressed = rotateAction.WasPressedThisFrame();
@@ -55,6 +59,7 @@ public class InputManager : MonoBehaviour
         _fireAction = playerInput.actions["Fire"];
         _interactAction = playerInput.actions["Interact"];
         _logAction = playerInput.actions["QuestLog"];
+        _recenterAction = playerInput.actions["Recenter"];
         // rotateAction = playerInput.actions["Rotate"];
     }
 
