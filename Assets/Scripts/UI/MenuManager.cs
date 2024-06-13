@@ -52,7 +52,10 @@ public class MenuManager : MonoBehaviour
     private void SetControlScheme()
     {
         _playerInput.enabled = true;
-       _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        if (_cachedControlScheme != null)
+        {
+            _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        }
     }
     
     #endregion
@@ -119,7 +122,7 @@ public class MenuManager : MonoBehaviour
     public void Pause()
     {
         OpenMainMenu();
-        _playerInput.enabled = false;
+        InputManager.instance.DisableAllInputs();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -133,7 +136,7 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1f;
 
         CloseAllMenus();
-        _playerInput.enabled = true;
+        InputManager.instance.EnableAllInputs();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

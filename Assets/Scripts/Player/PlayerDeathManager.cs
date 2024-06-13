@@ -12,8 +12,6 @@ namespace Player
     {
         public delegate void PlayerDied();
         public static PlayerDied onPlayerDied;
-
-        private PlayerInput _playerInput;
         
         [Header("Puddles")] 
         [Tooltip("Amount of time it takes before the player dies")]
@@ -28,7 +26,6 @@ namespace Player
         private AudioManager audioManager;
         private void Start()
         {
-            _playerInput = GetComponent<PlayerInput>();
             InitVignette();
             SubscribeToEvents();
             audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
@@ -125,7 +122,7 @@ namespace Player
 
         public void KillPlayer()
         {
-            _playerInput.enabled = false;
+            InputManager.instance.DisableAllInputs();
             audioManager.PlaySFX(audioManager.gameOver);
             onPlayerDied?.Invoke();
         }

@@ -297,8 +297,8 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log($"Grounded value: {Grounded}");
-            Debug.Log($"array wall hits: {_wallWasHit}");
+            // Debug.Log($"Grounded value: {Grounded}");
+            // Debug.Log($"array wall hits: {_wallWasHit}");
             
             PuddleEffects();
 

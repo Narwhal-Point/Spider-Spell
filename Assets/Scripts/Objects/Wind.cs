@@ -21,7 +21,8 @@ public class Wind : MonoBehaviour
             PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
             if (otherRb != null)
             {
-                playerInput.enabled = false;
+                // playerInput.enabled = false;
+                InputManager.instance.DisableAllInputsButMenu();
                 swingHandler.lr.positionCount = 0;
                 swingHandler.DestroyJoint();
                 otherRb.velocity = Vector3.zero;
@@ -54,7 +55,8 @@ public class Wind : MonoBehaviour
         PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
         if (otherRb != null)
         {
-            playerInput.enabled = true;
+            // playerInput.enabled = true;
+            InputManager.instance.EnableAllInputs();
             movement.enabled = true;
             otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
         }
