@@ -381,25 +381,26 @@ namespace Player.Movement
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
             float angle = Vector3.Angle(uRay.direction, fPlane.normal);
-            /*Debug.Log(angle);*/
-            if (angle >= 100)
+            if (fPlane.Raycast(uRay, out float uEnter))
             {
-                if (fPlane.Raycast(uRay, out float uEnter))
-                {
-                    Vector3 fPoint = uRay.GetPoint(uEnter);
-                    Debug.DrawLine(upOrigin, fPoint, Color.red);
-                    movementForward = fPoint - transform.position;
-                    Debug.DrawLine(transform.position,
-                        transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
-                }
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position,
+                    transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+            }
 
-                if (rPlane.Raycast(rRay, out float rEnter))
-                {
-                    movementRight = Vector3.Cross(transform.up, movementForward);
-                    Debug.DrawLine(transform.position,
-                        transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-                }
-            } 
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
+                movementRight = Vector3.Cross(transform.up, movementForward);
+                Debug.DrawLine(transform.position,
+                    transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }
+            /*Debug.Log(angle);*/
+            /*if (angle >= 100)
+            {
+                
+            } */
         }
 
         void OnDrawGizmos()
