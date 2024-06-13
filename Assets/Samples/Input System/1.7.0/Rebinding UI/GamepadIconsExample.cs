@@ -16,6 +16,12 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         public GamepadIcons xbox;
         public GamepadIcons dualsense;
         public GamepadIcons switch_;
+        private PlayerInput _playerInput;
+
+        private void Awake()
+        {
+            _playerInput = GameObject.Find("Player").GetComponent<PlayerInput>();
+        }
 
         protected void OnEnable()
         {
@@ -36,7 +42,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             var icon = default(Sprite);
             if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "DualShockGamepad"))
                 icon = dualsense.GetSprite(controlPath);
-            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "SwitchProControllerHID"))
+            else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "SwitchProControllerHID") || _playerInput.currentControlScheme == "Switch")
                 icon = switch_.GetSprite(controlPath);
             else if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Gamepad"))
                 icon = xbox.GetSprite(controlPath);
