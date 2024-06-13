@@ -1,46 +1,57 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SaveSlotsMenu : Menu
 {
-    [Header("Menu Navigation")] [SerializeField]
-    private MainMenu mainMenu;
+    [Header("Menu Navigation")] 
+    [SerializeField] private MainMenu mainMenu;
 
     [Header("Menu Buttons")] 
     [SerializeField] private Button backButton;
 
     private SaveSlot[] saveSlots;
-
     private bool isLoadingGame = false;
+    
+    [SerializeField] private InputSystemUIInputModule iptmod;
 
     private void Awake()
     {
         saveSlots = this.GetComponentsInChildren<SaveSlot>();
     }
 
+    private void Update()
+    {
+        bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+
+        if (cancelAction)
+        {
+            OnBackClicked();
+        }
+    }
+
     public void OnSaveSlotClicked(SaveSlot saveSlot)
     {
-        // disable all buttons
+        // Disable all buttons
         DisableMenuButtons();
         
-        // update the selected profile id to be used for data persistence
+        // Update the selected profile id to be used for data persistence
         DataPersistenceManager.instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
 
         if (!isLoadingGame)
         {
-            // create a new game which will initialize our data to a clean slate
+            // Create a new game which will initialize our data to a clean slate
             DataPersistenceManager.instance.NewGame();
         }
         
-        //save the game anytime before loading a new scene
+        // Save the game anytime before loading a new scene
         DataPersistenceManager.instance.SaveGame();
 
-        // load the scene - which will in turn save the game because of OnSceneUnloaded in the DataPersistenceManager
+        // Load the scene - which will in turn save the game because of OnSceneUnloaded in the DataPersistenceManager
         SceneManager.LoadSceneAsync("IntroScene");
     }
 
@@ -50,20 +61,18 @@ public class SaveSlotsMenu : Menu
         this.DeactivateMenu();
     }
     
-
     public void ActivateMenu(bool isLoadingGame)
     {
-        // set this menu to be active
+        // Set this menu to be active
         this.gameObject.SetActive(true);
         
-        //set mode
+        // Set mode
         this.isLoadingGame = isLoadingGame;
         
         // Load all of the profiles that exist
         Dictionary<string, GameData> profilesGameData = DataPersistenceManager.instance.GetAllProfilesGameData();
         
-        // loop through each save slot in the UI and set the content appropiately
-        GameObject firstSelected = backButton.gameObject;
+        // Loop through each save slot in the UI and set the content appropriately
         foreach (SaveSlot saveSlot in saveSlots)
         {
             GameData profileData = null;
@@ -76,20 +85,13 @@ public class SaveSlotsMenu : Menu
             else
             {
                 saveSlot.SetInteractable(true);
-                if (firstSelected.Equals(backButton.gameObject))
-                {
-                    firstSelected = saveSlot.gameObject;
-                }
             }
         }
-
-        Button firstSelectedButton = firstSelected.GetComponent<Button>();
-        this.SetFirstSelected(firstSelectedButton);
     }
 
     public void DeactivateMenu()
     {
-        this.GameObject().SetActive(false);
+        this.gameObject.SetActive(false);
     }
 
     private void DisableMenuButtons()

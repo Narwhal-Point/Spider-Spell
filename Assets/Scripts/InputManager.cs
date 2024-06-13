@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     public bool InteractInput { get; private set; }
     public bool MenuInput { get; private set; }
     public bool QuestLogInput { get; private set; }
+    public bool RecenterInput { get; private set; }
 
     private InputAction _moveAction;
     private InputAction _lookAction;
@@ -25,6 +26,10 @@ public class InputManager : MonoBehaviour
     private InputAction _interactAction;
     private InputAction _menuAction;
     private InputAction _logAction;
+    private InputAction _recenterAction;
+
+
+    public bool MenuOpenCloseInput { get; private set; }
     
     private void Awake()
     {
@@ -50,6 +55,7 @@ public class InputManager : MonoBehaviour
         InteractInput = _interactAction.WasPressedThisFrame();
         MenuInput = _menuAction.WasPressedThisFrame();
         QuestLogInput = _logAction.WasPressedThisFrame();
+        RecenterInput = _recenterAction.WasPressedThisFrame();
     }
 
     private void SetupActionInput()
@@ -63,6 +69,7 @@ public class InputManager : MonoBehaviour
         _interactAction = playerInput.actions["Interact"];
         _menuAction = playerInput.actions["MenuOpenClose"];
         _logAction = playerInput.actions["QuestLog"];
+        _recenterAction = playerInput.actions["Recenter"];
     }
 
     public void EnableMovement()

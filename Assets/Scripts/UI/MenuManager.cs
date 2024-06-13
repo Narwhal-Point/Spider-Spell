@@ -164,7 +164,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_mainMenuFirst);
+        SetSelectedGameObjectIfGamepad(_mainMenuFirst);
         audioManager.PauseAudio();
     }
 
@@ -178,7 +178,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_settingsMenuFirst);
+        SetSelectedGameObjectIfGamepad(_settingsMenuFirst);
     }
 
     private void OpenKeyboardCanvas()
@@ -191,7 +191,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_keyboardFirst);
+        SetSelectedGameObjectIfGamepad(_keyboardFirst);
     }
 
     private void OpenGamepadCanvas()
@@ -204,7 +204,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_gamepadFirst);
+        SetSelectedGameObjectIfGamepad(_gamepadFirst);
     }
 
     private void OpenPrompt()
@@ -217,7 +217,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_promptFirst);
+        SetSelectedGameObjectIfGamepad(_promptFirst);
     }
     
     private void OpenSensitivityCanvas()
@@ -230,7 +230,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_sensitivityFirst);
+        SetSelectedGameObjectIfGamepad(_sensitivityFirst);
     }
     
     private void OpenAudioCanvas()
@@ -243,7 +243,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_audioFirst); // Set the first selectable item in Audio Canvas
+        SetSelectedGameObjectIfGamepad(_audioFirst);
     }
 
     private void CloseAllMenus()
@@ -339,5 +339,13 @@ public class MenuManager : MonoBehaviour
         #endif
         // If running in a build, quit the application
         Application.Quit();
+    }
+    
+    private void SetSelectedGameObjectIfGamepad(GameObject gameObjectToSelect)
+    {
+        if (Gamepad.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObjectToSelect);
+        }
     }
 }

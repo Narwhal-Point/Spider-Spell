@@ -1,6 +1,7 @@
 using Audio;
 using Player.Movement.State_Machine;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -240,7 +241,7 @@ namespace Player.Movement
             Rb.position = data.position;
             Rb.rotation = data.rotation;
 
-            //camScript.RecenterCam();
+            camScript.InstantRecenterCam();
         }
 
         public void SaveData(GameData data)
@@ -301,7 +302,7 @@ namespace Player.Movement
             // Debug.Log($"array wall hits: {_wallWasHit}");
             
             PuddleEffects();
-
+            ZeroVelocity();
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
             if (Rb.IsSleeping())
@@ -330,8 +331,18 @@ namespace Player.Movement
             {
                 CalculatePlayerVMovement();
             }
-
-            HandleRotation();
+            else
+            {
+                SetPlayerDirection();
+            }            
+            if (_manager.CurrentState == JumpingState)
+            {
+                DelayClass.DelayMethod(HandleRotation, 0.2f);
+            }
+            else
+            {
+                HandleRotation();
+            }            
         }
 
         private void SetPlayerDirection()
@@ -366,6 +377,19 @@ namespace Player.Movement
             }
         }
 
+        private void ZeroVelocity()
+        {
+
+            float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
+
+            // get the dot product of the ground normal and the angleHit normal to check the angle between them.
+            float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
+            if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
+                     _manager.CurrentState != SwingingState)
+            {
+                Rb.velocity *= 0.1f;
+            }
+        }
         private void CalculatePlayerVMovement()
         {
             float rayAngle = Vector3.Angle(movementForward, movementRight);
@@ -381,25 +405,26 @@ namespace Player.Movement
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
             float angle = Vector3.Angle(uRay.direction, fPlane.normal);
-            /*Debug.Log(angle);*/
-            if (angle >= 100)
+            if (fPlane.Raycast(uRay, out float uEnter))
             {
-                if (fPlane.Raycast(uRay, out float uEnter))
-                {
-                    Vector3 fPoint = uRay.GetPoint(uEnter);
-                    Debug.DrawLine(upOrigin, fPoint, Color.red);
-                    movementForward = fPoint - transform.position;
-                    Debug.DrawLine(transform.position,
-                        transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
-                }
+                Vector3 fPoint = uRay.GetPoint(uEnter);
+                Debug.DrawLine(upOrigin, fPoint, Color.red);
+                movementForward = fPoint - transform.position;
+                Debug.DrawLine(transform.position,
+                    transform.position + movementForward.normalized * ((upOrDown > 0) ? -2 : 2), Color.red);
+            }
 
-                if (rPlane.Raycast(rRay, out float rEnter))
-                {
-                    movementRight = Vector3.Cross(transform.up, movementForward);
-                    Debug.DrawLine(transform.position,
-                        transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
-                }
-            } 
+            if (rPlane.Raycast(rRay, out float rEnter))
+            {
+                movementRight = Vector3.Cross(transform.up, movementForward);
+                Debug.DrawLine(transform.position,
+                    transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
+            }
+            /*Debug.Log(angle);*/
+            /*if (angle >= 100)
+            {
+                
+            } */
         }
 
         void OnDrawGizmos()
@@ -531,6 +556,7 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
+            Vector3 tempVelocity = Rb.velocity;
             float angle = 0;
             RaycastHit hit = new RaycastHit();
 
@@ -562,7 +588,7 @@ namespace Player.Movement
                 SetPlayerDirection();
             }
             else if (WallInFrontLow &&  Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
-            {
+            {                
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
                 TransformUponAngle(hit, angle);
@@ -591,9 +617,11 @@ namespace Player.Movement
             else if (EdgeFound &&  Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
+                Rb.velocity = Vector3.zero;
                 EdgeTransformation();
                 IsTransitioned = true;
-                SetPlayerDirection();
+                //SetPlayerDirection();
+                DelayClass.DelayMethod(SetPlayerDirection, 0.1f);
             }
             // TODO: Change camera player rotation
             else if (Grounded &&  Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
@@ -659,11 +687,9 @@ namespace Player.Movement
             transform.rotation = newOrientation;
 
             Vector3 newPlayerPos = angleHit.point;
-            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
+            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;            
 
-            transform.position = newPlayerPos + offset;
-
-            Rb.velocity = Vector3.zero;
+            transform.position = newPlayerPos + offset;            
         }
 
         private void TurnPlayer()
