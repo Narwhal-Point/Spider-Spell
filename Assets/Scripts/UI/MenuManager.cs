@@ -74,11 +74,6 @@ public class MenuManager : MonoBehaviour
     private void Update()
     {
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
-
-        if (cancelAction)
-        {
-            Debug.Log("Canceling ofzo");
-        }
         
         if (player.MenuOpenCloseInput)
         {
