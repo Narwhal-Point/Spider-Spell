@@ -11,9 +11,15 @@ public class GameData
 
     public int maxCollectables;
 
+    public bool introCutscenePlayed;
+
     public bool witchCutscenePlayed;
 
     public bool mainRoomCutscenePlayed;
+    
+    public bool shouldSkipIntro;
+
+    public bool exploreTextShown;
 
     // public int jumpCount;
 
@@ -29,7 +35,7 @@ public class GameData
         this.rotation = Quaternion.Euler(0,90,0);
         maxCollectables = 5;
         
-        Debug.Log("Rotation GameData: " + rotation);
+        //Debug.Log("Rotation GameData: " + rotation);
     }
 
     public int GetPercentageComplete()

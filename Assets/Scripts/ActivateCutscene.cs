@@ -7,22 +7,35 @@ using UnityEngine.Playables;
 public class ActivateCutscene : MonoBehaviour, IDataPersistence
 {
     [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private bool delayedStart;
+    [Tooltip("The delay in seconds for when delayed Start is enabled")]
+    [SerializeField] private float delay;
 
     private bool _cutscenePlayed;
     private bool _saved;
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (_cutscenePlayed)
+        if(_cutscenePlayed)
+            return;
+        
+        if(delayedStart && collision.CompareTag("Player"))
         {
-            GetComponent<BoxCollider>().enabled = false;
+            _cutscenePlayed = true;
+            StartCoroutine(DelayStart());
         }
         else if (collision.CompareTag("Player"))
         {
             _cutscenePlayed = true;
             playableDirector.Play();
-            GetComponent<BoxCollider>().enabled = false;
         }
+    }
+
+    private IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(delay);
+        
+        playableDirector.Play();
     }
 
     public void LoadData(GameData data)
@@ -34,6 +47,10 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
         else if (playableDirector.name == "Entering Main Room")
         {
             _cutscenePlayed = data.mainRoomCutscenePlayed;
+        }
+        else if (playableDirector.name == "Start cutscene")
+        {
+            _cutscenePlayed = data.introCutscenePlayed;
         }
     }
 
@@ -48,9 +65,14 @@ public class ActivateCutscene : MonoBehaviour, IDataPersistence
                 data.witchCutscenePlayed = true;
                 _saved = true;
             }
-            else if (playableDirector.name == "Entering Main Room")
+            if (playableDirector.name == "Entering Main Room")
             {
                 data.mainRoomCutscenePlayed = true;
+                _saved = true;
+            }
+            if (playableDirector.name == "Start cutscene")
+            {
+                data.introCutscenePlayed = true;
                 _saved = true;
             }
         }

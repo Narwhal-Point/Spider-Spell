@@ -40,8 +40,30 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private InputSystemUIInputModule iptmod;
     private bool _isPaused;
 
+    // fix for inputs defaulting to keyboard after closing menu
+    #region Input Caching
+    
+    private string _cachedControlScheme;
+
+    private void CacheControlScheme()
+    {
+        _cachedControlScheme = _playerInput.currentControlScheme;
+    }
+
+    private void SetControlScheme()
+    {
+        _playerInput.enabled = true;
+        if (_cachedControlScheme != null)
+        {
+            _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        }
+    }
+    
+    #endregion
+    
     private void Start()
     {
+        _cachedControlScheme = _playerInput.currentControlScheme;
         var rebinds = PlayerPrefs.GetString("rebinds");
         if (!string.IsNullOrEmpty(rebinds))
             actions.LoadBindingOverridesFromJson(rebinds);
@@ -52,6 +74,7 @@ public class MenuManager : MonoBehaviour
     private void Update()
     {
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+        
         if (player.MenuOpenCloseInput)
         {
             if (!_isPaused)
@@ -94,15 +117,14 @@ public class MenuManager : MonoBehaviour
             cancelAction = false;
             UnPause();
         }
-        
     }
-    
+
     #region Pause/Unpause Functions
 
     public void Pause()
     {
         OpenMainMenu();
-        _playerInput.enabled = false;
+        InputManager.instance.DisableAllInputs();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -115,10 +137,16 @@ public class MenuManager : MonoBehaviour
         _isPaused = false;
         Time.timeScale = 1f;
 
+        StartCoroutine(DelayInputEnable());
         CloseAllMenus();
-        _playerInput.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    IEnumerator DelayInputEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        InputManager.instance.EnableAllInputs();
     }
     
     #endregion
@@ -127,6 +155,8 @@ public class MenuManager : MonoBehaviour
 
     private void OpenMainMenu()
     {
+        CacheControlScheme();
+        
         _mainMenuCanvasGO.SetActive(true);
         _audioCanvasGO.SetActive(false);
         _sensitivityCanvasGO.SetActive(false);
@@ -135,7 +165,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_mainMenuFirst);
+        SetSelectedGameObjectIfGamepad(_mainMenuFirst);
         audioManager.PauseAudio();
     }
 
@@ -149,7 +179,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_settingsMenuFirst);
+        SetSelectedGameObjectIfGamepad(_settingsMenuFirst);
     }
 
     private void OpenKeyboardCanvas()
@@ -162,7 +192,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_keyboardFirst);
+        SetSelectedGameObjectIfGamepad(_keyboardFirst);
     }
 
     private void OpenGamepadCanvas()
@@ -175,7 +205,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_gamepadFirst);
+        SetSelectedGameObjectIfGamepad(_gamepadFirst);
     }
 
     private void OpenPrompt()
@@ -188,7 +218,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_promptFirst);
+        SetSelectedGameObjectIfGamepad(_promptFirst);
     }
     
     private void OpenSensitivityCanvas()
@@ -201,7 +231,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_sensitivityFirst);
+        SetSelectedGameObjectIfGamepad(_sensitivityFirst);
     }
     
     private void OpenAudioCanvas()
@@ -214,7 +244,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_audioFirst); // Set the first selectable item in Audio Canvas
+        SetSelectedGameObjectIfGamepad(_audioFirst);
     }
 
     private void CloseAllMenus()
@@ -228,6 +258,8 @@ public class MenuManager : MonoBehaviour
         _gamepadCanvasGO.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
         audioManager.UnpauseAudio();
+        
+        SetControlScheme();
     }
     
     #endregion
@@ -308,5 +340,13 @@ public class MenuManager : MonoBehaviour
         #endif
         // If running in a build, quit the application
         Application.Quit();
+    }
+    
+    private void SetSelectedGameObjectIfGamepad(GameObject gameObjectToSelect)
+    {
+        if (Gamepad.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObjectToSelect);
+        }
     }
 }

@@ -13,7 +13,6 @@ public class VictoryScreenManager : MonoBehaviour
     [SerializeField] private GameObject _videoPlayer;
     
     [Header("Misc")]
-    public PlayerInput _playerInput;
     [SerializeField] private AudioManager audioManager;
     
     
@@ -38,7 +37,7 @@ public class VictoryScreenManager : MonoBehaviour
     {
         _victoryScreenCanvasGO.SetActive(true);
         _videoPlayer.SetActive(true);
-        _playerInput.enabled = false;
+        InputManager.instance.DisableAllInputs();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;

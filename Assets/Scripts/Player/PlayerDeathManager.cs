@@ -1,4 +1,5 @@
 using System.Collections;
+using Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -11,8 +12,6 @@ namespace Player
     {
         public delegate void PlayerDied();
         public static PlayerDied onPlayerDied;
-
-        private PlayerInput _playerInput;
         
         [Header("Puddles")] 
         [Tooltip("Amount of time it takes before the player dies")]
@@ -24,11 +23,12 @@ namespace Player
         private float _deathPuddleTimer;
         [SerializeField] private Volume volume;
         private Vignette _vignette;
+        private AudioManager audioManager;
         private void Start()
         {
-            _playerInput = GetComponent<PlayerInput>();
             InitVignette();
             SubscribeToEvents();
+            audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         }
 
         private void OnDestroy()
@@ -69,6 +69,10 @@ namespace Player
 
         private IEnumerator DeathTimeCoroutine()
         {
+            // start dying sound
+            audioManager.PlayLoopSFX(audioManager.dyingSound);
+            audioManager.PlayLoopSFX(audioManager.acidSound);
+            
             while (_deathPuddleTimer < puddleDeathDelay)
             {
                 // make the vignette always reach 1 in '_deathPuddleTimer' time.
@@ -82,6 +86,10 @@ namespace Player
 
                 yield return null;
             }
+            
+            // stop dying sound
+            audioManager.StopSFX(audioManager.dyingSound);
+            audioManager.StopSFX(audioManager.acidSound);
 
             _deathPuddleTimer = 0;
             KillPlayer();
@@ -101,15 +109,21 @@ namespace Player
         private void ResetDeathTime()
         {
             StopCoroutine(nameof(DeathTimeCoroutine));
+            
+            // stop dying sound
+            audioManager.StopSFX(audioManager.dyingSound);
+            audioManager.StopSFX(audioManager.acidSound);
+            
             _deathPuddleTimer = 0;
             StartCoroutine(DisableVignette());
         }
 
         #endregion
 
-        private void KillPlayer()
+        public void KillPlayer()
         {
-            _playerInput.enabled = false;
+            InputManager.instance.DisableAllInputsButMenu();
+            audioManager.PlaySFX(audioManager.gameOver);
             onPlayerDied?.Invoke();
         }
         private void ResetToCheckpoint()
