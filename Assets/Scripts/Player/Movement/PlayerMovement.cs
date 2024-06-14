@@ -108,6 +108,7 @@ namespace Player.Movement
             Idle,
             Walking,
             Sprinting,
+
             // Crouching,
             Sliding,
             Jumping,
@@ -143,7 +144,9 @@ namespace Player.Movement
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
         public PlayerMovementStateWalking WalkingState { get; private set; }
+
         public PlayerMovementStateSprinting SprintingState { get; private set; }
+
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }
@@ -300,7 +303,6 @@ namespace Player.Movement
             // Debug.Log($"array wall hits: {_wallWasHit}");
 
             PuddleEffects();
-            ZeroVelocity();
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
             if (Rb.IsSleeping())
@@ -323,25 +325,25 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-
-
-            if (!IsTransitioned && _manager.CurrentState != JumpingState)
-            {
-                CalculatePlayerVMovement();
-            }
-            else
-            {
-                SetPlayerDirection();
-            }
-
-            if (_manager.CurrentState == JumpingState)
-            {
-                DelayClass.DelayMethod(HandleRotation, 0.2f);
-            }
-            else
-            {
-                HandleRotation();
-            }
+            //
+            //
+            // if (!IsTransitioned && _manager.CurrentState != JumpingState)
+            // {
+            //     CalculatePlayerVMovement();
+            // }
+            // else
+            // {
+            //     SetPlayerDirection();
+            // }
+            //
+            // if (_manager.CurrentState == JumpingState)
+            // {
+            //     DelayClass.DelayMethod(HandleRotation, 0.2f);
+            // }
+            // else
+            // {
+            HandleRotation();
+            // }
         }
 
         private void SetPlayerDirection()
@@ -428,7 +430,7 @@ namespace Player.Movement
             // hacky workaround that switches back to the old rotation system when the player is on a flat surface and the camera
             // is lower than 90 degrees. This fixes the issue of the player not rotating when the camera angle gets too low,
             // from my testing it also doesn't interfere with the transitioning so that's also nice.
-            
+
             if (camAngle <= 90 && groundHit.normal == Vector3.up && Rb.velocity.magnitude > 0.3f)
             {
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
@@ -521,9 +523,9 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // check if an angled surface is in front of the player
-            float edgeCastDistance = 1.5f;
+            float edgeCastDistance = 2.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
-                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
+                -playerObj.up + (0.2f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
 #if UNITY_EDITOR
             // debug ray drawings
@@ -568,10 +570,6 @@ namespace Player.Movement
 
         private void HandleRotation()
         {
-            Vector3 tempVelocity = Rb.velocity;
-            float angle = 0;
-            RaycastHit hit = new RaycastHit();
-
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
@@ -582,90 +580,77 @@ namespace Player.Movement
 
             facingAngles = GetFacingAngle(InputDirection);
 
-            if (WallInFront && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
+            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                angle = facingAngles.Item1;
-                hit = wallHit;
-                if (hit.transform.up == -Vector3.up)
-                {
-                    angle = -facingAngles.Item1;
-                    TransformUponAngle(hit, angle);
-                }
-                else
-                {
-                    TransformUponAngle(hit, angle);
-                }
-
-                IsTransitioned = true;
-                SetPlayerDirection();
+                Debug.Log("hi");
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, wallHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                transform.rotation = orientation.rotation;
             }
-            else if (WallInFrontLow && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
+            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
             {
-                angle = facingAngles.Item1;
-                hit = lowWallHit;
-                TransformUponAngle(hit, angle);
-                IsTransitioned = true;
-                SetPlayerDirection();
+                Debug.Log("hi2");
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, lowWallHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                transform.rotation = orientation.rotation;
             }
-            else if (_wallWasHit && _manager.CurrentState != SwingingState && !Grounded)
-            {
-                angle = facingAngles.Item1;
-                hit = _wallHit2;
-                if (hit.transform.up == -Vector3.up)
-                {
-                    angle = -facingAngles.Item1;
-                    TransformUponAngle(hit, angle);
-                }
-                else
-                {
-                    TransformUponAngle(hit, angle);
-                }
-
-                IsTransitioned = true;
-                SetPlayerDirection();
-            }
-
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
+            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
+                // rotate towards the new surface
+                // Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                // Quaternion surfaceAlignment =
+                //     Quaternion.FromToRotation(Vector3.up, angleHit.normal);
+                // Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                // orientation.rotation = combinedRotation;
+                // transform.rotation = orientation.rotation;
+                Quaternion oldOrientation = transform.rotation;
+                Quaternion rotation = Quaternion.FromToRotation(groundHit.normal, angleHit.normal);
+                Quaternion newOrientation = rotation * oldOrientation;
+
+                Debug.Log("old forward: " + transform.forward);
+                orientation.rotation = newOrientation;
+                transform.rotation = newOrientation;
+
+                // move the player to the new surface
+                Vector3 newPlayerPos = angleHit.point;
+                Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
+
+                transform.position = newPlayerPos + offset;
                 Rb.velocity = Vector3.zero;
-                EdgeTransformation();
-                IsTransitioned = true;
-                //SetPlayerDirection();
-                DelayClass.DelayMethod(SetPlayerDirection, 0.1f);
+                Debug.Log("new forward: " + transform.forward);
             }
             // TODO: Change camera player rotation
-            else if (Grounded && Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
+            else if (Grounded && InputDirection != Vector2.zero || _manager.CurrentState == SwingingState)
             {
-                IsTransitioned = false;
-                if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
-                {
-                    angle = facingAngles.Item1;
-                    hit = groundHit;
-                    TransformUponAngle(hit, angle);
-                    // smooth turn
-                    transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
-                        Time.deltaTime * rotationSpeed);
-                }
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, groundHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
 
-                else
-                {
-                    TurnPlayer();
-                }
+                // slerp the rotation to the turning smooth
+                transform.rotation = Quaternion.Slerp(playerObj.rotation, orientation.rotation,
+                    Time.deltaTime * rotationSpeed);
             }
             else if (IsHeadHit && _manager.CurrentState != SwingingState)
             {
-                angle = facingAngles.Item1;
-                hit = headHit;
-                TransformUponAngle(hit, angle);
-                IsTransitioned = true;
-                SetPlayerDirection();
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, headHit.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                transform.rotation = orientation.rotation;
             }
             else if (InputDirection != Vector2.zero)
             {
-                IsTransitioned = true;
-                SetPlayerDirection();
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
             }
