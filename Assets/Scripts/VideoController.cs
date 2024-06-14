@@ -16,6 +16,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
 
     private AsyncOperation asyncLoad;
 
+    // objects for the skip option
     [SerializeField] private GameObject textObject;
     [SerializeField] private SetTextToTextBox text;
     [SerializeField] private PlayerInput _playerInput;
@@ -87,6 +88,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         videoPlayer.loopPointReached -= OnVideoFinished;
     }
 
+    // function to check if any key at all is pressed.
     bool CheckAnyButtonPress()
     {
         // Check keyboard inputs
@@ -102,16 +104,17 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         if (Gamepad.current != null)
         {
             var gamepad = Gamepad.current;
-
-            // Check if any button is pressed this frame
+            
             if (gamepad.allControls.Any(control => control is ButtonControl button && button.wasPressedThisFrame))
             {
                 return true;
             }
         }
+        // no button was pressed
         return false;
     }
 
+    // display the interact button
     IEnumerator ShowInteractButton()
     {
         textObject.SetActive(true);   
