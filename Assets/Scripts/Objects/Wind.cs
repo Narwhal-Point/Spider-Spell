@@ -1,63 +1,61 @@
 using Player.Movement;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class Wind : MonoBehaviour
+namespace Objects
 {
-
-    [SerializeField] Vector3 windDirection;
-    [SerializeField] float windStrength;
-
-    private void OnTriggerEnter(Collider other)
+    public class Wind : MonoBehaviour
     {
-        if (other.gameObject.CompareTag("Player"))
+
+        [SerializeField] Vector3 windDirection;
+        [SerializeField] float windStrength;
+        private int enteredAmount;
+
+        private void OnTriggerEnter(Collider other)
         {
-            // Debug.Log("blowing");
+            if (other.gameObject.CompareTag("Player"))
+            {
+                PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
+                PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
+                Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
+                if (otherRb != null)
+                {
+                    InputManager.instance.DisableAllInputsButMenu();
+                    swingHandler.lr.positionCount = 0;
+                    swingHandler.DestroyJoint();
+                    otherRb.velocity = Vector3.zero;
+                    otherRb.drag = 0f;
+                    movement.enabled = false;
+                    otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
+                }
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
+                Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
+                if (otherRb != null)
+                {
+                    swingHandler.lr.positionCount = 0;
+                    swingHandler.DestroyJoint();
+                    otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
             PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
-            PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
-            Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
-            PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
-            if (otherRb != null)
-            {
-                playerInput.enabled = false;
-                swingHandler.lr.positionCount = 0;
-                swingHandler.DestroyJoint();
-                otherRb.velocity = Vector3.zero;
-                otherRb.drag = 0f;
-                movement.enabled = false;
-                otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
-            }
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
             Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
             if (otherRb != null)
             {
-                swingHandler.lr.positionCount = 0;
-                swingHandler.DestroyJoint();
+                InputManager.instance.EnableAllInputs();
+                movement.enabled = true;
                 otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
             }
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
-        Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
-        PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
-        if (otherRb != null)
-        {
-            playerInput.enabled = true;
-            movement.enabled = true;
-            otherRb.AddForce(windDirection * windStrength, ForceMode.Impulse);
-        }
     }
-
 }
