@@ -75,7 +75,7 @@ public class MenuManager : MonoBehaviour
     {
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
         
-        if (player.MenuOpenCloseInput)
+        if (InputManager.instance.MenuInput)
         {
             if (!_isPaused)
             {
