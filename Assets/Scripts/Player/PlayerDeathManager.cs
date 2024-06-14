@@ -122,7 +122,7 @@ namespace Player
 
         public void KillPlayer()
         {
-            InputManager.instance.DisableAllInputs();
+            InputManager.instance.DisableAllInputsButMenu();
             audioManager.PlaySFX(audioManager.gameOver);
             onPlayerDied?.Invoke();
         }

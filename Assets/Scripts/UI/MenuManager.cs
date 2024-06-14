@@ -123,7 +123,7 @@ public class MenuManager : MonoBehaviour
     public void Pause()
     {
         OpenMainMenu();
-        InputManager.instance.DisableAllInputs();
+        InputManager.instance.DisableAllInputsButMenu();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

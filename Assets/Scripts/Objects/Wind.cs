@@ -18,7 +18,6 @@ public class Wind : MonoBehaviour
             PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
             PlayerSwingHandler swingHandler = other.gameObject.GetComponent<PlayerSwingHandler>();
             Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
-            PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
             if (otherRb != null)
             {
                 // playerInput.enabled = false;
@@ -52,7 +51,6 @@ public class Wind : MonoBehaviour
     {
         PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
         Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>();
-        PlayerInput playerInput = other.gameObject.GetComponent<PlayerInput>();
         if (otherRb != null)
         {
             // playerInput.enabled = true;

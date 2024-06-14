@@ -60,7 +60,7 @@ namespace UI
             // save the current input device before disabling player input
             // _currentControlScheme = playerInput.currentControlScheme;
             // _currentInputDevice = playerInput.devices[0];
-            InputManager.instance.DisableAllInputs();
+            InputManager.instance.DisableAllInputsButMenu();
             // playerInput.enabled = false;
             // enable this action again because otherwise the log will never close
             _logAction.Enable();
