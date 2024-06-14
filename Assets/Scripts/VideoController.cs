@@ -43,8 +43,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         // Preload the scene asynchronously
         asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
-
-        shouldSkipIntroScene = false;
+        
         // Check the boolean value
         if (shouldSkipIntroScene)
         {
