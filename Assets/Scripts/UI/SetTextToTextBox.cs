@@ -33,12 +33,15 @@ namespace UI
         private void InitComponents()
         {
             // if the components are empty for some reason. Add them
-            if (_playerInput == null)
+            if (!_playerInput)
             {
                 _playerInput = GameObject.Find("Player").GetComponent<PlayerInput>();
             }
-            if(_textBox == null)
+
+            if (!_textBox)
+            {
                 _textBox = GetComponent<TMP_Text>();
+            }
         }
 
         private void Start()

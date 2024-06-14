@@ -1,5 +1,10 @@
 using System;
+using System.Collections;
+using System.Linq;
+using UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
@@ -10,6 +15,11 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
     public string sceneName = "SampleScene";
 
     private AsyncOperation asyncLoad;
+
+    [SerializeField] private GameObject textObject;
+    [SerializeField] private SetTextToTextBox text;
+    [SerializeField] private PlayerInput _playerInput;
+    private Coroutine _skipButtonCoroutine;
 
     public void Awake()
     {
@@ -28,10 +38,12 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
 
     void Start()
     {
+        textObject.SetActive(false);
         // Preload the scene asynchronously
         asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
+        shouldSkipIntroScene = false;
         // Check the boolean value
         if (shouldSkipIntroScene)
         {
@@ -44,6 +56,22 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
             videoPlayer.loopPointReached += OnVideoFinished;
             // If false, play the video
             videoPlayer.Play();
+        }
+    }
+
+    private void Update()
+    {
+        bool checkPress = CheckAnyButtonPress();
+        Debug.Log($"Check button press: {checkPress}");
+        Debug.Log($"Check coroutine: {_skipButtonCoroutine != null}");
+        
+        if (checkPress && _skipButtonCoroutine == null)
+        {
+            _skipButtonCoroutine = StartCoroutine(ShowInteractButton());
+        }
+        else if (_skipButtonCoroutine != null && _playerInput.actions["Interact"].WasPerformedThisFrame())
+        {
+            asyncLoad.allowSceneActivation = true;
         }
     }
 
@@ -61,5 +89,44 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
     {
         // Clean up the event listener when the script is destroyed
         videoPlayer.loopPointReached -= OnVideoFinished;
+    }
+
+    bool CheckAnyButtonPress()
+    {
+        // Check keyboard inputs
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.anyKey.wasPressedThisFrame)
+            {
+                return true;
+            }
+        }
+
+        // Check gamepad inputs
+        if (Gamepad.current != null)
+        {
+            var gamepad = Gamepad.current;
+
+            // Check if any button is pressed this frame
+            if (gamepad.allControls.Any(control => control is ButtonControl button && button.wasPressedThisFrame))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    IEnumerator ShowInteractButton()
+    {
+        textObject.SetActive(true);   
+        float timer = 0f;
+        while (timer < 2f)
+        {
+            timer += Time.deltaTime;
+            text.SetText("Press [Interact] to skip");
+            yield return null;
+        }
+        textObject.SetActive(false);
+        _skipButtonCoroutine = null;
     }
 }
