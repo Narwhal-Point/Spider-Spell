@@ -336,14 +336,14 @@ namespace Player.Movement
             //     SetPlayerDirection();
             // }
             //
-            // if (_manager.CurrentState == JumpingState)
-            // {
-            //     DelayClass.DelayMethod(HandleRotation, 0.2f);
-            // }
-            // else
-            // {
-            HandleRotation();
-            // }
+            if (_manager.CurrentState == JumpingState)
+            {
+                DelayClass.DelayMethod(HandleRotation, 0.2f);
+            }
+            else
+            {
+                HandleRotation();
+            }
         }
 
         private void SetPlayerDirection()
@@ -580,9 +580,8 @@ namespace Player.Movement
 
             facingAngles = GetFacingAngle(InputDirection);
 
-            if (WallInFront && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            if (WallInFront && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, wallHit.normal);
@@ -590,9 +589,8 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
-            else if (WallInFrontLow && InputDirection != Vector2.zero && _manager.CurrentState != SwingingState)
+            else if (WallInFrontLow && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
             {
-                Debug.Log("hi2");
                 Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
                 Quaternion surfaceAlignment =
                     Quaternion.FromToRotation(Vector3.up, lowWallHit.normal);
@@ -600,8 +598,17 @@ namespace Player.Movement
                 orientation.rotation = combinedRotation;
                 transform.rotation = orientation.rotation;
             }
+            else if (_wallWasHit && _manager.CurrentState != SwingingState && !Grounded)
+            {
+                Quaternion cameraRotation = Quaternion.Euler(0f, facingAngles.Item1, 0f);
+                Quaternion surfaceAlignment =
+                    Quaternion.FromToRotation(Vector3.up, _wallHit2.normal);
+                Quaternion combinedRotation = surfaceAlignment * cameraRotation;
+                orientation.rotation = combinedRotation;
+                transform.rotation = orientation.rotation;
+            }
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && InputDirection != Vector2.zero && dotProduct <= cos70 &&
+            else if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 // rotate towards the new surface
