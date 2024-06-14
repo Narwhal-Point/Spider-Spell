@@ -108,7 +108,6 @@ namespace Player.Movement
             Idle,
             Walking,
             Sprinting,
-
             // Crouching,
             Sliding,
             Jumping,
@@ -143,11 +142,8 @@ namespace Player.Movement
 
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
-
         public PlayerMovementStateWalking WalkingState { get; private set; }
-
         public PlayerMovementStateSprinting SprintingState { get; private set; }
-
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
         public PlayerMovementStateFalling FallingState { get; private set; }

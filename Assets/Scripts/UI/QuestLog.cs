@@ -18,8 +18,8 @@ namespace UI
         private SetTextToTextBox _closeText;
 
         // current control scheme and device
-        private string _currentControlScheme;
-        private InputDevice _currentInputDevice;
+        // private string _currentControlScheme;
+        // private InputDevice _currentInputDevice;
 
 
         private void Awake()
@@ -58,9 +58,10 @@ namespace UI
             _audioManager.PlaySFX(_audioManager.paperSfx);
             
             // save the current input device before disabling player input
-            _currentControlScheme = playerInput.currentControlScheme;
-            _currentInputDevice = playerInput.devices[0];
-            playerInput.enabled = false;
+            // _currentControlScheme = playerInput.currentControlScheme;
+            // _currentInputDevice = playerInput.devices[0];
+            InputManager.instance.DisableAllInputsButMenu();
+            // playerInput.enabled = false;
             // enable this action again because otherwise the log will never close
             _logAction.Enable();
             // enable the gameobject
@@ -71,11 +72,12 @@ namespace UI
 
         private void CloseQuestLog()
         {
-            playerInput.enabled = true;
+            // playerInput.enabled = true;
+            InputManager.instance.EnableAllInputs();
             // set the control scheme back. This is only really an issue when using a controller
             // and you're checking the quest log while there's a hud text with a button prompt.
             // Enabling player input defaults to keyboard&Mouse, so the keyboard/mouse icon will be shown.
-            playerInput.SwitchCurrentControlScheme(_currentControlScheme, _currentInputDevice);
+            // playerInput.SwitchCurrentControlScheme(_currentControlScheme, _currentInputDevice);
             // disable the gameobject
             _logImage.SetActive(false);
             // resume the game

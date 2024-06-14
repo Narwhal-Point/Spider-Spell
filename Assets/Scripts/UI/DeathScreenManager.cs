@@ -145,7 +145,7 @@ namespace UI
         {
             EnableImages();
             blackImage.enabled = true;
-            playerInput.enabled = false;
+            InputManager.instance.DisableAllInputsButMenu();
             
             // small delay to make the respawn effect look a bit better
             yield return new WaitForSeconds(0.2f);
@@ -194,7 +194,7 @@ namespace UI
             // Ensure the scale is set to the end scale when the loop is done
             deathScreenImage.transform.localScale = new Vector3(1f, 1f, 1f);
             DisableImages();
-            playerInput.enabled = true;
+            InputManager.instance.EnableAllInputs();
 
         }
     }

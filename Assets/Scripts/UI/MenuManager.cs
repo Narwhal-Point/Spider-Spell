@@ -1,3 +1,4 @@
+using System.Collections;
 using Audio;
 using Player.Movement;
 using UnityEngine;
@@ -52,7 +53,10 @@ public class MenuManager : MonoBehaviour
     private void SetControlScheme()
     {
         _playerInput.enabled = true;
-       _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        if (_cachedControlScheme != null)
+        {
+            _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        }
     }
     
     #endregion
@@ -70,6 +74,7 @@ public class MenuManager : MonoBehaviour
     private void Update()
     {
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+        
         if (player.MenuOpenCloseInput)
         {
             if (!_isPaused)
@@ -119,7 +124,7 @@ public class MenuManager : MonoBehaviour
     public void Pause()
     {
         OpenMainMenu();
-        _playerInput.enabled = false;
+        InputManager.instance.DisableAllInputs();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -132,10 +137,16 @@ public class MenuManager : MonoBehaviour
         _isPaused = false;
         Time.timeScale = 1f;
 
+        StartCoroutine(DelayInputEnable());
         CloseAllMenus();
-        _playerInput.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    IEnumerator DelayInputEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        InputManager.instance.EnableAllInputs();
     }
     
     #endregion
