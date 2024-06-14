@@ -300,7 +300,7 @@ namespace Player.Movement
             // Debug.Log($"array wall hits: {_wallWasHit}");
 
             PuddleEffects();
-            ZeroVelocity();
+            // ZeroVelocity();
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
             if (Rb.IsSleeping())
@@ -496,6 +496,11 @@ namespace Player.Movement
             }
         }
 
+        [Header("raycast angle controls")] 
+        [SerializeField] private float edgeCastDistance = 2.5f;
+
+        [SerializeField] private float edgeCastAngle = 0.2f;
+
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
@@ -503,7 +508,7 @@ namespace Player.Movement
             // check if player is on the ground
             // Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
             //     playerHeight * 0.5f + 0.2f, ground);
-            Vector3 halfExtents = _collider.bounds.extents;
+
             Grounded = Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.7f), -transform.up, out groundHit,
                 transform.rotation, playerHeight * 0.5f + 0.2f, ground);
 
@@ -521,9 +526,9 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // check if an angled surface is in front of the player
-            float edgeCastDistance = 1.5f;
+            // float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
-                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
+                -playerObj.up + (edgeCastAngle * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
 #if UNITY_EDITOR
             // debug ray drawings
@@ -551,7 +556,7 @@ namespace Player.Movement
 
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
-                -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
+                -playerObj.up + -playerObj.forward * (edgeCastAngle * edgeCastDistance), Color.yellow);
 #endif
         }
 
