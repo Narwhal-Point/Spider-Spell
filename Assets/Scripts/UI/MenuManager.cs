@@ -127,16 +127,14 @@ private void Update()
         cancelAction = false;
         UnPause();
     }
-
-    // select the box if using navigate. Else don't select anything
-    else if (!EventSystem.current.currentSelectedGameObject && _usingNavigateAction)
-    {
-        SetSelectedGameObjectIfGamepad(_mainMenuFirst);
-    }
-    else if (!_usingNavigateAction)
-    {
-        SetSelectedGameObjectIfGamepad(null);
-    }
+    
+    HandleCanvasActivation(_mainMenuCanvasGO, _mainMenuFirst);
+    HandleCanvasActivation(_settingsMenuCanvasGO, _settingsMenuFirst);
+    HandleCanvasActivation(_audioCanvasGO, _audioFirst);
+    HandleCanvasActivation(_keyboardCanvasGO, _keyboardFirst);
+    HandleCanvasActivation(_gamepadCanvasGO, _gamepadFirst);
+    
+    
 }
 
     #region Pause/Unpause Functions
@@ -356,6 +354,21 @@ private void Update()
         Application.Quit();
     }
     
+    private void HandleCanvasActivation(GameObject canvas, GameObject firstSelectedObject)
+    {
+        if (canvas.activeSelf)
+        {
+            if (!EventSystem.current.currentSelectedGameObject && _usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(firstSelectedObject);
+            }
+            else if (!_usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(null);
+            }
+        }
+    }
+    
     private void SetSelectedGameObjectIfGamepad(GameObject gameObjectToSelect)
     {
         if (_usingNavigateAction)
@@ -366,6 +379,5 @@ private void Update()
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
-
     }
 }
