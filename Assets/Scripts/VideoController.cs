@@ -115,8 +115,17 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         if (Gamepad.current != null)
         {
             var gamepad = Gamepad.current;
-            
+        
             if (gamepad.allControls.Any(control => control is ButtonControl button && button.wasPressedThisFrame))
+            {
+                return true;
+            }
+        }
+
+        // Check mouse inputs
+        if (Mouse.current != null)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame)
             {
                 return true;
             }
