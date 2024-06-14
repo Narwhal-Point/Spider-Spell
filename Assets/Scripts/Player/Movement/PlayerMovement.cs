@@ -404,6 +404,9 @@ namespace Player.Movement
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
             float angle = Vector3.Angle(uRay.direction, fPlane.normal);
+            
+            RotatePlayerBasedOnCamera(angle);
+            
             if (fPlane.Raycast(uRay, out float uEnter))
             {
                 Vector3 fPoint = uRay.GetPoint(uEnter);
@@ -419,17 +422,16 @@ namespace Player.Movement
                 Debug.DrawLine(transform.position,
                     transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
-
-            RotatePlayerBasedOnCamera(angle);
         }
 
         void RotatePlayerBasedOnCamera(float camAngle)
         {
+            Debug.Log($"cam Angle: {camAngle}");
             // hacky workaround that switches back to the old rotation system when the player is on a flat surface and the camera
             // is lower than 90 degrees. This fixes the issue of the player not rotating when the camera angle gets too low,
             // from my testing it also doesn't interfere with the transitioning so that's also nice.
             
-            if (camAngle <= 90 && groundHit.normal == Vector3.up && Rb.velocity.magnitude > 0.3f)
+            if (camAngle <= 94 && groundHit.normal == Vector3.up && Rb.velocity.magnitude > 0.3f)
             {
                 orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
                 transform.rotation = orientation.rotation;
