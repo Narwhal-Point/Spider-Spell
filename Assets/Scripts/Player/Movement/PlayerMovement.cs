@@ -426,7 +426,6 @@ namespace Player.Movement
 
         void RotatePlayerBasedOnCamera(float camAngle)
         {
-            Debug.Log($"cam Angle: {camAngle}");
             // hacky workaround that switches back to the old rotation system when the player is on a flat surface and the camera
             // is lower than 90 degrees. This fixes the issue of the player not rotating when the camera angle gets too low,
             // from my testing it also doesn't interfere with the transitioning so that's also nice.
