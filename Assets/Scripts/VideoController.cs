@@ -61,11 +61,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
 
     private void Update()
     {
-        bool checkPress = CheckAnyButtonPress();
-        Debug.Log($"Check button press: {checkPress}");
-        Debug.Log($"Check coroutine: {_skipButtonCoroutine != null}");
-        
-        if (checkPress && _skipButtonCoroutine == null)
+        if (CheckAnyButtonPress() && _skipButtonCoroutine == null)
         {
             _skipButtonCoroutine = StartCoroutine(ShowInteractButton());
         }
