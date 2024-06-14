@@ -121,15 +121,6 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
                 return true;
             }
         }
-
-        // Check mouse inputs
-        if (Mouse.current != null)
-        {
-            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame)
-            {
-                return true;
-            }
-        }
         // no button was pressed
         return false;
     }
