@@ -74,6 +74,12 @@ public class MenuManager : MonoBehaviour
     private void Update()
     {
         bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+
+        if (cancelAction)
+        {
+            Debug.Log("Canceling ofzo");
+        }
+        
         if (player.MenuOpenCloseInput)
         {
             if (!_isPaused)
@@ -123,7 +129,7 @@ public class MenuManager : MonoBehaviour
     public void Pause()
     {
         OpenMainMenu();
-        InputManager.instance.DisableAllInputsButMenu();
+        InputManager.instance.DisableAllInputs();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
