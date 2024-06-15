@@ -20,6 +20,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
     [SerializeField] private GameObject textObject;
     [SerializeField] private SetTextToTextBox text;
     [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private float skipButtonDisplayTime = 3f;
     private Coroutine _skipButtonCoroutine;
 
     public void Awake()
@@ -129,7 +130,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
     {
         textObject.SetActive(true);   
         float timer = 0f;
-        while (timer < 2f)
+        while (timer < skipButtonDisplayTime)
         {
             timer += Time.deltaTime;
             text.SetText("Press [Interact] to skip");
