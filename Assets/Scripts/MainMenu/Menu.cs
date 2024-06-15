@@ -1,41 +1,60 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
 
-public class Menu : MonoBehaviour
+namespace MainMenu
 {
-    [Header("First Selected Button")] 
-    [SerializeField] private Button firstSelected;
-
-    private bool isFirstSelectedSet = false;
-
-    protected virtual void OnEnable()
+    public class Menu : MonoBehaviour
     {
-        // Check immediately if a gamepad is connected
-        isFirstSelectedSet = false;
-        CheckForGamepad();
-    }
+        [Header("First Selected Button")] [SerializeField]
+        private Button firstSelected;
 
-    void Update()
-    {
-        // Periodically check for gamepad presence until the first selected button is set
-            CheckForGamepad();
-    }
+        private InputSystemUIInputModule _iptmod;
+        private InputAction _navigate;
+        private InputAction _point;
+        private bool _usingNavigateAction;
 
-    private void CheckForGamepad()
-    {
-        if (Gamepad.current != null && !isFirstSelectedSet)
+        protected virtual void OnEnable()
         {
-            SetFirstSelected(firstSelected);
-            isFirstSelectedSet = true; // Mark as set to avoid redundant checks
+            _iptmod = GameObject.Find("EventSystem").GetComponent<InputSystemUIInputModule>();
+            _navigate = _iptmod.move.action;
+            _point = _iptmod.point.action;
         }
-    }
 
-    public void SetFirstSelected(Button firstSelectedButton)
-    {
-        // Set the first selected button
-        EventSystem.current.SetSelectedGameObject(firstSelectedButton.gameObject);
+        protected virtual void Update()
+        {
+            if (_navigate.WasPerformedThisFrame())
+                _usingNavigateAction = true;
+            else if (_point.WasPerformedThisFrame())
+                _usingNavigateAction = false;
+            // Periodically check for gamepad presence until the first selected button is set
+            HandleCanvasActivation(firstSelected);
+        }
+
+        private void HandleCanvasActivation(Button firstSelectedButton)
+        {
+            if (!EventSystem.current.currentSelectedGameObject && _usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(firstSelectedButton.gameObject);
+            }
+            else if (!_usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(null);
+            }
+        }
+
+        private void SetSelectedGameObjectIfGamepad(GameObject gameObjectToSelect)
+        {
+            if (_usingNavigateAction)
+            {
+                EventSystem.current.SetSelectedGameObject(gameObjectToSelect);
+            }
+            else
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
     }
 }
