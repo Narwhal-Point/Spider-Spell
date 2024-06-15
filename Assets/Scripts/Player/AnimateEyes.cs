@@ -18,6 +18,7 @@ namespace Player
 
         void Start()
         {
+            eyeMaterial.SetTextureOffset(BaseMap, new Vector2(_offsets[0], 0));
             StartCoroutine(BlinkAnimation());
         }
 
