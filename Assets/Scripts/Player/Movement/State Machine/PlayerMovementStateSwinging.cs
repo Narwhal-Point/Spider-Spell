@@ -64,7 +64,7 @@ namespace Player.Movement.State_Machine
             float distanceFromPoint = Vector3.Distance(player.transform.position, _swing.SwingPoint);
 
             // the distance grapple will try to keep from grapple point. 
-            float distance = Mathf.Min(distanceFromPoint * 0.4f, _swing.maxSwingDistance);
+            float distance = Mathf.Min(distanceFromPoint, _swing.maxSwingDistance);
             
             _swing.Joint.minDistance = distance;
 
@@ -75,8 +75,6 @@ namespace Player.Movement.State_Machine
             _swing.lr.positionCount = 2;
             _swing.CurrentGrapplePosition = player.swingOrigin.position;
             player.audioManager.PlaySFX(player.audioManager.webshooting);
-            // player.webShootSound.Play();
-            // player.midAirSound.Play();
         }
 
         void StopSwing()
@@ -111,8 +109,7 @@ namespace Player.Movement.State_Machine
                 player.Rb.AddForce(directionToPoint.normalized * (300f * Time.deltaTime));
 
                 float distanceFromPoint = Vector3.Distance(player.transform.position, _swing.SwingPoint);
-
-                _swing.Joint.maxDistance = distanceFromPoint * 0.4f;
+                
                 _swing.Joint.minDistance = distanceFromPoint * 0.25f;
             }
         }
