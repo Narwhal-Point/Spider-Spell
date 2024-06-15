@@ -6,7 +6,7 @@ namespace Collectables
 {
     public class CollectableManager : MonoBehaviour, IDataPersistence
     {
-        private readonly Dictionary<string, Image> _collectables = new Dictionary<string, Image>();
+        private readonly Dictionary<string, GameObject> _collectables = new Dictionary<string, GameObject>();
         public static CollectableManager instance;
         private readonly Dictionary<string, GameObject> _inventory = new Dictionary<string, GameObject>();
         
@@ -51,13 +51,13 @@ namespace Collectables
             return _inventory.Remove(key);
         }
 
-        public void AddToCollectables(string key, Image sprite)
+        public void AddToCollectables(string key, GameObject sprite)
         {
             if(key == "")
                 return;
             
             _collectables.Add(key, sprite);
-            sprite.enabled = false;
+            sprite.transform.GetChild(0).GetComponent<Image>().enabled = false;
             // Debug.Log($"Collectables count: {_collectables.Count}");
         }
 
@@ -65,7 +65,7 @@ namespace Collectables
         {
             bool success = _collectables.TryGetValue(key, out var sprite);
             if(success)
-                sprite.enabled = true;
+                sprite.transform.GetChild(0).GetComponent<Image>().enabled = true;
         }
 
         // saving and loading name of gameobject because otherwise it doesn't work.

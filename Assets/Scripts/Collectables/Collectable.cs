@@ -10,21 +10,17 @@ namespace Collectables
         [SerializeField] private float rotationSpeed = 50f; // Speed of rotation
         [SerializeField] private float bopSpeed = 0.5f; // Speed of bopping
         [SerializeField] private float bopHeight = 0.2f; // Height of bopping
-        [SerializeField] private Image image;
+        [SerializeField] private GameObject image;
         
         private Vector3 _startPosition;
 
         private void OnTriggerEnter(Collider other)
         {
             CollectableManager.instance.AddToInventory(id, gameObject);
-
-            GetComponent<MeshRenderer>().enabled = false;
         }
 
         private void Start()
         {
-            image.enabled = false;
-            
             CollectableManager.instance.AddToCollectables(id, image);
             
             // Save the initial position
