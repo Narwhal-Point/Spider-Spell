@@ -93,8 +93,6 @@ namespace Player.Movement
 
         public bool IsSnapping { get; set; } = false;
 
-        public bool MenuOpenCloseInput { get; private set; }
-
         private InputAction _menuOpenCloseAction;
 
         private PlayerInput _playerInput;
@@ -305,8 +303,7 @@ namespace Player.Movement
             // This can affect performance, but it should be fine to at least have it on the player.
             if (Rb.IsSleeping())
                 Rb.WakeUp();
-
-            MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
+            
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen

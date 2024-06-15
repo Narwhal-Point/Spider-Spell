@@ -27,9 +27,6 @@ public class InputManager : MonoBehaviour
     private InputAction _menuAction;
     private InputAction _logAction;
     private InputAction _recenterAction;
-
-
-    public bool MenuOpenCloseInput { get; private set; }
     
     private void Awake()
     {

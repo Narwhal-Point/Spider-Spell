@@ -89,7 +89,7 @@ private void Update()
         _usingNavigateAction = false;
 
     bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
-    if (player.MenuOpenCloseInput)
+    if (InputManager.instance.MenuInput)
     {
         if (!_isPaused)
         {
