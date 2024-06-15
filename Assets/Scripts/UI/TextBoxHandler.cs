@@ -156,6 +156,16 @@ namespace UI
             _currentLine = 0;
         }
 
+        public void EnableText()
+        {
+            displayInteractKeyHandler.SetActive(true);
+            if (enableInteractKey)
+                textObject.SetActive(true);
+            textBackground.SetActive(true);
+            _playerInArea = true;
+            _currentLine = 0;
+        }
+
         // very not scalable. If we want other text boxes that only have their text shown once we should do this differently.
         // Probably with a dictionary or something.
         public void LoadData(GameData data)

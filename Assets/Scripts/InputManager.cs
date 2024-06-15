@@ -107,6 +107,16 @@ public class InputManager : MonoBehaviour
     {
         _logAction.Disable();
     }
+
+    public void EnableInteract()
+    {
+        _interactAction.Enable();
+    }
+
+    public void DisableInteract()
+    {
+        _interactAction.Disable();
+    }
     
     // disable all inputs in the action map "Player".
     // this is better than just disabling playerinput, because this way that can still be
