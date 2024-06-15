@@ -18,7 +18,6 @@ namespace Cutscene
 
         private void Update()
         {
-            Debug.Log($"Pause State: {playableDirector.state}");
             if (playableDirector.state == PlayState.Paused && Started)
             {
                 continueCutsceneText.SetText("Press [Interact] to continue");
