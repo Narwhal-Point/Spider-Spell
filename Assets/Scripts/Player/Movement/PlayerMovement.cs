@@ -93,8 +93,6 @@ namespace Player.Movement
 
         public bool IsSnapping { get; set; } = false;
 
-        public bool MenuOpenCloseInput { get; private set; }
-
         private InputAction _menuOpenCloseAction;
 
         private PlayerInput _playerInput;
@@ -142,9 +140,7 @@ namespace Player.Movement
 
         private PlayerMovementStateManager _manager;
         public PlayerMovementStateIdle IdleState { get; private set; }
-
         public PlayerMovementStateWalking WalkingState { get; private set; }
-
         public PlayerMovementStateSprinting SprintingState { get; private set; }
         // public PlayerMovementStateCrouching CrouchingState { get; private set; }
         public PlayerMovementStateJumping JumpingState { get; private set; }
@@ -241,7 +237,7 @@ namespace Player.Movement
             Rb.position = data.position;
             Rb.rotation = data.rotation;
 
-            //camScript.RecenterCam();
+            camScript.InstantRecenterCam();
         }
 
         public void SaveData(GameData data)
@@ -298,17 +294,16 @@ namespace Player.Movement
 
         private void Update()
         {
-            Debug.Log($"Grounded value: {Grounded}");
-            Debug.Log($"array wall hits: {_wallWasHit}");
-            
+            // Debug.Log($"Grounded value: {Grounded}");
+            // Debug.Log($"array wall hits: {_wallWasHit}");
+
             PuddleEffects();
-            ZeroVelocity();
+            // ZeroVelocity();
             // wake up the rigidbody when it's sleeping so collisions keep working.
             // This can affect performance, but it should be fine to at least have it on the player.
             if (Rb.IsSleeping())
                 Rb.WakeUp();
-
-            MenuOpenCloseInput = _menuOpenCloseAction.WasPressedThisFrame();
+            
             // Debug.Log("Rigidbody Velocity: " + Rb.velocity.magnitude);
             speed_text.text = MoveSpeed + "/" + DesiredMoveSpeed;
             // print the current movement state on the screen
@@ -317,7 +312,7 @@ namespace Player.Movement
             // raycasts to check if a surface has been hit
             SurfaceCheck();
             WallCheck();
-            
+
             // state update
             _manager.CurrentState.UpdateState();
         }
@@ -325,8 +320,8 @@ namespace Player.Movement
         private void FixedUpdate()
         {
             _manager.CurrentState.FixedUpdateState();
-            
-            
+
+
             if (!IsTransitioned && _manager.CurrentState != JumpingState)
             {
                 CalculatePlayerVMovement();
@@ -334,7 +329,8 @@ namespace Player.Movement
             else
             {
                 SetPlayerDirection();
-            }            
+            }
+
             if (_manager.CurrentState == JumpingState)
             {
                 DelayClass.DelayMethod(HandleRotation, 0.2f);
@@ -342,7 +338,7 @@ namespace Player.Movement
             else
             {
                 HandleRotation();
-            }            
+            }
         }
 
         private void SetPlayerDirection()
@@ -379,17 +375,17 @@ namespace Player.Movement
 
         private void ZeroVelocity()
         {
-
             float cos70 = Mathf.Cos(70 * Mathf.Deg2Rad);
 
             // get the dot product of the ground normal and the angleHit normal to check the angle between them.
             float dotProduct = Vector3.Dot(groundHit.normal.normalized, angleHit.normal.normalized);
             if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
-                     _manager.CurrentState != SwingingState)
+                _manager.CurrentState != SwingingState)
             {
                 Rb.velocity *= 0.1f;
             }
         }
+
         private void CalculatePlayerVMovement()
         {
             float rayAngle = Vector3.Angle(movementForward, movementRight);
@@ -405,6 +401,9 @@ namespace Player.Movement
             float upOrDown = Vector3.Dot(cam2Player, transform.up);
 
             float angle = Vector3.Angle(uRay.direction, fPlane.normal);
+            
+            RotatePlayerBasedOnCamera(angle);
+            
             if (fPlane.Raycast(uRay, out float uEnter))
             {
                 Vector3 fPoint = uRay.GetPoint(uEnter);
@@ -420,11 +419,21 @@ namespace Player.Movement
                 Debug.DrawLine(transform.position,
                     transform.position + movementRight.normalized * ((upOrDown > 0) ? -2 : 2), Color.green);
             }
-            /*Debug.Log(angle);*/
-            /*if (angle >= 100)
+        }
+
+        void RotatePlayerBasedOnCamera(float camAngle)
+        {
+            // hacky workaround that switches back to the old rotation system when the player is on a flat surface and the camera
+            // is lower than 90 degrees. This fixes the issue of the player not rotating when the camera angle gets too low,
+            // from my testing it also doesn't interfere with the transitioning so that's also nice.
+            
+            if (camAngle <= 94 && groundHit.normal == Vector3.up && Rb.velocity.magnitude > 0.3f)
             {
-                
-            } */
+                orientation.rotation = Quaternion.Euler(0f, facingAngles.Item2, 0f);
+                transform.rotation = orientation.rotation;
+
+                SetPlayerDirection();
+            }
         }
 
         void OnDrawGizmos()
@@ -457,11 +466,12 @@ namespace Player.Movement
         // when falling. Noticed that a lot of people are struggling with this.
         private bool _wallWasHit;
         private RaycastHit _wallHit2;
+
         private void WallCheck()
         {
-            if(WallInFront || WallInFrontLow)
+            if (WallInFront || WallInFrontLow)
                 return;
-            
+
             Vector3[] raycastDirections =
             {
                 -transform.forward,
@@ -484,6 +494,11 @@ namespace Player.Movement
             }
         }
 
+        [Header("raycast angle controls")] 
+        [SerializeField] private float edgeCastDistance = 2.5f;
+
+        [SerializeField] private float edgeCastAngle = 0.2f;
+
         private void SurfaceCheck() // written with the help of google gemini. https://g.co/gemini/share/8d280f3a447f
         {
             if (IsDashing)
@@ -491,7 +506,7 @@ namespace Player.Movement
             // check if player is on the ground
             // Grounded = Physics.Raycast(transform.position, playerObj.TransformDirection(Vector3.down), out groundHit,
             //     playerHeight * 0.5f + 0.2f, ground);
-            Vector3 halfExtents = _collider.bounds.extents;
+
             Grounded = Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.7f), -transform.up, out groundHit,
                 transform.rotation, playerHeight * 0.5f + 0.2f, ground);
 
@@ -509,9 +524,9 @@ namespace Player.Movement
                 playerHeight * 0.5f + 0.2f, ground);
 
             // check if an angled surface is in front of the player
-            float edgeCastDistance = 1.5f;
+            // float edgeCastDistance = 1.5f;
             EdgeFound = Physics.Raycast(transform.position + (playerObj.forward) + (playerObj.up * .5f),
-                -playerObj.up + (0.45f * -playerObj.forward), out angleHit, edgeCastDistance, ground);
+                -playerObj.up + (edgeCastAngle * -playerObj.forward), out angleHit, edgeCastDistance, ground);
 
 #if UNITY_EDITOR
             // debug ray drawings
@@ -539,7 +554,7 @@ namespace Player.Movement
 
             // angled in the front
             Debug.DrawRay(transform.position + (playerObj.forward) + (playerObj.up * 0.5f),
-                -playerObj.up + -playerObj.forward * (0.45f * edgeCastDistance), Color.yellow);
+                -playerObj.up + -playerObj.forward * (edgeCastAngle * edgeCastDistance), Color.yellow);
 #endif
         }
 
@@ -587,8 +602,8 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
-            else if (WallInFrontLow &&  Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
-            {                
+            else if (WallInFrontLow && Rb.velocity.magnitude > 0.1f && _manager.CurrentState != SwingingState)
+            {
                 angle = facingAngles.Item1;
                 hit = lowWallHit;
                 TransformUponAngle(hit, angle);
@@ -612,9 +627,9 @@ namespace Player.Movement
                 IsTransitioned = true;
                 SetPlayerDirection();
             }
-            
+
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound &&  Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
+            else if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 Rb.velocity = Vector3.zero;
@@ -624,7 +639,7 @@ namespace Player.Movement
                 DelayClass.DelayMethod(SetPlayerDirection, 0.1f);
             }
             // TODO: Change camera player rotation
-            else if (Grounded &&  Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
+            else if (Grounded && Rb.velocity.magnitude > 0.1f || _manager.CurrentState == SwingingState)
             {
                 IsTransitioned = false;
                 if (_manager.CurrentState != SwingingState && groundHit.collider.CompareTag("smoothObject"))
@@ -687,9 +702,9 @@ namespace Player.Movement
             transform.rotation = newOrientation;
 
             Vector3 newPlayerPos = angleHit.point;
-            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;            
+            Vector3 offset = (playerHeight - 1) * 0.5f * angleHit.normal;
 
-            transform.position = newPlayerPos + offset;            
+            transform.position = newPlayerPos + offset;
         }
 
         private void TurnPlayer()
@@ -789,9 +804,9 @@ namespace Player.Movement
         public void OnSprint(InputValue value)
         {
             IsSprinting = value.isPressed;
-            
+
             // might be better to handle this in the current state using a special function for checking if a state switch is logical
-            
+
             if (_manager.CurrentState == WalkingState && IsSprinting)
             {
                 _manager.SwitchState(SprintingState);

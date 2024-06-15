@@ -1,3 +1,4 @@
+using System.Collections;
 using Audio;
 using Player.Movement;
 using UnityEngine;
@@ -38,6 +39,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private PlayerMovement player;
     [SerializeField] private InputSystemUIInputModule iptmod;
     private bool _isPaused;
+    
+    private InputAction _navigate;
+    private InputAction _point;
+    private bool _usingNavigateAction;
 
     // fix for inputs defaulting to keyboard after closing menu
     #region Input Caching
@@ -52,74 +57,96 @@ public class MenuManager : MonoBehaviour
     private void SetControlScheme()
     {
         _playerInput.enabled = true;
-       _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        if (_cachedControlScheme != null)
+        {
+            _playerInput.SwitchCurrentControlScheme(_cachedControlScheme);
+        }
     }
     
     #endregion
     
-    private void Start()
+
+private void Start()
+{
+    // setting up the input actions for hotswapping between keyboard and controller
+    _navigate = _playerInput.actions["Navigate"];
+    _point = _playerInput.actions["Point"];
+    
+    _cachedControlScheme = _playerInput.currentControlScheme;
+    var rebinds = PlayerPrefs.GetString("rebinds");
+    if (!string.IsNullOrEmpty(rebinds))
+        actions.LoadBindingOverridesFromJson(rebinds);
+    UnPause();
+    CloseAllMenus();
+}
+
+private void Update()
+{
+    // check if either arrow keys/ gamepad controls are used or mouse is used
+    if (_navigate.WasPerformedThisFrame())
+        _usingNavigateAction = true;
+    else if (_point.WasPerformedThisFrame())
+        _usingNavigateAction = false;
+
+    bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
+    if (InputManager.instance.MenuInput)
     {
-        _cachedControlScheme = _playerInput.currentControlScheme;
-        var rebinds = PlayerPrefs.GetString("rebinds");
-        if (!string.IsNullOrEmpty(rebinds))
-            actions.LoadBindingOverridesFromJson(rebinds);
+        if (!_isPaused)
+        {
+            Pause();
+        }
+        // else
+        // {
+        //     UnPause();
+        // }
+    }
+
+    else if (cancelAction & (_promptCanvasGO.activeSelf == true | _settingsMenuCanvasGO.activeSelf == true))
+    {
+        cancelAction = false;
+        OpenMainMenu();
+    }
+
+
+    else if (cancelAction & (_sensitivityCanvasGO.activeSelf == true | _audioCanvasGO.activeSelf == true))
+    {
+        cancelAction = false;
+        OpenSettingsMenuHandle();
+    }
+
+    else if (cancelAction & _keyboardCanvasGO.activeSelf == true & _waitForInputKeyboard.activeSelf == false)
+    {
+        cancelAction = false;
+        OpenSettingsMenuHandle();
+    }
+
+    else if (cancelAction & _gamepadCanvasGO.activeSelf == true & _waitForInputGamePad.activeSelf == false)
+    {
+        cancelAction = false;
+        OpenSettingsMenuHandle();
+    }
+
+    else if (cancelAction & _mainMenuCanvasGO.activeSelf == true)
+    {
+        cancelAction = false;
         UnPause();
-        CloseAllMenus();
     }
-
-    private void Update()
-    {
-        bool cancelAction = iptmod.cancel.action.WasPerformedThisFrame();
-        if (player.MenuOpenCloseInput)
-        {
-            if (!_isPaused)
-            {
-                Pause();
-            }
-            // else
-            // {
-            //     UnPause();
-            // }
-        }
-
-        else if (cancelAction & (_promptCanvasGO.activeSelf == true | _settingsMenuCanvasGO.activeSelf == true))
-        {
-            cancelAction = false;
-            OpenMainMenu();
-        }
-        
-        
-        else if (cancelAction & (_sensitivityCanvasGO.activeSelf == true | _audioCanvasGO.activeSelf == true))
-        {
-            cancelAction = false;
-            OpenSettingsMenuHandle();
-        }
-        
-        else if (cancelAction & _keyboardCanvasGO.activeSelf == true & _waitForInputKeyboard.activeSelf ==false)
-        {
-            cancelAction = false;
-            OpenSettingsMenuHandle();
-        }
-        
-        else if (cancelAction & _gamepadCanvasGO.activeSelf == true & _waitForInputGamePad.activeSelf ==false)
-        {
-            cancelAction = false;
-            OpenSettingsMenuHandle();
-        }
-        
-        else if (cancelAction & _mainMenuCanvasGO.activeSelf == true)
-        {
-            cancelAction = false;
-            UnPause();
-        }
-    }
+    
+    HandleCanvasActivation(_mainMenuCanvasGO, _mainMenuFirst);
+    HandleCanvasActivation(_settingsMenuCanvasGO, _settingsMenuFirst);
+    HandleCanvasActivation(_audioCanvasGO, _audioFirst);
+    HandleCanvasActivation(_keyboardCanvasGO, _keyboardFirst);
+    HandleCanvasActivation(_gamepadCanvasGO, _gamepadFirst);
+    
+    
+}
 
     #region Pause/Unpause Functions
 
     public void Pause()
     {
         OpenMainMenu();
-        _playerInput.enabled = false;
+        InputManager.instance.DisableAllInputs();
         // _playerInput.actions["MenuOpenClose"].Enable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -132,10 +159,16 @@ public class MenuManager : MonoBehaviour
         _isPaused = false;
         Time.timeScale = 1f;
 
+        StartCoroutine(DelayInputEnable());
         CloseAllMenus();
-        _playerInput.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    IEnumerator DelayInputEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        InputManager.instance.EnableAllInputs();
     }
     
     #endregion
@@ -154,7 +187,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_mainMenuFirst);
+        SetSelectedGameObjectIfGamepad(_mainMenuFirst);
         audioManager.PauseAudio();
     }
 
@@ -168,7 +201,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_settingsMenuFirst);
+        SetSelectedGameObjectIfGamepad(_settingsMenuFirst);
     }
 
     private void OpenKeyboardCanvas()
@@ -181,7 +214,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_keyboardFirst);
+        SetSelectedGameObjectIfGamepad(_keyboardFirst);
     }
 
     private void OpenGamepadCanvas()
@@ -194,7 +227,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_gamepadFirst);
+        SetSelectedGameObjectIfGamepad(_gamepadFirst);
     }
 
     private void OpenPrompt()
@@ -207,7 +240,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_promptFirst);
+        SetSelectedGameObjectIfGamepad(_promptFirst);
     }
     
     private void OpenSensitivityCanvas()
@@ -220,7 +253,7 @@ public class MenuManager : MonoBehaviour
         _settingsMenuCanvasGO.SetActive(false);
         _keyboardCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_sensitivityFirst);
+        SetSelectedGameObjectIfGamepad(_sensitivityFirst);
     }
     
     private void OpenAudioCanvas()
@@ -233,7 +266,7 @@ public class MenuManager : MonoBehaviour
         _keyboardCanvasGO.SetActive(false);
         _gamepadCanvasGO.SetActive(false);
         
-        EventSystem.current.SetSelectedGameObject(_audioFirst); // Set the first selectable item in Audio Canvas
+        SetSelectedGameObjectIfGamepad(_audioFirst);
     }
 
     private void CloseAllMenus()
@@ -329,5 +362,32 @@ public class MenuManager : MonoBehaviour
         #endif
         // If running in a build, quit the application
         Application.Quit();
+    }
+    
+    private void HandleCanvasActivation(GameObject canvas, GameObject firstSelectedObject)
+    {
+        if (canvas.activeSelf)
+        {
+            if (!EventSystem.current.currentSelectedGameObject && _usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(firstSelectedObject);
+            }
+            else if (!_usingNavigateAction)
+            {
+                SetSelectedGameObjectIfGamepad(null);
+            }
+        }
+    }
+    
+    private void SetSelectedGameObjectIfGamepad(GameObject gameObjectToSelect)
+    {
+        if (_usingNavigateAction)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObjectToSelect);
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }
