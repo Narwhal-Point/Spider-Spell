@@ -132,7 +132,7 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         float timer = 0f;
         while (timer < skipButtonDisplayTime)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             text.SetText("Press [Interact] to skip");
             yield return null;
         }
