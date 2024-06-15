@@ -629,7 +629,7 @@ namespace Player.Movement
             }
 
             // if an edge is found and the angle between the normals is 90 degrees or more align the player with the new surface
-            else if (EdgeFound && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
+            else if (EdgeFound && Grounded && Rb.velocity.magnitude > 0.1f && dotProduct <= cos70 &&
                      _manager.CurrentState != SwingingState)
             {
                 Rb.velocity = Vector3.zero;
