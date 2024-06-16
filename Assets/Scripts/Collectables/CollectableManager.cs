@@ -53,10 +53,10 @@ namespace Collectables
 
         public void AddToCollectables(string key, GameObject sprite)
         {
-            if(key == "")
+            if(key == "" || key.Contains("fake"))
                 return;
             
-            _collectables.Add(key, sprite);
+            _collectables.TryAdd(key, sprite);
             sprite.transform.GetChild(0).GetComponent<Image>().enabled = false;
             // Debug.Log($"Collectables count: {_collectables.Count}");
         }
@@ -71,20 +71,56 @@ namespace Collectables
         // saving and loading name of gameobject because otherwise it doesn't work.
         public void LoadData(GameData data)
         {
+            // foreach (var ingredient in data.collectables)
+            // {
+            //     GameObject o = GameObject.Find(ingredient.Value);
+            //     AddToCollectables(ingredient.Key, o);
+            // }
             foreach (var ingredient in data.collectedIngredients)
             {
                 GameObject o = GameObject.Find(ingredient.Value);
                 AddToInventory(ingredient.Key, o);
             }
+
+            foreach (var ingredient in _inventory)
+            {
+                if (!ingredient.Key.Contains("fake"))
+                    _collectables.TryAdd(ingredient.Key, ingredient.Value);
+            }
         }
 
         public void SaveData(GameData data)
         {
+            // foreach (var ingredient in _collectables)
+            // {
+            //     string ingredientName = ingredient.Value.name;
+            //     data.collectables.TryAdd(ingredient.Key, ingredientName);
+            // }
+            
             foreach (var ingredient in _inventory)
             {
                 string ingredientName = ingredient.Value.name;
                 data.collectedIngredients.TryAdd(ingredient.Key, ingredientName);
             }
+        }
+
+        public int GetInventoryCount()
+        {
+            return _inventory.Count;
+        }
+
+        public int GetCollectableCount()
+        {
+            return _collectables.Count;
+        }
+
+        public bool CollectedAll()
+        {
+            #if UNITY_EDITOR
+            Debug.Log($"Collectable Count: {GetCollectableCount()}");
+            Debug.Log($"Inventory Count: {GetInventoryCount()}");
+            #endif
+            return GetCollectableCount() <= GetInventoryCount();
         }
     }
 }
