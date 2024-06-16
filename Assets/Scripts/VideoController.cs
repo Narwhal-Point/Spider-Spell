@@ -68,6 +68,8 @@ public class VideoSceneController : MonoBehaviour, IDataPersistence
         }
         else if (_skipButtonCoroutine != null && _playerInput.actions["Interact"].WasPerformedThisFrame())
         {
+            shouldSkipIntroScene = true;
+            DataPersistenceManager.instance.SaveGame();
             asyncLoad.allowSceneActivation = true;
         }
     }
