@@ -61,11 +61,15 @@ namespace Player.Movement.State_Machine
 
             Vector3 planeRelativeMovement = forwardRelativeInput + rightRelativeInput;
             planeRelativeMovement = Vector3.ProjectOnPlane(planeRelativeMovement, player.groundHit.normal).normalized;
-            Vector3 movementWithSpeed = planeRelativeMovement * player.MoveSpeed * Time.deltaTime;
+
+            // Modify the movement speed based on the magnitude of the input direction
+            float speedModifier = player.InputDirection.magnitude;
+            Vector3 movementWithSpeed = planeRelativeMovement * player.MoveSpeed * speedModifier * Time.deltaTime;
+
             player.MoveDirection = movementWithSpeed;
 
             player.Rb.AddForce(-player.transform.up * 10f, ForceMode.Force);
-            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * 10f), ForceMode.Force);
+            player.Rb.AddForce(player.MoveDirection.normalized * (player.MoveSpeed * speedModifier * 10f), ForceMode.Force);
         }
 
         private void SpeedControl()
