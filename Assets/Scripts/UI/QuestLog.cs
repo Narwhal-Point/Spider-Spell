@@ -68,6 +68,7 @@ namespace UI
             _logImage.SetActive(true);
             // pause the game
             Time.timeScale = 0f;
+            _audioManager.PauseAudio();
         }
 
         private void CloseQuestLog()
@@ -82,6 +83,7 @@ namespace UI
             _logImage.SetActive(false);
             // resume the game
             Time.timeScale = 1f;
+            _audioManager.UnpauseAudio();
             
             // needs to play when timescale is 1.
             _audioManager.PlaySFX(_audioManager.paperSfx);
