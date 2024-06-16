@@ -26,7 +26,6 @@ public class GameData
     public bool journalCollected;
 
     // public Dictionary<string, GameObject> CollectedIngredients = new Dictionary<string, GameObject>();
-    public SerializableDictionary<string, string> collectables = new SerializableDictionary<string, string>();
     public SerializableDictionary<string, string> collectedIngredients = new SerializableDictionary<string, string>();
     public Vector3 spawnPoint = new Vector3(430.98f, 35.478f, 198f);
 
