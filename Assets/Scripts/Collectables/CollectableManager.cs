@@ -40,17 +40,6 @@ namespace Collectables
             ShowCollectedCollectable(key);
         }
 
-        private GameObject GetObjectFromInventory(string key)
-        {
-            _inventory.TryGetValue(key, out var collectable);
-            return collectable;
-        }
-
-        private bool RemoveFromInventory(string key)
-        {
-            return _inventory.Remove(key);
-        }
-
         public void AddToCollectables(string key, GameObject sprite)
         {
             if(key == "" || key.Contains("fake"))
@@ -104,12 +93,12 @@ namespace Collectables
             }
         }
 
-        public int GetInventoryCount()
+        private int GetInventoryCount()
         {
             return _inventory.Count;
         }
 
-        public int GetCollectableCount()
+        private int GetCollectableCount()
         {
             return _collectables.Count;
         }
