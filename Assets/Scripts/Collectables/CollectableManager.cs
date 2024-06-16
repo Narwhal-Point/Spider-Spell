@@ -93,12 +93,22 @@ namespace Collectables
             }
         }
 
+        // will ignore fake collectables
         private int GetInventoryCount()
         {
-            return _inventory.Count;
+            int keyAmount = _inventory.Count;
+            foreach (var key in _inventory.Keys)
+            {
+                if (key.Contains("fake"))
+                {
+                    keyAmount--;
+                }
+            }
+            
+            return keyAmount;
         }
-
-        private int GetCollectableCount()
+        
+        public int GetCollectableCount()
         {
             return _collectables.Count;
         }
@@ -109,6 +119,7 @@ namespace Collectables
             Debug.Log($"Collectable Count: {GetCollectableCount()}");
             Debug.Log($"Inventory Count: {GetInventoryCount()}");
             #endif
+            
             return GetCollectableCount() <= GetInventoryCount();
         }
     }

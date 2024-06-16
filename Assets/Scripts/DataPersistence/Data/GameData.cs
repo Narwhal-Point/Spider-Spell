@@ -1,3 +1,4 @@
+using Collectables;
 using UnityEngine;
 
 [System.Serializable]
@@ -40,7 +41,15 @@ public class GameData
 
     public int GetPercentageComplete()
     {
-        int percentageCompleted = (collectedIngredients.Count * 100 / maxCollectables);
+        int collectedIngredientCount = collectedIngredients.Count;
+
+        foreach (var key in collectedIngredients.Keys)
+        {
+            if (key.Contains("fake") && collectedIngredientCount <= maxCollectables)
+                collectedIngredientCount--;
+        }
+        
+        int percentageCompleted = (collectedIngredientCount * 100 / maxCollectables);
         return percentageCompleted;
     }
 }
